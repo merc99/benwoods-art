@@ -1,0 +1,27 @@
+# dependencies and build output
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# secrets
+.env
+.env.*
+!.env.example
+
+# full sources from the handoff (third-party kits and skills live here; never commit)
+handoff/
+
+# raw source images (originals pulled from Framer, captures). The site uses the
+# optimized copies in public/work, made by scripts/prepare-images.mjs.
+assets/
+
+# local agent tooling and third-party skills
+.claude/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.vercel

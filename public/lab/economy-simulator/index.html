@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>mmo nodes economy simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Questrial&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<style>
+:root{--bg:#eef1f8;--b1:#c7b6ff;--b2:#a9dcff;--b3:#86aaff;--ink:#0b0f25;--ink2:rgba(11,15,37,.62);--rule:rgba(11,15,37,.12);--glass:rgba(255,255,255,.62);--glass2:rgba(255,255,255,.82);--edge:rgba(255,255,255,.9);
+  --shadow:inset 0 1px 0 rgba(255,255,255,.7),0 14px 30px -20px rgba(30,45,90,.45);--accent:#3d6bff;--accent2:#9b7bff;--good:#0e9f6e;--bad:#e0314b;--warn:#d98a10;--emit:#6f95ff;--burn:#ff6a3a;
+  --display:'Lexend',ui-sans-serif,system-ui,sans-serif;--body:'Questrial',ui-sans-serif,system-ui,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1117;--b1:#43307f;--b2:#1a5a8a;--b3:#1f3c96;--ink:#f2f4ff;--ink2:rgba(242,244,255,.62);--rule:rgba(255,255,255,.12);--glass:rgba(255,255,255,.06);--glass2:rgba(255,255,255,.09);--edge:rgba(255,255,255,.12);--shadow:0 16px 32px -20px rgba(0,0,0,.8)}}
+:root[data-theme="dark"]{--bg:#0f1117;--b1:#43307f;--b2:#1a5a8a;--b3:#1f3c96;--ink:#f2f4ff;--ink2:rgba(242,244,255,.62);--rule:rgba(255,255,255,.12);--glass:rgba(255,255,255,.06);--glass2:rgba(255,255,255,.09);--edge:rgba(255,255,255,.12);--shadow:0 16px 32px -20px rgba(0,0,0,.8)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box;margin:0}
+html,body{min-height:100%}
+body{font-family:var(--body);color:var(--ink);background:var(--bg);letter-spacing:.01em;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(40vmax 40vmax at 12% 8%,var(--b1),transparent 60%),radial-gradient(45vmax 45vmax at 92% 20%,var(--b2),transparent 60%),radial-gradient(50vmax 40vmax at 60% 100%,var(--b3),transparent 60%);opacity:.8}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:1360px;margin:0 auto;padding:22px clamp(14px,3vw,36px) 60px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.brand{font-family:var(--display);font-weight:700;font-size:1.05rem;line-height:.9;letter-spacing:-.02em}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(1.5rem,3vw,2.2rem);letter-spacing:-.02em;margin-top:10px}
+.sub{color:var(--ink2);font-size:.92rem;margin-top:6px;max-width:70ch;line-height:1.45}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.presets button{font-family:var(--display);font-weight:600;font-size:.8rem;padding:8px 13px;border-radius:10px;background:var(--glass2);border:1px solid var(--edge);box-shadow:var(--shadow);cursor:pointer}
+.presets button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.grid{display:grid;grid-template-columns:340px 1fr;gap:18px;align-items:start}
+.card{background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);border:1px solid var(--edge);border-radius:16px;box-shadow:var(--shadow)}
+.controls{padding:16px;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;scrollbar-width:thin}
+.group+.group{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule)}
+.group h2{font-family:var(--display);font-weight:600;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-bottom:8px}
+.ctl{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;margin:10px 0}
+.ctl label{font-size:.84rem}
+.ctl output{font-family:var(--display);font-weight:600;font-size:.84rem;font-variant-numeric:tabular-nums}
+.ctl input{grid-column:1/-1;width:100%;accent-color:var(--accent)}
+.ctl small{grid-column:1/-1;font-size:.7rem;color:var(--ink2);line-height:1.35}
+.actions{display:flex;gap:8px;margin-top:14px}
+.actions button{flex:1;font-family:var(--display);font-weight:600;font-size:.8rem;padding:9px;border-radius:10px;border:1px solid var(--rule);background:transparent;cursor:pointer}
+.actions button:hover{border-color:var(--ink)}
+.verdict{padding:16px 18px;margin-bottom:14px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.vdot{width:14px;height:14px;border-radius:50%}
+.verdict b{font-family:var(--display);font-weight:600;font-size:1.05rem;display:block}
+.verdict span{font-size:.86rem;color:var(--ink2)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.kpi{padding:14px 16px}
+.kpi span{display:block;font-size:.74rem;color:var(--ink2)}
+.kpi b{display:block;font-family:var(--display);font-weight:600;font-size:1.35rem;font-variant-numeric:tabular-nums;margin-top:2px}
+.kpi small{font-size:.72rem;font-variant-numeric:tabular-nums}
+.up{color:var(--good)}.dn{color:var(--bad)}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.chart{padding:14px 16px 10px}
+.chart h3{font-family:var(--display);font-weight:600;font-size:.95rem}
+.chart p{font-size:.76rem;color:var(--ink2);margin:2px 0 8px}
+.chart .box{position:relative;height:230px}
+.wide{grid-column:1/-1}
+.notes{padding:16px 18px;margin-top:14px;font-size:.84rem;line-height:1.55;color:var(--ink2)}
+.notes b{color:var(--ink);font-family:var(--display);font-weight:600}
+.seg2{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:3px;border-radius:10px;background:var(--rule);margin-top:4px}.seg2 button{font-family:var(--display);font-weight:600;font-size:.8rem;padding:7px;border-radius:8px;border:0;background:transparent;cursor:pointer}.seg2 button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}.tog label{grid-column:1/-1}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);padding:10px 16px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:.84rem;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.on{opacity:1}
+@media (max-width:1000px){.grid{grid-template-columns:1fr}.controls{position:static;max-height:none}.kpis{grid-template-columns:1fr 1fr}.charts{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="brand">mmo<br>nodes</div>
+      <h1>Economy simulator</h1>
+      <p class="sub">Runs $MMO forward two years, week by week. Set emissions, player behavior and sinks, and see whether burns catch up with emissions and what that does to price and supply.</p>
+    </div>
+    <div class="presets" id="presets" role="group" aria-label="Scenarios"></div>
+  </header>
+  <div class="grid">
+    <aside class="card controls" id="controls" aria-label="Model inputs"></aside>
+    <main>
+      <div class="card verdict"><i class="vdot" id="vdot"></i><div><b id="vhead"></b><span id="vtext"></span></div></div>
+      <div class="kpis" id="kpis"></div>
+      <div class="charts">
+        <section class="card chart wide"><h3>Price</h3><p>USD per $MMO, driven by weekly buys against sells through the liquidity pool</p><div class="box"><canvas id="cPrice" aria-label="Price over time"></canvas></div></section>
+        <section class="card chart"><h3>Emissions vs burns</h3><p>$MMO per week; burns above emissions means the supply shrinks</p><div class="box"><canvas id="cFlow" aria-label="Weekly emissions and burns"></canvas></div></section>
+        <section class="card chart"><h3>Where the burns come from</h3><p>$MMO burned per week, by sink</p><div class="box"><canvas id="cSinks" aria-label="Burns by sink"></canvas></div></section>
+        <section class="card chart"><h3>Supply</h3><p>Circulating $MMO and cumulative burned, millions</p><div class="box"><canvas id="cSupply" aria-label="Supply over time"></canvas></div></section>
+        <section class="card chart"><h3>Players and APR</h3><p>Active players, and dungeon APR in USD terms</p><div class="box"><canvas id="cPlayers" aria-label="Players and APR"></canvas></div></section>
+      </div>
+      <div class="card notes"><b>How the model works.</b> Each week, emissions decay and split between dungeons and the raid pool. Players compound part of their rewards and claim the rest, paying the claim tax, and sell a share of what they claim. Buys come from new players entering and active players minting and spending. Price moves through a constant-product liquidity pool, and players churn faster when price falls. Players spend held rewards on sinks first, then top up from a limited weekly budget. Burns come from mints, the claim tax, Volcano offerings, loot burned and raid retreats. This is a directional model for comparing designs, not a price prediction.</div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const P=[ // key, label, group, min, max, step, default, format, help
+ ['E0','Weekly emission at launch','Emissions',1,10,.1,4.5,v=>v.toFixed(1)+'M','Spec: 4.5M, which emits the full 450M dungeon allocation over time'],
+ ['decay','Weekly decay','Emissions',0,4,.1,1,v=>v.toFixed(1)+'%','Spec: 1% per week'],
+ ['raidShare','Raid pool share','Emissions',0,40,1,15,v=>v+'%','Raid rewards lock longer, so they sell less'],
+ ['newPlayers','New players, week one','Players',50,5000,50,250,v=>fmtN(v),''],
+ ['growth','Early weekly growth','Players',0,20,.5,4,v=>v.toFixed(1)+'%','Applies for the first 26 weeks'],
+ ['cap','Audience size','Players',5000,500000,5000,40000,v=>fmtN(v),'Where new-player growth levels off'],
+ ['churn','Base weekly churn','Players',0,15,.5,3,v=>v.toFixed(1)+'%','Rises by 3 points when price falls more than 20% in a month'],
+ ['entryUSD','Entry buy per new player','Players',25,2000,5,120,v=>'$'+fmtN(v),''],
+ ['weeklyUSD','Other weekly buys per player','Players',0,50,.5,2,v=>'$'+v,'Buying and holding, outside of sinks'],
+ ['compound','Rewards compounded','Behavior',0,100,1,40,v=>v+'%','The rest is claimed and taxed'],
+ ['sell','Claimed rewards sold','Behavior',0,100,1,50,v=>v+'%','Unsold rewards are held, and spent on sinks first'],
+ ['budget','Weekly sink budget per player','Behavior',0,40,.5,4,v=>'$'+v.toFixed(1),'Fresh dollars a player will spend on mints and burns once held tokens run out'],
+ ['claimTax','Claim tax','Sinks',0,10,.5,5,v=>v.toFixed(1)+'%','Half is burned, half returns to stakers'],
+ ['mintRate','Mints per player per month','Sinks',0,2,.05,.3,v=>v.toFixed(2),''],
+ ['mintBurn','Mint cost burned','Sinks',0,100,5,50,v=>v+'%',''],
+ ['mintUSD','Mint price (USD pricing)','Sinks',5,200,5,40,v=>'$'+v,'Used when sinks are priced in USD'],
+ ['mintTok','Mint price (MMO pricing)','Sinks',100,10000,100,1500,v=>fmtN(v)+' MMO','Used when sinks are priced in $MMO'],
+ ['volcUSD','Volcano offering per player (USD)','Sinks',0,50,.5,3,v=>'$'+v.toFixed(1),'Weekly, when priced in USD'],
+ ['volcTok','Volcano offering per player (MMO)','Sinks',0,2000,10,120,v=>fmtN(v)+' MMO','Weekly, when priced in $MMO'],
+ ['lootBurn','Loot burned in the Volcano','Sinks',0,100,5,50,v=>v+'%','Share of dropped item backing that players burn'],
+ ['liq','Liquidity at launch','Market',250000,10000000,250000,2000000,v=>'$'+fmtN(v),'USD side of the pool'],
+ ['p0','Launch price','Market',.005,.2,.005,.02,v=>'$'+v.toFixed(3),'Fully diluted value = price × 1B'],
+ ['teamSell','Team tokens sold after cliff','Market',0,100,5,25,v=>v+'%','Team vests from week 52 over 104 weeks'],
+ ['whale','Whale buys','Stress tests',0,200,5,0,v=>v+'M MMO','One buyer, bought at the market price'],
+ ['whaleWeek','Whale buys in week','Stress tests',1,60,1,8,v=>'Week '+v,''],
+ ['whaleLock','Whale locks in the Council','Stress tests',0,100,5,50,v=>v+'%','Locked 52 weeks; the rest is staked'],
+ ['dumpWeek','Whale dumps everything unlocked in week','Stress tests',0,104,1,0,v=>v?'Week '+v:'Never','Sells all unlocked tokens and rewards at once'],
+ ['bots','Bot accounts farming free rewards','Stress tests',0,5000,50,0,v=>fmtN(v),'Each farms every free reward and sells any MMO']];
+const TOG=[['tokenSinks','Price sinks in','USD','$MMO',false,'Priced in $MMO, sinks burn more tokens as the game grows'],['adaptive','Adaptive emissions','Off','On',false,'Emissions throttle down when burns lag, to a floor of 25%'],
+ ['pool','Staking rewards','Fixed APR','Fixed pool',true,'Fixed APR mints more as more is staked; a fixed pool never does'],
+ ['freeMMO','Free rewards (chest, first steps)','Embers','MMO',false,'The old prototype paid up to 100K MMO a day from the daily chest'],
+ ['perAction','War and raid prizes','From budget','Minted',false,'The old prototype minted war prizes per staked character'],
+ ['emberLeak','Gear bought with Embers','Account-bound','Sellable',false,'Sellable lets bots turn free Embers into gear and sell it for MMO']];
+const PRESETS={
+ 'Spec as written':{},
+ 'Spec with fixes':{tokenSinks:true,adaptive:true},
+ 'Hype launch':{newPlayers:800,growth:8,cap:150000,entryUSD:250,tokenSinks:true,adaptive:true},
+ 'Bear market':{newPlayers:150,growth:2,cap:15000,entryUSD:80,weeklyUSD:1,sell:70,churn:5,tokenSinks:true,adaptive:true},
+ 'Farm and dump':{sell:85,compound:15,budget:1,churn:6,tokenSinks:true,adaptive:true},
+ 'Prototype schedule':{E0:3.64,decay:2},
+ 'Whale buys 100M':{tokenSinks:true,adaptive:true,whale:100,whaleWeek:8,whaleLock:50},
+ 'Whale buys, then dumps':{tokenSinks:true,adaptive:true,whale:100,whaleWeek:8,whaleLock:0,dumpWeek:30},
+ 'Bot farm, old faucets':{tokenSinks:true,adaptive:true,bots:1000,freeMMO:true,perAction:true,pool:false},
+ 'Bot farm, fixed':{tokenSinks:true,adaptive:true,bots:1000},
+ 'Bot farm, sellable Ember gear':{tokenSinks:true,adaptive:true,bots:1000,emberLeak:true}};
+const fmtN=n=>Math.abs(n)>=1e9?(n/1e9).toFixed(2)+'B':Math.abs(n)>=1e6?(n/1e6).toFixed(2)+'M':Math.abs(n)>=1e3?(n/1e3).toFixed(1)+'K':Math.round(n).toString();
+const S={};const defaults=()=>{P.forEach(p=>S[p[0]]=p[6]);TOG.forEach(t=>S[t[0]]=t[4])};defaults();
+// ---------- controls ----------
+let html='',grp='';
+P.forEach(([k,l,g,mi,ma,st,d,f,h])=>{if(g!==grp){html+=(grp?'</div>':'')+`<div class="group"><h2>${g}</h2>`;grp=g}
+  html+=`<div class="ctl"><label for="i-${k}">${l}</label><output id="o-${k}" for="i-${k}"></output><input type="range" id="i-${k}" min="${mi}" max="${ma}" step="${st}" value="${d}">${h?`<small>${h}</small>`:''}</div>`});
+html+=`</div><div class="group"><h2>Design fixes</h2>${TOG.map(([k,l,a,b,d,h])=>`<div class="ctl tog"><label>${l}</label><span class="seg2" role="group" aria-label="${l}"><button data-t="${k}" data-v="0">${a}</button><button data-t="${k}" data-v="1">${b}</button></span><small>${h}</small></div>`).join('')}</div><div class="actions"><button id="reset">Reset to spec</button><button id="copy">Copy settings</button></div>`;
+$('#controls').innerHTML=html;
+const syncUI=()=>{P.forEach(([k,,,,,,,f])=>{$('#i-'+k).value=S[k];$('#o-'+k).textContent=f(+S[k])});document.querySelectorAll('[data-t]').forEach(b=>b.setAttribute('aria-pressed',String(!!S[b.dataset.t])===String(b.dataset.v==='1')))};
+$('#controls').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b)return;S[b.dataset.t]=b.dataset.v==='1';syncUI();markPreset(null);run()});
+P.forEach(([k])=>$('#i-'+k).addEventListener('input',e=>{S[k]=+e.target.value;$('#o-'+k).textContent=P.find(p=>p[0]===k)[7](S[k]);markPreset(null);run()}));
+$('#presets').innerHTML=Object.keys(PRESETS).map(n=>`<button data-p="${n}" aria-pressed="${n==='Spec as written'}">${n}</button>`).join('');
+function markPreset(n){document.querySelectorAll('#presets button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.p===n))}
+$('#presets').addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(!b)return;defaults();Object.assign(S,PRESETS[b.dataset.p]);syncUI();markPreset(b.dataset.p);run()});
+$('#reset').onclick=()=>{defaults();syncUI();markPreset('Spec as written');run()};
+$('#copy').onclick=async()=>{const t=JSON.stringify(S,null,2);try{await navigator.clipboard.writeText(t);toast('Settings copied')}catch(e){toast('Copying is blocked here')}};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800)}
+// ---------- model ----------
+const WEEKS=104;
+function simulate(p){
+  const M=1e6,out=[];let price=p.p0,N=0,issued=200*M,burned=0,staked=60*M,held=0,cov=1,hist=[price];let wLock=0,wStake=0,wFree=0,wPaid=0,wUnlock=0,leakMint=0;
+  const k=p.liq*p.liq/p.p0;
+  for(let w=0;w<WEEKS;w++){
+    const Eb=p.E0*M*Math.pow(1-p.decay/100,w),E=Eb*(p.adaptive&&w>=4?Math.min(1,Math.max(.25,.35+cov*.9)):1);
+    const raid=E*p.raidShare/100,dun=E-raid,comm=150*M/156,team=w>=52?120*M/104:0;
+    const fresh=Math.max(0,p.newPlayers*Math.pow(1+p.growth/100,Math.min(w,26))*(1-N/p.cap));
+    const fell=hist.length>4&&price<hist.at(-5)*.8;N=Math.max(0,N+fresh-N*(p.churn+(fell?3:0))/100);
+    // stress tests: whale and bots
+    let extraSell=0,extraBuyUSD=0,extraMint=0;
+    if(p.whale>0&&w===p.whaleWeek-1){const tok=p.whale*M;extraBuyUSD=tok*price;wLock=tok*p.whaleLock/100;wStake=tok-wLock;wUnlock=w+52;wPaid=extraBuyUSD}
+    if(wStake>0||wLock>0){if(p.pool){const share=wStake/(staked+wStake);wFree+=dun*share*.6}else{const add=wStake*.10/52;extraMint+=add;wFree+=add}}
+    if(wLock>0&&w===wUnlock){wStake+=wLock;wLock=0}
+    if(p.dumpWeek>0&&w===p.dumpWeek-1){extraSell+=wStake+wFree;wStake=0;wFree=0}
+    if(p.bots>0&&p.freeMMO){const f=p.bots*30e3*7*.5;extraMint+=f;extraSell+=f}
+    if(p.perAction){const f=N*.5*3*62500*.5;extraMint+=f;extraSell+=f*.6}
+    if(p.bots>0&&p.emberLeak){extraSell+=p.bots*3.5*20000}
+    leakMint+=extraMint;
+    const comp=dun*p.compound/100,claimed=dun-comp,tax=claimed*p.claimTax/100,s=p.sell/100;
+    const loot=comm*.4,lootBurn=loot*p.lootBurn/100;
+    let sellTok=(claimed-tax)*s+raid*s*.6+(comm-loot)*s+team*p.teamSell/100;
+    held+=(claimed-tax)*(1-s)+raid*(1-s*.6)+(comm-loot)*(1-s);
+    const mints=N*p.mintRate/4.33,dMint=p.tokenSinks?mints*p.mintTok:mints*p.mintUSD/price,dVolc=p.tokenSinks?N*p.volcTok:N*p.volcUSD/price,D=dMint+dVolc;
+    const fromHeld=Math.min(held,D);held-=fromHeld;const bought=Math.min(D-fromHeld,N*p.budget/price),f=D>0?(fromHeld+bought)/D:0;
+    const mintBurn=dMint*f*p.mintBurn/100,volcBurn=dVolc*f,raidBurn=raid*.03,taxBurn=tax/2;
+    const leak=held*.04;held-=leak;sellTok+=leak;
+    sellTok+=extraSell;
+    const buyUSD=fresh*p.entryUSD+N*p.weeklyUSD+bought*price+extraBuyUSD;
+    const burnTot=taxBurn+mintBurn+volcBurn+lootBurn+raidBurn;
+    const R=Math.sqrt(k*price),after=Math.max(R*.15,R+buyUSD-sellTok*price);price=Math.max(1e-5,price*Math.pow(after/R,2));hist.push(price);
+    cov=burnTot/Math.max(1,E+comm+extraMint);issued+=E+comm+team+extraMint;burned+=burnTot;staked+=comp+fresh*p.entryUSD*.5/price;
+    out.push({w,E,burnTot,sinks:{tax:taxBurn,mint:mintBurn,volc:volcBurn,loot:lootBurn,raid:raidBurn},price,N,circ:issued-burned,burned,apr:dun*52/Math.max(1,staked+wStake)*100,issuedWeek:E+comm+team+extraMint,emitNew:E+comm+extraMint,whale:wStake+wLock+wFree,extra:leakMint});
+  }
+  return out}
+// ---------- charts ----------
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+let charts={};
+function base(extra){const ink=css('--ink2'),grid=css('--rule');return {responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'index',intersect:false},
+  plugins:{legend:{labels:{color:ink,boxWidth:10,font:{family:'Questrial'}}},tooltip:{callbacks:{}}},
+  scales:{x:{ticks:{color:ink,maxTicksLimit:9,callback:(v,i)=>'W'+(i+1)},grid:{color:grid}},y:{ticks:{color:ink,callback:v=>fmtN(v)},grid:{color:grid}},...(extra||{})}}}
+function mk(id,type,datasets,opts){if(!window.Chart){return}const lbl=Array.from({length:WEEKS},(_,i)=>'Week '+(i+1));
+  if(charts[id]){charts[id].data.datasets=datasets;charts[id].update();return}
+  charts[id]=new Chart(document.getElementById(id),{type,data:{labels:lbl,datasets},options:opts})}
+const line=(label,data,color,extra)=>({label,data,borderColor:color,backgroundColor:color+'22',borderWidth:2,pointRadius:0,tension:.25,...(extra||{})});
+function run(){const r=simulate(S);
+  const accent=css('--accent'),emit=css('--emit'),burn=css('--burn'),good=css('--good'),purple=css('--accent2');
+  const pr=base();pr.scales.y.ticks.callback=v=>'$'+(+v).toFixed(v<.01?4:3);pr.plugins.tooltip.callbacks.label=c=>' $'+c.parsed.y.toFixed(4);
+  mk('cPrice','line',[line('Price',r.map(x=>x.price),accent,{fill:true})],pr);
+  mk('cFlow','line',[line('Emitted',r.map(x=>x.issuedWeek),emit),line('Burned',r.map(x=>x.burnTot),burn)],base());
+  const sk=base({});sk.scales.x.stacked=true;sk.scales.y.stacked=true;
+  mk('cSinks','bar',[['Volcano offerings','volc','#ff6a3a'],['Loot burned','loot','#f0a818'],['Mint','mint','#9b7bff'],['Claim tax','tax','#3d6bff'],['Raid retreats','raid','#c8121e']].map(([l,k,c])=>({label:l,data:r.map(x=>x.sinks[k]),backgroundColor:c,borderWidth:0,barPercentage:1,categoryPercentage:1})),sk);
+  mk('cSupply','line',[line('Circulating',r.map(x=>x.circ),accent),line('Burned, cumulative',r.map(x=>x.burned),burn)],base());
+  const pl=base({y2:{position:'right',ticks:{color:css('--ink2'),callback:v=>v.toFixed(0)+'%'},grid:{display:false}}});
+  mk('cPlayers','line',[line('Active players',r.map(x=>x.N),good),line('Dungeon APR',r.map(x=>x.apr),purple,{yAxisID:'y2',borderDash:[5,4]})],pl);
+  // KPIs
+  const at=w=>r[w-1],p52=at(52).price,p104=at(104).price,chg=v=>((v/S.p0-1)*100);
+  let peak=0,dd=0;r.forEach(x=>{peak=Math.max(peak,x.price);dd=Math.max(dd,1-x.price/peak)});
+  const cross=r.findIndex(x=>x.burnTot>=x.emitNew);const cov52=r.slice(47,52).reduce((a,x)=>a+x.burnTot,0)/r.slice(47,52).reduce((a,x)=>a+x.emitNew,0)*100;
+  const circ=at(104).circ,circChg=(circ/(200e6)-1)*100;
+  const k=(t,v,s,cls)=>`<div class="card kpi"><span>${t}</span><b>${v}</b><small class="${cls||''}">${s}</small></div>`;
+  $('#kpis').innerHTML=k('Price at week 52','$'+p52.toFixed(4),(chg(p52)>=0?'+':'')+chg(p52).toFixed(0)+'% vs launch',chg(p52)>=0?'up':'dn')+
+    k('Price at week 104','$'+p104.toFixed(4),`${chg(p104)>=0?'+':''}${chg(p104).toFixed(0)}% vs launch, worst drop ${(dd*100).toFixed(0)}%`,chg(p104)>=0?'up':'dn')+
+    k('Burns cover new emissions',cov52.toFixed(0)+'%',cross>=0?'Deflationary from week '+(cross+1):'Weeks 48 to 52',cov52>=45?'up':cov52>=30?'':'dn')+
+    k('Circulating at week 104',fmtN(circ),`${circChg>=0?'+':''}${circChg.toFixed(0)}% vs 200M at launch`,circChg<=150?'up':'dn');
+  let head,txt,col;
+  if(chg(p104)>=0&&cov52>=45){head='Healthy: price holds and burns absorb about half of emissions';txt=`Burns cover ${cov52.toFixed(0)}% of new emissions by week 52 and circulating supply ends at ${fmtN(circ)}.`;col=css('--good')}
+  else if(chg(p104)>=-40){head='Workable, but emissions outpace burns';txt=`Burns cover ${cov52.toFixed(0)}% of new emissions by week 52. Try pricing sinks in $MMO and turning on adaptive emissions.`;col=css('--warn')}
+  else{head='At risk: selling outruns demand';txt=`Price ends ${chg(p104).toFixed(0)}% from launch and burns cover only ${cov52.toFixed(0)}% of new emissions. This is the sell-pressure spiral the spec warns about.`;col=css('--bad')}
+  const last=r.at(-1);if(S.whale>0)txt+=` The whale ends holding ${fmtN(last.whale)} MMO${S.pool?'; with fixed pools, its staking added no new supply':', and fixed APRs minted extra supply for it'}.`;
+  if(last.extra>1e6)txt+=` Off-schedule minting added ${fmtN(last.extra)} MMO that no emission budget covered.`;else if(S.bots>0)txt+=` ${fmtN(S.bots)} bot accounts extracted no MMO, because free rewards pay Embers.`;
+  $('#vhead').textContent=head;$('#vtext').textContent=txt;$('#vdot').style.background=col;$('#vdot').style.boxShadow='0 0 12px '+col;
+}
+syncUI();
+if(window.Chart){Chart.defaults.font.family='Questrial, system-ui, sans-serif'}
+run();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{Object.values(charts).forEach(c=>c.destroy());charts={};run()});
+new MutationObserver(()=>{Object.values(charts).forEach(c=>c.destroy());charts={};run()}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+})();
+</script>
+</body>
+</html>

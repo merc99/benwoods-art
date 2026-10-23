@@ -1,0 +1,69 @@
+---
+title: Check-in
+slug: checkin
+category: product
+tags: [Product design, Front end, Motion]
+year: 2026
+role: Solo product designer and developer. Concept, brand, UX, visual design, motion and front end, built in pair-programming sessions with Claude Code
+stack: [Next.js 16, React 19, TypeScript, Tailwind CSS v4, Radix, Vercel]
+status: Portfolio build · simulated live crew · Supabase backend in progress
+liveUrl: https://check-in-web-six.vercel.app
+repoUrl: https://github.com/merc99/check-in-web
+cover: /work/checkin/cover-dark.webp
+coverWide: /work/checkin/cover-dark-wide.webp
+# Cover A chosen. Unused alternative: /work/checkin/cover-light.webp and cover-light-wide.webp
+coverAlt: Check-in's desktop feed in dark mode, framed on a sky-blue backdrop, with a crew banner, posts with reactions and a rail showing 2 of 5 crewmates in today.
+summary: A social habit tracker for small crews. Check in once a day, see who else showed up.
+order: 1
+featured: true
+interesting:
+  - "Choosing effects by comparison, not taste alone. Three sources offered overlapping effects, so I built every version side by side on a preview route in both themes, picked a winner per overlap and folded them into one effect system with one set of tokens and a written motion budget."
+  - "Porting imperative animation to React without fighting it. The carousel and reactions were vanilla JS with springs and FLIP animation. One transform per element, the hot path written straight to the DOM and React owning only state kept them at 60fps."
+  - "Touch and pointer edge cases. A scroll over a carousel card shouldn't open it, a hold button needs a hint for people who tap, and hover effects are mouse-only. Each needed explicit handling for pointercancel, pointer type and movement thresholds."
+  - "One app, two layouts. The phone app (bottom tabs, sheets) and the desktop dashboard (sidebar, wide feed, sticky rail) share every component; CSS decides most of it and one hook decides the rest."
+  - "Demo data that stays current. In-memory data shaped like the real Supabase schema, re-seeded relative to now, with crewmates who check in and react through the same change events a real backend would send."
+gallery:
+  - src: /work/checkin/feed-dark.webp
+    alt: Check-in's desktop feed in dark mode, with a sky-blue 5am Lifters banner, a join request, posts with reactions and a right rail showing 2 of 5 crewmates in today.
+    caption: Feed. The crew banner, posts and the rail with today's check-ins.
+    span: full
+  - src: /work/checkin/explore.webp
+    alt: Check-in's Explore page in dark mode, a 3D ring of crew cards (Hydration Station, Couch to 5K, Morning Pages) above a grid of all crews.
+    caption: Explore. Crews looking for one more person, on a draggable ring carousel.
+    span: full
+  - src: /work/checkin/you.webp
+    alt: The You dashboard in dark mode, with glossy green, orange and purple stat cards for 41 check-ins, a 6-day streak and a best streak of 14, plus a crew leaderboard.
+    caption: You. Glossy stat panels, achievements and crew streaks.
+    span: full
+  - src: /work/checkin/logo.webp
+    alt: The Check-in gauge logo, a red-to-green arc with a black check mark.
+    caption: The gauge mark.
+    span: half
+  - src: /work/checkin/phone.webp
+    alt: An early phone mockup of Check-in's welcome screen on cream, with the gauge logo and a Create Account button.
+    caption: The first mobile concept, 2025.
+    span: half
+  - src: /work/checkin/concept-02.webp
+    alt: Two early phone screens, a list of groups with colorful tag chips and a check-in form with tags and a green Check-in button.
+    caption: Early mobile concept. Groups and the check-in form.
+    span: half
+  - src: /work/checkin/concept-03.webp
+    alt: Two early phone screens, a gradient group list and a stats page with streaks and achievements.
+    caption: Early mobile concept. Groups and stats.
+    span: half
+---
+
+Check-in is a social habit tracker for small crews of 3 to 15 people. You join a crew, check in once a day with a short
+note and a couple of tags, and see who else showed up. The line is "No shame days, just show up": it's an
+accountability app, not a productivity app. Missed days aren't punished, streaks are secondary, and the all-time
+check-in count never goes down.
+
+It started in a group chat where friends posted what they did each day ("Chest day ✅", "Cold plunge"). Every message
+was a small promise to show up. Check-in keeps that energy and gives it a home.
+
+## Status
+
+A portfolio build. It runs on built-in demo data that re-seeds on every load, relative to now, so the feed always
+looks like today, and crewmates' activity is simulated (they check in and react every 9 to 16 seconds). A full Supabase
+backend with email sign-in, schema and migrations exists on its own branch and isn't merged yet. A React Native version
+lives separately and is behind the web app.

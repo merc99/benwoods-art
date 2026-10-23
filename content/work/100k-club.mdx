@@ -1,0 +1,88 @@
+---
+title: 100K Club
+slug: 100k-club
+category: product
+tags: [Brand, Product design, WebGL]
+year: 2026
+role: Founder. Club concept and rank system, crests and brand, landing page design and interactions, and Slipboard's product design, built with Claude and Claude Code
+stack: [HTML, CSS, WebGL, Web Animations API, Discord bot on Railway, Postgres, Claude API]
+status: Pre-launch · landing page live · Discord opening soon
+liveUrl: https://100k-club.netlify.app
+repoUrl: ""
+cover: /work/100k-club/cover-mark.webp
+coverAlt: The gold 100K Club crest centered on deep navy with a soft back glow.
+summary: A sports betting club on Discord with an earned rank ladder, and Slipboard, the bot that grades slips.
+order: 2
+featured: true
+interesting:
+  - "A bot that reads slips so members don't fill out forms. Members post a screenshot and tag @Slipboard; the bot reads it, matches it to real games and grades it from live scores. It graded a 7-leg boosted parlay correctly on its own."
+  - "Ranks that reward skill, not volume. Thresholds use units risked, profit and ROI over a window, with safeguards so tiny bets and lotto parlays can't game the ladder."
+  - "Porting React components into a non-React page. The carousel and reactions were React; the page wasn't. Hooks became one imperative object that owns its DOM, so the page's re-renders never fight the animation."
+  - "Debugging rendering, not just logic. Carousel cards looked pixelated because the browser had frozen them as small layers and scaled them up; drawing them at full size fixed it."
+  - "Many rounds of visual iteration. The crests went through simplified shields for Discord role icons, detailed crests for the site, and black lacquer with gold inlay for Club Legend."
+gallery:
+  - src: /work/100k-club/site-hero.webp
+    alt: The 100K Club landing hero, the gold crest over swirling navy silk with the line "Where every slip counts, and anyone can rise." and Join Discord and See how it works buttons.
+    caption: The hero. The crest tilts toward the cursor over a WebGL silk shader.
+    span: full
+  - src: /work/100k-club/site-inside.webp
+    alt: The "Step inside the club" section, a Discord-style window with the channel list and a members-only room shown locked.
+    caption: Step inside. A preview of the Discord, with members-only rooms locked.
+    span: full
+  - src: /work/100k-club/site-ladder.webp
+    alt: The "Climb the ladder" section, three steps (post your slip, it grades itself, climb the ranks), rank tabs from Member to Club Legend and the Member crest.
+    caption: The rank ladder. Each rank has its own finish.
+    span: full
+  - src: /work/100k-club/site-leaderboard.webp
+    alt: The leaderboard section, a podium of silver, gold and bronze cards above a table of members ranked by units won, with record and ROI.
+    caption: The leaderboard. Switching tabs reorders it with a FLIP animation.
+    span: full
+  - src: /work/100k-club/site-wins.webp
+    alt: The "Club wins" section, winning bet slips fanned on a 3D ring carousel above the caption of the front slip.
+    caption: Club wins on the ring carousel.
+    span: full
+  - src: /work/100k-club/site-membership.webp
+    alt: The "One price. The whole club." section, a gold-trimmed membership card at 49.99 dollars a month beside a silver Member card and the steps to join.
+    caption: Membership.
+    span: full
+  - src: /work/100k-club/crest-lineup.webp
+    alt: The five 100K Club rank crests in silver, pale gold, gold, ice blue and black lacquer, under the line "Where every slip counts, and anyone can rise."
+    caption: The rank ladder in crests, as used for the share image.
+    span: full
+  - src: /work/100k-club/crest-member.webp
+    alt: The Member crest, a navy shield with silver trim, sports-ball icons and 100K Club lettering.
+    caption: Member.
+    span: quarter
+  - src: /work/100k-club/crest-rising-sharp.webp
+    alt: The Rising Sharp crest, a navy shield with pale gold trim.
+    caption: Rising Sharp.
+    span: quarter
+  - src: /work/100k-club/crest-sharp.webp
+    alt: The Sharp crest, a navy shield with ice-blue trim and blue lettering.
+    caption: Sharp.
+    span: quarter
+  - src: /work/100k-club/crest-club-legend.webp
+    alt: The Club Legend crest in black lacquer with gold trim and gold lettering.
+    caption: Club Legend.
+    span: quarter
+  - src: /work/100k-club/win-slip.webp
+    alt: A winning FanDuel bet slip on a player to score 2 or more goals at +12500, a 20 dollar wager returning 2,520 dollars.
+    caption: A member's winning slip, as posted for Slipboard to grade.
+    span: half
+---
+
+100K Club is a paid sports betting community on Discord with an earned rank ladder: Member, Rising Sharp, Sharp,
+Featured Sharp and Club Legend. It's community-first. Members rise by posting and tracking their own plays, not by
+following a few senior cappers.
+
+Slipboard is the custom Discord bot behind it. A member posts a bet slip screenshot and tags @Slipboard; the bot reads
+the image, grades it automatically from live scores, keeps the leaderboard and assigns rank roles.
+
+The landing page sells the club and shows the ladder, a preview of the Discord, the leaderboard and recent wins. Its
+hero crest tilts toward the cursor with a holo glare and a gold sweep clipped to the crest's shape, over a WebGL silk
+shader.
+
+## Status
+
+Pre-launch. The landing page is live. Slipboard runs on Railway with Postgres and has auto-graded real slips. The
+server isn't open to members yet.

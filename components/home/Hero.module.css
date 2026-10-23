@@ -1,0 +1,27 @@
+/* Hero type reveal (moment). Each line rises out of its own mask; reduced motion shows it still. */
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.04em;
+  margin-bottom: -0.04em;
+}
+.rise {
+  display: block;
+  animation: rise 1100ms var(--ease-out) both;
+}
+.fade {
+  animation: fadeUp 900ms var(--ease-out) 380ms both;
+}
+@keyframes rise {
+  from { transform: translateY(105%); }
+  to { transform: none; }
+}
+@keyframes fadeUp {
+  /* 0.001, not 0: looks the same, but Chrome only counts text for LCP if its first paint isn't fully transparent */
+  from { opacity: 0.001; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .fade { animation: none; }
+}

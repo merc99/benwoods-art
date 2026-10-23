@@ -1,0 +1,12 @@
+/* Ported from the Check-in handoff: components/rolling-count/RollingCount.module.css (commit 558f14a). */
+.count { --roll-h: 1.2em; display: inline-flex; font-variant-numeric: tabular-nums; }
+.digits { display: inline-flex; }
+.col,
+.sep { display: inline-block; height: var(--roll-h); line-height: var(--roll-h); }
+.col { overflow: hidden; }
+.strip { display: flex; flex-direction: column; transition: transform var(--roll-ms, 260ms) var(--fx-spring); }
+.strip > span { height: var(--roll-h); }
+
+@media (prefers-reduced-motion: reduce) {
+  .strip { transition: none; }
+}
