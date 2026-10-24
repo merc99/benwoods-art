@@ -18,7 +18,7 @@ const BITE_MS = 380
 const CHEESE = '#f2c230'
 const INK = '#0e0d0c'
 
-type Cheese = { x: number; y: number; t0: number; bites: number; nextBite: number }
+type Cheese = { x: number; y: number; t0: number; bites: number; nextBite: number; side?: number }
 type Crumb = { x: number; y: number; vx: number; vy: number; t0: number }
 
 export function RatMatsHero() {
@@ -78,14 +78,16 @@ export function RatMatsHero() {
 
       // where to go: the cheese first, then the pointer, else home
       const ch = cheese.current
+      // for the cheese: walk up beside it, on whichever side the rat comes from, mouth level with the wedge
+      if (ch && !ch.side) ch.side = p.x > ch.x * W ? 1 : -1
       const goal = ch
-        ? { x: ch.x * W, y: ch.y * H }
+        ? { x: ch.x * W + (ch.side ?? 1) * rw * 0.72, y: ch.y * H - rw * 0.06 }
         : pointer.current
           ? { x: pointer.current.x * W, y: pointer.current.y * H }
           : { x: HOME.x * W, y: HOME.y * H }
       const atHome = !ch && !pointer.current
-      // stop with the nose just short of the goal (not when going home: it settles exactly into the logo)
-      const stop = atHome ? 0 : rw * (ch ? 0.5 : 0.62)
+      // stop with the nose just short of the pointer (the cheese and home spots are exact already)
+      const stop = atHome || ch ? 0 : rw * 0.62
       const gx = goal.x - p.x
       const gy = goal.y - p.y
       const gd = Math.hypot(gx, gy)
@@ -108,7 +110,7 @@ export function RatMatsHero() {
       const speed = Math.hypot(v.x, v.y)
 
       // face the goal, only once it has clearly been on the other side for a moment (no flicker)
-      const want = gd > rw * 0.3 ? (gx > 0 ? -1 : 1) : atHome ? 1 : facing
+      const want = ch && gd < rw * 0.5 ? (ch.side ?? 1) : gd > rw * 0.3 ? (gx > 0 ? -1 : 1) : atHome ? 1 : facing
       if (want !== facing) {
         if (!turnSince) turnSince = now
         if (now - turnSince > 90) {
@@ -137,7 +139,7 @@ export function RatMatsHero() {
 
       // eating: once the nose reaches the cheese, a bite every BITE_MS, each throwing a few crumbs
       let nibble = 0
-      if (ch && gd <= stop + rw * 0.08) {
+      if (ch && gd <= rw * 0.1) {
         if (!ch.nextBite) ch.nextBite = now + 160
         if (now >= ch.nextBite) {
           ch.bites++
@@ -181,7 +183,7 @@ export function RatMatsHero() {
       }
       ctx.globalAlpha = 1
       const cur = cheese.current
-      if (cur) drawCheese(ctx, cur.x * W, cur.y * H, rw * 0.36, 1 - cur.bites / BITES, Math.min(1, (now - cur.t0) / 220))
+      if (cur) drawCheese(ctx, cur.x * W, cur.y * H, rw * 0.54, cur.bites, Math.min(1, (now - cur.t0) / 220), cur.side ?? -1)
       ctx.fillStyle = CHEESE
       for (let i = crumbs.length - 1; i >= 0; i--) {
         const cr = crumbs[i]
@@ -246,37 +248,151 @@ export function RatMatsHero() {
   )
 }
 
-/** A wedge of cheese with holes, outlined in the lockup's black ink; `left` (0..1) shrinks it bite by bite from the tip. */
-function drawCheese(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, left: number, pop: number) {
-  if (left <= 0) return
-  const s = w * (0.6 + 0.4 * pop) * (pop < 1 ? 1 + Math.sin(pop * Math.PI) * 0.15 : 1)
-  const h = s * 0.62
-  ctx.save()
-  ctx.translate(x, y)
-  // eaten from the pointed end: clip away the bitten part
-  ctx.beginPath()
-  ctx.rect(-s / 2 + s * (1 - left), -h, s * left + 4, h * 2)
-  ctx.clip()
-  ctx.beginPath()
-  ctx.moveTo(-s / 2, h / 2)
-  ctx.lineTo(s / 2, h / 2)
-  ctx.lineTo(s / 2, -h / 2)
-  ctx.closePath()
-  ctx.fillStyle = CHEESE
-  ctx.fill()
-  ctx.lineWidth = Math.max(1.5, s * 0.05)
-  ctx.lineJoin = 'round'
-  ctx.strokeStyle = INK
-  ctx.stroke()
-  ctx.fillStyle = INK
-  for (const [hx, hy, r] of [
-    [0.28, 0.22, 0.07],
-    [0.1, 0.34, 0.045],
-    [0.36, -0.06, 0.05],
-  ] as const) {
-    ctx.beginPath()
-    ctx.arc(hx * s, hy * s, r * s, 0, Math.PI * 2)
-    ctx.fill()
+// The wedge, in a unit box (1 wide, 0.9 tall), seen from the front-left and a little above: a long pale
+// top face running back from the tip, the golden cut face in front, and the darker rind side at the back.
+const TIP = [0.02, 0.66] as const
+const FT = [0.64, 0.24] as const // front edge, top
+const FB = [0.64, 0.86] as const // front edge, bottom
+const BT = [0.97, 0.1] as const // back edge, top
+const BB = [0.97, 0.72] as const // back edge, bottom
+// holes on the cut face and the top: [x, y, rx, ry]
+const HOLES = [
+  [0.4, 0.6, 0.075, 0.062],
+  [0.52, 0.42, 0.05, 0.042],
+  [0.24, 0.66, 0.045, 0.036],
+  [0.55, 0.75, 0.04, 0.03],
+  [0.73, 0.22, 0.045, 0.014],
+] as const
+const RIND_HOLES = [[0.82, 0.5, 0.03, 0.058]] as const
+// each bite takes a round scallop out of the end the rat is eating from, a little further in each time
+const BITE_TIP = [
+  [0.05, 0.66, 0.13],
+  [0.19, 0.6, 0.14],
+  [0.34, 0.55, 0.15],
+] as const
+const BITE_BACK = [
+  [0.98, 0.36, 0.13],
+  [0.86, 0.42, 0.14],
+  [0.72, 0.48, 0.15],
+] as const
+
+const sprites = new Map<string, HTMLCanvasElement>()
+
+/** The wedge drawn once per size and bite count (canvas paths, cached), in the lockup's black ink. */
+function cheeseSprite(s: number, bites: number, dpr: number, side: number) {
+  const key = `${Math.round(s)}|${bites}|${dpr}|${side}`
+  const hit = sprites.get(key)
+  if (hit) return hit
+  const pad = s * 0.08
+  const c = document.createElement('canvas')
+  c.width = Math.ceil((s + pad * 2) * dpr)
+  c.height = Math.ceil((s * 0.9 + pad * 2) * dpr)
+  const g = c.getContext('2d')!
+  g.scale(dpr, dpr)
+  g.translate(pad, pad)
+  const P = ([x, y]: readonly [number, number]) => [x * s, y * s] as const
+  const poly = (pts: (readonly [number, number])[]) => {
+    g.beginPath()
+    pts.forEach((p, i) => (i ? g.lineTo(...P(p)) : g.moveTo(...P(p))))
+    g.closePath()
   }
+  const ink = Math.max(1.5, s * 0.035)
+
+  // faces
+  poly([TIP, FT, FB])
+  g.fillStyle = '#f6bd2e' // cut face
+  g.fill()
+  poly([TIP, BT, FT])
+  g.fillStyle = '#ffdc6b' // top, catching the light
+  g.fill()
+  poly([FT, BT, BB, FB])
+  g.fillStyle = '#e09a1c' // rind side
+  g.fill()
+
+  // holes: a dark well with a lighter lip on the lower edge
+  const hole = (x: number, y: number, rx: number, ry: number, deep: string) => {
+    g.beginPath()
+    g.ellipse(x * s, y * s, rx * s, ry * s, 0, 0, Math.PI * 2)
+    g.fillStyle = deep
+    g.fill()
+    g.beginPath()
+    g.ellipse(x * s, (y + ry * 0.35) * s, rx * s * 0.82, ry * s * 0.62, 0, 0, Math.PI)
+    g.fillStyle = 'rgb(255 232 150 / 0.55)'
+    g.fill()
+  }
+  g.save()
+  poly([TIP, FT, FB])
+  g.clip()
+  for (const [x, y, rx, ry] of HOLES.slice(0, 4)) hole(x, y, rx, ry, '#b9740f')
+  g.restore()
+  g.save()
+  poly([TIP, BT, FT])
+  g.clip()
+  const [tx, ty, trx, try_] = HOLES[4]
+  hole(tx, ty, trx, try_, '#c98a17')
+  g.restore()
+  g.save()
+  poly([FT, BT, BB, FB])
+  g.clip()
+  for (const [x, y, rx, ry] of RIND_HOLES) hole(x, y, rx, ry, '#a8650c')
+  g.restore()
+
+  // a highlight along the top edge
+  g.beginPath()
+  g.moveTo(...P([TIP[0] + 0.06, TIP[1] - 0.035]))
+  g.lineTo(...P([FT[0] - 0.02, FT[1] + 0.01]))
+  g.strokeStyle = 'rgb(255 250 220 / 0.8)'
+  g.lineWidth = ink * 0.7
+  g.lineCap = 'round'
+  g.stroke()
+
+  // ink: the outline, then the inner edges a touch thinner
+  g.lineJoin = 'round'
+  g.strokeStyle = INK
+  g.lineWidth = ink
+  poly([TIP, BT, BB, FB])
+  g.stroke()
+  g.lineWidth = ink * 0.75
+  g.beginPath()
+  g.moveTo(...P(TIP))
+  g.lineTo(...P(FT))
+  g.lineTo(...P(FB))
+  g.moveTo(...P(FT))
+  g.lineTo(...P(BT))
+  g.stroke()
+
+  // bites: punch round scallops out of the tip end, then ink their edges where cheese remains
+  for (const [x, y, r] of (side > 0 ? BITE_BACK : BITE_TIP).slice(0, bites)) {
+    g.globalCompositeOperation = 'destination-out'
+    g.beginPath()
+    g.arc(x * s, y * s, r * s, 0, Math.PI * 2)
+    g.fill()
+    g.globalCompositeOperation = 'source-atop'
+    g.beginPath()
+    g.arc(x * s, y * s, r * s + ink * 0.45, 0, Math.PI * 2)
+    g.strokeStyle = INK
+    g.lineWidth = ink * 0.9
+    g.stroke()
+    g.globalCompositeOperation = 'source-over'
+  }
+  sprites.set(key, c)
+  return c
+}
+
+/** The cheese on the mat: a soft shadow, then the wedge; it pops in, and loses a scallop per bite. */
+function drawCheese(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, bites: number, pop: number, side: number) {
+  if (bites >= BITES) return
+  const s = w * (0.6 + 0.4 * pop) * (pop < 1 ? 1 + Math.sin(pop * Math.PI) * 0.15 : 1)
+  const dpr = ctx.getTransform().a || 1
+  ctx.save()
+  ctx.fillStyle = INK
+  ctx.globalAlpha = 0.12
+  ctx.beginPath()
+  ctx.ellipse(x + s * 0.06, y + s * 0.4, s * 0.5, s * 0.075, 0, 0, Math.PI * 2)
+  ctx.fill()
   ctx.restore()
+  const sp = cheeseSprite(w, Math.min(bites, BITE_TIP.length), dpr, side)
+  const k = s / w
+  const pad = w * 0.08
+  ctx.drawImage(sp, x - s / 2 - pad * k, y - s * 0.5 - pad * k, (w + pad * 2) * k, (w * 0.9 + pad * 2) * k)
 }
