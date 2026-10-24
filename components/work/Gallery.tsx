@@ -5,6 +5,7 @@ import type { GalleryItem } from '@/lib/work'
 import { cn } from '@/lib/cn'
 import { GalleryVideo } from './GalleryVideo'
 import { Bezel, bezelRadius } from '@/components/ui/Bezel'
+import { ZoomButton, ZoomProvider } from './GalleryZoom'
 
 const span = {
   full: 'col-span-2 md:col-span-12',
@@ -26,8 +27,21 @@ const TILT = ['-rotate-2', 'rotate-1', '-rotate-1', 'rotate-2', 'rotate-[0.6deg]
 /**
  * Case-study gallery: images at their own proportions (no crop), short videos, and dashed placeholder slots.
  * Items with a `group` get a heading where the group starts. `variant="playful"` tilts the prints.
+ * `lightbox` opens images in the shared Lightbox. `startAt` continues figure numbers from an earlier gallery.
  */
-export async function Gallery({ items, title, variant }: { items: GalleryItem[]; title: string; variant?: '' | 'playful' }) {
+export async function Gallery({
+  items,
+  title,
+  variant,
+  lightbox = false,
+  startAt = 0,
+}: {
+  items: GalleryItem[]
+  title: string
+  variant?: '' | 'playful'
+  lightbox?: boolean
+  startAt?: number
+}) {
   const resolved = await Promise.all(
     items.map(async (item) => {
       if (!item.src || /\.(mp4|webm)$/i.test(item.src)) return { item, size: null }
@@ -73,10 +87,24 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
   }
   const inFlexRow = new Set([...rowFlex.values()].flatMap((r) => r.slice(1)))
 
+  // lightbox: every image in order, with its title and caption
+  const photos = resolved.flatMap(({ item, size }, i) =>
+    item.src && size ? [{ i, src: item.src, alt: item.alt ?? '', caption: [item.title, item.caption].filter(Boolean).join(': ') }] : [],
+  )
+  const Zoomable = ({ i, children }: { i: number; children: React.ReactNode }) => {
+    const k = photos.findIndex((x) => x.i === i)
+    if (!lightbox || k < 0) return <>{children}</>
+    return (
+      <ZoomButton index={k} label={resolved[i].item.alt ?? title}>
+        {children}
+      </ZoomButton>
+    )
+  }
+
   const figure = (i: number, className: string, style?: React.CSSProperties) => {
     const { item, size } = resolved[i]
     const s = item.span ?? 'full'
-    const fig = i + 1
+    const fig = startAt + i + 1
     return (
       <figure
         key={i}
@@ -103,6 +131,7 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
               <Image src={item.src} alt={item.alt ?? ''} width={size.width} height={size.height} sizes={sizes[s]} quality={88} className="h-auto w-full" />
             </div>
           ) : (
+            <Zoomable i={i}>
             <Bezel size={frame[s]}>
               <div
                 style={rowAspect.has(i) ? { aspectRatio: rowAspect.get(i) } : undefined}
@@ -115,12 +144,14 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
                 )}
               </div>
             </Bezel>
+            </Zoomable>
           )
         ) : null}
-        {item.caption && (
+        {(item.caption || item.title) && (
           <figcaption className="t-label relative mt-3 flex gap-3 text-fg-2">
             {!playful && <span className="shrink-0">Fig. {String(fig).padStart(2, '0')}</span>}
             <span className={cn(!item.group && 'text-[0.875rem] tracking-normal normal-case [font-family:var(--font-sans)]', 'text-fg-2')}>
+              {item.title && <strong className="mb-1 block font-semibold text-fg">{item.title}</strong>}
               {item.caption}
             </span>
           </figcaption>
@@ -129,7 +160,7 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
     )
   }
 
-  return (
+  const grid = (
     <div className={cn('grid grid-cols-2 items-start gap-x-[var(--gutter)] md:grid-cols-12', playful ? 'gap-y-14' : 'gap-y-10')}>
       {resolved.map(({ item }, i) => {
         if (inFlexRow.has(i)) return null
@@ -157,4 +188,5 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
       })}
     </div>
   )
+  return lightbox ? <ZoomProvider items={photos.map(({ src, alt, caption }) => ({ src, alt, caption }))}>{grid}</ZoomProvider> : grid
 }

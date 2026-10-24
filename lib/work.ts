@@ -17,6 +17,28 @@ export type GalleryItem = {
   span?: 'full' | 'half' | 'third' | 'quarter'
   /** Items sharing a group get a heading in the gallery, e.g. "The mats". */
   group?: string
+  /** Bold name shown before the caption, e.g. a single's title. */
+  title?: string
+}
+
+/** One ink in a palette section: its name, what it's used for, and its hex. */
+export type Ink = { name: string; use: string; hex: string }
+
+/**
+ * A titled section of its own on the case study, after the story: optional intro text (markdown), then
+ * figures (laid out like the gallery) or palette swatches. Rendered in order, before modules and the gallery.
+ */
+export type CaseSection = {
+  title: string
+  intro?: string
+  items?: GalleryItem[]
+  /** Open the figures in the lightbox on click. */
+  lightbox?: boolean
+  /** Word after the count in the section header, e.g. "details" (default "figures"). */
+  unit?: string
+  palette?: Ink[]
+  /** Paper the swatches sit on (hex). */
+  paper?: string
 }
 
 export type Project = {
@@ -49,12 +71,17 @@ export type Project = {
   coverScreen: string
   /** Alt text for `coverScreen`. */
   coverScreenAlt: string
+  /** false: the cover only shows on cards; the case study goes straight from the header to the story. */
+  pageCover: boolean
+  /** How the work was made, shown in the spec table, e.g. "Drawn by hand, digitally. No AI." */
+  medium: string
   summary: string
   order: number
   featured: boolean
   draft: boolean
   interesting: string[]
   gallery: GalleryItem[]
+  sections: CaseSection[]
   body: string
 }
 
@@ -87,11 +114,14 @@ function load(): Project[] {
         coverBg: '',
         coverScreen: '',
         coverScreenAlt: '',
+        pageCover: true,
+        medium: '',
         summary: '',
         featured: false,
         draft: false,
         interesting: [],
         gallery: [],
+        sections: [],
         ...data,
         year: Number(data.year),
         order: Number(data.order ?? 99),

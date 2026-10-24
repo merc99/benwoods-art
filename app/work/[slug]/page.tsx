@@ -3,11 +3,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Gallery } from '@/components/work/Gallery'
+import { Palette } from '@/components/work/Palette'
 import { PlaylistGrid } from '@/components/work/PlaylistGrid'
 import { playlists } from '@/lib/playlists'
 import { MerchGrid } from '@/components/merch/MerchGrid'
 import { allMerch } from '@/lib/merch'
 import { Prose } from '@/components/work/Prose'
+import { ReadMore } from '@/components/work/ReadMore'
 import { SpecTable } from '@/components/work/SpecTable'
 import { imageSize } from '@/lib/image'
 import { getAdjacent, getProject, getProjects } from '@/lib/work'
@@ -105,6 +107,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
       ) : (
+        p.pageCover &&
         p.cover &&
         cover && (
           // tall art: the frame wraps the artwork itself, centered, instead of a wide frame with side gaps
@@ -138,7 +141,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           </aside>
           <div className="max-w-[64ch] lg:col-span-7 lg:col-start-6">
             <h2 className="sr-only">About the project</h2>
-            <Prose source={p.body} />
+            <ReadMore>
+              <Prose source={p.body} />
+            </ReadMore>
 
             {p.interesting.length > 0 && (
               <section aria-labelledby="interesting" className="mt-14">
@@ -163,6 +168,38 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
       </section>
+
+      {/* sections: titled blocks of their own (intro, then figures or palette swatches), in order */}
+      {p.sections.map((sec, k) => {
+        const id = `section-${k + 1}`
+        const startAt = p.sections.slice(0, k).reduce((n, x) => n + (x.items?.length ?? 0), 0)
+        const count = sec.palette?.length ?? sec.items?.length ?? 0
+        const meta = count ? `${String(count).padStart(2, '0')} ${sec.palette ? 'inks' : (sec.unit ?? 'figures')}` : ''
+        return (
+          <section key={id} aria-labelledby={id} className="border-t border-rule">
+            <div className="shell py-14 lg:py-20">
+              <div className="rule-dash-b mb-8 flex items-end justify-between pb-4">
+                <h2 id={id} className="t-heading text-[clamp(1.75rem,1.2rem+2.4vw,3.25rem)]">
+                  {sec.title}
+                </h2>
+                {meta && <span className="t-label text-fg-3">{meta}</span>}
+              </div>
+              {sec.intro && (
+                // the intro sits in the story's column, so the text lines up down the page
+                <div className="mb-10 grid gap-x-[var(--gutter)] lg:mb-14 lg:grid-cols-12">
+                  <div className="max-w-[64ch] lg:col-span-7 lg:col-start-6">
+                    <ReadMore>
+                      <Prose source={sec.intro} />
+                    </ReadMore>
+                  </div>
+                </div>
+              )}
+              {sec.palette && <Palette inks={sec.palette} paper={sec.paper} />}
+              {sec.items && sec.items.length > 0 && <Gallery items={sec.items} title={p.title} lightbox={sec.lightbox} startAt={startAt} />}
+            </div>
+          </section>
+        )
+      })}
 
       {/* custom modules */}
       {p.module === 'playlists' && (

@@ -3,62 +3,18 @@
 // between photos, Escape closes. Focus stays in the lightbox and returns to the photo you opened.
 
 import Image from 'next/image'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { useMemo, useRef, useState } from 'react'
 import type { MerchItem } from '@/lib/merch'
 import { Bezel, bezelRadius } from '@/components/ui/Bezel'
+import { Lightbox } from '@/components/ui/Lightbox'
 import { cn } from '@/lib/cn'
 
 const caption = (m: MerchItem) => [m.item, m.brand, m.year].filter(Boolean).join(' · ')
 
 export function MerchGrid({ items }: { items: MerchItem[] }) {
   const [open, setOpen] = useState<number | null>(null)
-  const reduce = useReducedMotion()
   const thumbs = useRef<(HTMLButtonElement | null)[]>([])
-  const dialog = useRef<HTMLDivElement>(null)
-  const swipe = useRef<{ x: number; id: number } | null>(null)
-  const swiped = useRef(false) // a swipe just changed photo: don't treat its click as a backdrop click
-  const photo = useRef<HTMLDivElement>(null)
-
-  const go = useCallback((d: number) => setOpen((i) => (i === null ? i : (i + d + items.length) % items.length)), [items.length])
-
-  useEffect(() => {
-    if (open === null) return
-    const opener = thumbs.current[open]
-    const root = document.documentElement
-    const prev = root.style.overflow
-    root.style.overflow = 'hidden'
-    dialog.current?.querySelector<HTMLElement>('[data-close]')?.focus()
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(null)
-      else if (e.key === 'ArrowRight') go(1)
-      else if (e.key === 'ArrowLeft') go(-1)
-      else if (e.key === 'Tab' && dialog.current) {
-        const f = dialog.current.querySelectorAll<HTMLElement>('button')
-        const first = f[0]
-        const last = f[f.length - 1]
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault()
-          last.focus()
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault()
-          first.focus()
-        }
-      }
-    }
-    document.addEventListener('keydown', onKey)
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      root.style.overflow = prev
-      opener?.focus()
-    }
-    // re-run only when the lightbox opens or closes, not on every photo change
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open === null, go])
-
-  const current = open === null ? null : items[open]
+  const photos = useMemo(() => items.map((m) => ({ src: m.src, alt: m.alt, caption: caption(m) })), [items])
 
   return (
     <>
@@ -85,81 +41,7 @@ export function MerchGrid({ items }: { items: MerchItem[] }) {
         ))}
       </ul>
 
-      {/* portal: sections use `isolate`, which would trap a fixed overlay under the sticky header */}
-      {open !== null &&
-        createPortal(
-      <AnimatePresence>
-        {current && (
-          <motion.div
-            ref={dialog}
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Photo ${open + 1} of ${items.length}`}
-            data-surface="ink"
-            className="fixed inset-0 z-[70] flex flex-col bg-[rgb(10_10_9/0.96)]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reduce ? 0 : 0.18 }}
-            onPointerDown={(e) => (swipe.current = { x: e.clientX, id: e.pointerId })}
-            onPointerUp={(e) => {
-              const s = swipe.current
-              swipe.current = null
-              if (!s || s.id !== e.pointerId) return
-              const dx = e.clientX - s.x
-              swiped.current = Math.abs(dx) > 50
-              if (swiped.current) go(dx < 0 ? 1 : -1)
-            }}
-            onClick={(e) => {
-              // close on any click outside the photo itself (backdrop, letterbox, empty bar space); buttons keep working
-              if (swiped.current) return void (swiped.current = false)
-              if ((e.target as HTMLElement).closest('button')) return
-              const box = photo.current?.getBoundingClientRect()
-              const img = photo.current?.querySelector('img')
-              if (box && img?.naturalWidth) {
-                // where object-contain actually draws the image inside its box
-                const scale = Math.min(box.width / img.naturalWidth, box.height / img.naturalHeight)
-                const w = img.naturalWidth * scale
-                const h = img.naturalHeight * scale
-                const l = box.left + (box.width - w) / 2
-                const t = box.top + (box.height - h) / 2
-                if (e.clientX >= l && e.clientX <= l + w && e.clientY >= t && e.clientY <= t + h) return
-              }
-              setOpen(null)
-            }}
-          >
-            <div className="t-label flex items-center justify-between px-[var(--gutter)] py-3 text-fg-2">
-              <span>
-                {String(open + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
-              </span>
-              <button
-                type="button"
-                data-close
-                onClick={() => setOpen(null)}
-                className="inline-flex h-11 items-center gap-2 border border-rule-strong px-4 text-fg hover:bg-fg hover:text-bg"
-              >
-                Close <X className="size-4" strokeWidth={1.5} aria-hidden />
-              </button>
-            </div>
-            <div ref={photo} className="relative min-h-0 flex-1 touch-pan-y">
-              <Image key={current.src} src={current.src} alt={current.alt} fill sizes="100vw" className="object-contain" />
-            </div>
-            <div className="flex items-center justify-between gap-4 px-[var(--gutter)] py-4">
-              <button type="button" onClick={() => go(-1)} aria-label="Previous photo" className="grid size-11 place-items-center border border-rule-strong text-fg hover:bg-fg hover:text-bg">
-                <ChevronLeft className="size-5" strokeWidth={1.5} aria-hidden />
-              </button>
-              <p className="t-label text-center text-fg-2" aria-live="polite">
-                {caption(current)}
-              </p>
-              <button type="button" onClick={() => go(1)} aria-label="Next photo" className="grid size-11 place-items-center border border-rule-strong text-fg hover:bg-fg hover:text-bg">
-                <ChevronRight className="size-5" strokeWidth={1.5} aria-hidden />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>,
-          document.body,
-        )}
+      <Lightbox items={photos} open={open} onChange={setOpen} opener={() => (open === null ? null : thumbs.current[open])} />
     </>
   )
 }

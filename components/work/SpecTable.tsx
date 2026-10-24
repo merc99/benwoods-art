@@ -13,6 +13,7 @@ export function SpecTable({ project }: { project: Project }) {
   const ext = { target: '_blank', rel: 'noreferrer' }
   const rows: [string, React.ReactNode | null][] = [
     ['Role', project.role],
+    ['Medium', project.medium],
     ['Year', project.year],
     ['Stack', project.stack.length ? project.stack.join(' · ') : null],
     ['Status', project.status],
