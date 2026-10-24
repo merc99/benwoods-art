@@ -104,7 +104,7 @@ const jobs = {
     const m = await sharp(src).metadata()
     const h = Math.round((m.width * 10) / 16)
     const buf = await sharp(src).extract({ left: 0, top: m.height - h, width: m.width, height: h }).png().toBuffer()
-    await save(buf, 'merc-eats', 'cover')
+    await save(buf, 'merc-eats', 'cover-portrait')
   },
 
   // Playlist covers: the four latest covers in a row on near-black.
