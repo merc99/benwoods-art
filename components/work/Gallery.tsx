@@ -4,6 +4,7 @@ import { imageSize } from '@/lib/image'
 import type { GalleryItem } from '@/lib/work'
 import { cn } from '@/lib/cn'
 import { GalleryVideo } from './GalleryVideo'
+import { Bezel, bezelRadius } from '@/components/ui/Bezel'
 
 const span = {
   full: 'col-span-2 md:col-span-12',
@@ -17,6 +18,8 @@ const sizes = {
   third: '(min-width: 768px) 33vw, 100vw',
   quarter: '(min-width: 768px) 25vw, 50vw',
 }
+// frame size per span (the site's card frame); playful prints keep their own paper look
+const frame = { full: 'wide', half: 'half', third: 'half', quarter: 'small' } as const
 // playful: loose prints on a table, each at its own small tilt; they straighten on hover
 const TILT = ['-rotate-2', 'rotate-1', '-rotate-1', 'rotate-2', 'rotate-[0.6deg]', '-rotate-[1.4deg]']
 
@@ -62,14 +65,23 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
                   <p className="t-label max-w-[40ch] text-fg-2">{item.placeholder}</p>
                 </div>
               ) : item.src && !size ? (
-                <div className="bg-sunken">
-                  <GalleryVideo src={item.src} label={item.alt ?? `${title} video`} />
-                </div>
+                <Bezel size={frame[s]}>
+                  <div className={cn('overflow-hidden bg-sunken', bezelRadius[frame[s]].inner)}>
+                    <GalleryVideo src={item.src} label={item.alt ?? `${title} video`} />
+                  </div>
+                </Bezel>
               ) : item.src && size ? (
-                <div className="relative bg-sunken">
-                  <Image src={item.src} alt={item.alt ?? ''} width={size.width} height={size.height} sizes={sizes[s]} quality={88} className="h-auto w-full" />
-                  {!playful && <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-rule ring-inset" />}
-                </div>
+                playful ? (
+                  <div className="relative bg-sunken">
+                    <Image src={item.src} alt={item.alt ?? ''} width={size.width} height={size.height} sizes={sizes[s]} quality={88} className="h-auto w-full" />
+                  </div>
+                ) : (
+                  <Bezel size={frame[s]}>
+                    <div className={cn('relative overflow-hidden bg-sunken', bezelRadius[frame[s]].inner)}>
+                      <Image src={item.src} alt={item.alt ?? ''} width={size.width} height={size.height} sizes={sizes[s]} quality={88} className="h-auto w-full" />
+                    </div>
+                  </Bezel>
+                )
               ) : null}
               {item.caption && (
                 <figcaption className="t-label mt-3 flex gap-3 text-fg-2">

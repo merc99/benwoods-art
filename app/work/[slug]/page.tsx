@@ -14,6 +14,7 @@ import { getAdjacent, getProject, getProjects } from '@/lib/work'
 import { cn } from '@/lib/cn'
 import { PixelTiles } from '@/components/fx/PixelTiles'
 import { DeviceFrame } from '@/components/ui/DeviceFrame'
+import { Bezel, bezelRadius } from '@/components/ui/Bezel'
 
 export const dynamicParams = false
 
@@ -107,7 +108,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         p.cover &&
         cover && (
           <div className="shell">
-            <div className={cn('overflow-hidden bg-sunken', portrait && 'flex justify-center py-[var(--gutter)]')}>
+            <Bezel size="wide">
+            <div className={cn('overflow-hidden bg-sunken', bezelRadius.wide.inner, portrait && 'flex justify-center py-[var(--gutter)]')}>
               <Image
                 src={p.cover}
                 alt={p.coverAlt}
@@ -119,6 +121,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 className={cn('h-auto', portrait ? 'max-h-[82svh] w-auto max-w-full' : 'w-full')}
               />
             </div>
+            </Bezel>
           </div>
         )
       )}
