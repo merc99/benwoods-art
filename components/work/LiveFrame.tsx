@@ -9,6 +9,8 @@ import { cn } from '@/lib/cn'
 
 const VW = 1440
 const VH = 900
+// the iframe is this much wider than what shows, so the site's own scrollbar sits outside the frame
+const SCROLLBAR = 24
 
 export function LiveFrame({ src, title }: { src: string; title: string }) {
   const box = useRef<HTMLDivElement>(null)
@@ -38,7 +40,7 @@ export function LiveFrame({ src, title }: { src: string; title: string }) {
   }, [])
 
   return (
-    <div ref={box} className="absolute inset-0">
+    <div ref={box} className="absolute inset-0 overflow-hidden">
       {on && scale > 0 && (
         <iframe
           src={src}
@@ -46,14 +48,9 @@ export function LiveFrame({ src, title }: { src: string; title: string }) {
           onLoad={() => setLoaded(true)}
           referrerPolicy="no-referrer"
           allow="clipboard-write"
-          style={{ width: VW, height: VH, transform: `scale(${scale})` }}
+          style={{ width: VW + SCROLLBAR, height: VH, transform: `scale(${scale})` }}
           className={cn('absolute top-0 left-0 origin-top-left border-0 transition-opacity duration-500', loaded ? 'opacity-100' : 'opacity-0')}
         />
-      )}
-      {loaded && (
-        <span className="t-label pointer-events-none absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-[rgb(10_10_9/0.72)] px-2.5 py-1 text-[#f4ecdc]">
-          <span aria-hidden className="size-1.5 rounded-full bg-[#3ddc84]" /> Live
-        </span>
       )}
     </div>
   )

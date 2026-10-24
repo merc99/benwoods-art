@@ -66,7 +66,8 @@ export function MegaRollHero() {
       onPointerLeave={() => (st.current.inside = false)}
       onPointerDown={(e) => Object.assign(st.current, { kick: BURST, ...local(e) })}
     >
-      <svg viewBox="-20 -20 1030 520" className="w-[62%] overflow-visible" role="img" aria-label="Mega Roll">
+      {/* centered on the letters (887 × 435) plus their resting color layers (25 units down-right) */}
+      <svg viewBox="-59 -30 1030 520" className="w-[62%] overflow-visible" role="img" aria-label="Mega Roll">
         <defs>
           <g id="mr-letters-hero">
             {MEGA_ROLL_PATHS.map((d, i) => (

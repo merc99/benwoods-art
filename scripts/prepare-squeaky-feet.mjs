@@ -22,7 +22,7 @@ const save = async (src, name, { max = 2400, extract } = {}) => {
 await save('Cover (2).png', 'cover', { max: 2400 })
 // card cover (Work grid 4:5 rows): a 4:5 crop of the cover centered on the bolt and its impact, at the
 // cover's own pixels. Framed so every label is either whole or out (no lettering cut at the edge).
-await save('Cover (2).png', 'cover-card', { extract: { left: 660, top: 470, width: 1600, height: 2000 } })
+await save('Cover (2).png', 'cover-card-bolt', { extract: { left: 660, top: 470, width: 1600, height: 2000 } })
 // singles
 await save('Countdown (1).png', 'single-countdown', { max: 1800 })
 await save('Terms_&_Conditions (1).png', 'single-terms-and-conditions', { max: 1800 })
