@@ -107,9 +107,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       ) : (
         p.cover &&
         cover && (
-          <div className="shell">
-            <Bezel size="wide">
-            <div className={cn('overflow-hidden bg-sunken', bezelRadius.wide.inner, portrait && 'flex justify-center py-[var(--gutter)]')}>
+          // tall art: the frame wraps the artwork itself, centered, instead of a wide frame with side gaps
+          <div className={cn('shell', portrait && 'flex justify-center')}>
+            <Bezel size="wide" className={cn(portrait && 'max-w-full')}>
+            <div className={cn('overflow-hidden bg-sunken', bezelRadius.wide.inner)}>
               <Image
                 src={p.cover}
                 alt={p.coverAlt}
@@ -118,7 +119,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 priority
                 sizes={portrait ? '(min-width: 768px) 60vw, 100vw' : '(min-width: 1520px) 1440px, 100vw'}
                 quality={88}
-                className={cn('h-auto', portrait ? 'max-h-[82svh] w-auto max-w-full' : 'w-full')}
+                className={cn('h-auto', portrait ? 'block max-h-[78svh] w-auto max-w-full' : 'w-full')}
               />
             </div>
             </Bezel>
