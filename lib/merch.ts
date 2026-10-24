@@ -24,9 +24,9 @@ const m = (slug: string, item: string, brand: string, alt: string): MerchItem =>
 })
 
 export const merch: MerchItem[] = [
-  m('bwtb-mockup-2', 'Tee', 'BWTB', 'BWTB armored knights tee in heather gray'),
-  m('frame-1', 'Tee', 'BWTB', 'BWTB chest logo tee in heather gray'),
-  m('group-43-1', 'Tee', '', 'Red and orange script tee in black'),
+  m('bwtb-mockup-2', 'Tee', 'Bussin’ With the Boys', 'Bussin’ With the Boys armored knights tee in heather gray'),
+  m('frame-1', 'Tee', 'Bussin’ With the Boys', 'Bussin’ With the Boys chest logo tee in heather gray'),
+  m('group-43-1', 'Tee', 'Dreamline', 'Dreamline red and orange script tee in black'),
   m('sunnyside-tee-brown', 'Tee', 'Sunnyside', 'Sunnyside starburst tee in brown'),
   m('dreamline-script-cream', 'Tee', 'Dreamline', 'Dreamline script tee in cream'),
   m('dreamline-emblem-small', 'Tee', 'Dreamline', 'Dreamline small emblem tee in black'),

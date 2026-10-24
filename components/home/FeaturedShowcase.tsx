@@ -27,6 +27,7 @@ export function FeaturedShowcase({
             src={screenshot}
             alt={screenshotAlt}
             size={half ? 'half' : 'wide'}
+            priority={!half}
             sizes={half ? '(min-width: 768px) 46vw, 94vw' : '(min-width: 768px) 86vw, 94vw'}
           />
         </div>
