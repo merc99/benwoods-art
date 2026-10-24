@@ -14,8 +14,9 @@
 import { useEffect, useRef } from 'react'
 
 const LEVELS = [' ', '·', '∙', ':', '+', '×', '◇', '◈', '▣', '■']
-// Facet colors: cream through amber to the site's vermilion, with one cool band for the iridescent edge.
-const BANDS = ['#f4ecdc', '#e8c9a0', '#e9a23b', '#ff5a2e', '#b9a6ff']
+// Facet colors from the site's own palette (the pixel tiles' pop colors): cream, a light amber, amber,
+// the signal vermilion, and violet for the rim glow.
+const BANDS = ['#f4ecdc', '#ffd27a', '#ffb02e', '#ff5a2e', '#a78bfa']
 /** The number is drawn at this many subpixels per glyph cell, then each cell is filled by its coverage. */
 const SS = 4
 
@@ -483,7 +484,8 @@ export function GlyphField({ className }: { className?: string }) {
             band = Math.round(img[k] / 50)
             // denser glyphs the more light a face catches: '+' in shadow up to '■' in full light
             level = Math.min(LEVELS.length - 1, 4 + Math.floor(lum * 5.99))
-            alpha = 0.5 + lum * 0.5
+            // colored faces stay vivid even in shadow; the glyph density does the shading
+            alpha = 0.78 + lum * 0.22
             if (mask) {
               if (cover > 0.42) {
                 // the number: solid glyphs, amber for a natural 20

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Download } from 'lucide-react'
 import { GlyphFieldLazy } from '@/components/about/GlyphFieldLazy'
 import { SectionHeader } from '@/components/ui/SectionHeader'
-import { approach, bio, experience } from '@/lib/about'
+import { approach, bio } from '@/lib/about'
 import { links, site } from '@/lib/site'
 import { latestPlaylist } from '@/lib/playlists'
 
@@ -96,29 +96,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* experience */}
-      <section aria-labelledby="experience">
-        <div className="shell py-16 lg:py-24">
-          <SectionHeader index="02" id="experience" title="Experience" meta="2015—now" />
-          <ol className="mt-4">
-            {experience.map((e) => (
-              <li key={`${e.org}-${e.role}`} className="grid gap-x-[var(--gutter)] gap-y-2 border-b border-rule py-6 lg:grid-cols-12">
-                <p className="t-label pt-1 text-fg-3 lg:col-span-2">{e.years}</p>
-                <div className="lg:col-span-4">
-                  <h3 className="t-title text-[1.5rem]">{e.org}</h3>
-                  <p className="mt-1 text-fg-2">{e.role}</p>
-                </div>
-                <p className="max-w-[56ch] text-fg lg:col-span-6">{e.body}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
       {/* links */}
       <section id="contact" aria-labelledby="links" className="scroll-mt-[var(--header-h)] border-t border-rule">
         <div className="shell py-16 lg:py-24">
-          <SectionHeader index="03" id="links" title="Elsewhere" meta={`${links.length} links`} />
+          <SectionHeader index="02" id="links" title="Elsewhere" meta={`${links.length} links`} />
           <ul className="mt-4 grid sm:grid-cols-2 lg:grid-cols-3">
             {links.map((l) => (
               <li key={l.label} className="border-b border-rule">

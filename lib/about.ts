@@ -7,24 +7,3 @@ export const bio = [
 ]
 
 export const approach = 'Outside client work I write music in Ableton and build audio-reactive visuals in TouchDesigner.'
-
-export const experience = [
-  {
-    org: 'Independent',
-    role: 'Product design and front end',
-    years: '2025—now',
-    body: 'Designing and building products end to end: Check-in, 100K Club, MMO Nodes, Rat Mats and Mega Roll.',
-  },
-  {
-    org: 'Freelance',
-    role: 'Graphic designer',
-    years: '2015—2025',
-    body: 'Brand, packaging and digital design for clients including Mamie’s Sunday Best and Flexible, across food, wellness and lifestyle.',
-  },
-  {
-    org: 'Freelance',
-    role: 'Audio production and engineering',
-    years: '2015—2025',
-    body: 'Produced original music, with a focus on mixing, mastering, sound design and songwriting.',
-  },
-]
