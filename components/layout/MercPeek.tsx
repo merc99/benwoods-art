@@ -19,11 +19,32 @@ export function MercPeek() {
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    // the slot he rises into: count it reached once most of it is on screen (its bottom 14px sits under the clip edge, so a hover lift never shows his cut-off base)
-    const io = new IntersectionObserver(([e]) => setUp(e.isIntersecting), { threshold: 0.75 })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+    // Up while his slot is well inside the window. Checked from its position on every scroll, resize,
+    // page change and return to the tab (not a one-off visibility threshold, which can miss when the page
+    // changes height around it, e.g. images loading above).
+    let raf = 0
+    const check = () => {
+      raf = 0
+      const r = el.getBoundingClientRect()
+      setUp(r.height > 0 && r.top < window.innerHeight - r.height * 0.4 && r.bottom > 0)
+    }
+    const queue = () => {
+      if (!raf) raf = requestAnimationFrame(check)
+    }
+    check()
+    window.addEventListener('scroll', queue, { passive: true })
+    window.addEventListener('resize', queue)
+    document.addEventListener('visibilitychange', queue)
+    const ro = new ResizeObserver(queue)
+    ro.observe(document.body)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', queue)
+      window.removeEventListener('resize', queue)
+      document.removeEventListener('visibilitychange', queue)
+      ro.disconnect()
+    }
+  }, [pathname])
 
   // say hi once he's up, then let the bubble go (hover or focus brings it back)
   useEffect(() => {

@@ -20,27 +20,15 @@ const save = async (src, name, { max = 2400, extract } = {}) => {
 
 // hero and card cover: the album cover
 await save('Cover (2).png', 'cover', { max: 2400 })
-// card cover (Work grid 4:5 rows): the whole cover as a matted print on darker kraft,
-// so no lettering is cropped and nothing is upscaled
-{
-  const W = 2400, H = 3000, A = 2112
-  const left = (W - A) / 2, top = Math.round((H - A) / 2)
-  const art = await sharp(IN + 'Cover (2).png').resize(A).png().toBuffer()
-  const dest = `${OUT}cover-card.webp`
-  rmSync(dest, { force: true })
-  const info = await sharp({ create: { width: W, height: H, channels: 3, background: '#d8c9a0' } })
-    .composite([{ input: art, left, top }])
-    .webp({ quality: 90, smartSubsample: true })
-    .toFile(dest)
-  console.log(dest.padEnd(52), `${info.width}x${info.height}`, `${Math.round(info.size / 1024)}KB`)
-}
+// card cover (Work grid 4:5 rows): a 4:5 crop of the cover centered on the bolt and its impact, at the
+// cover's own pixels. Framed so every label is either whole or out (no lettering cut at the edge).
+await save('Cover (2).png', 'cover-card', { extract: { left: 660, top: 470, width: 1600, height: 2000 } })
 // singles
 await save('Countdown (1).png', 'single-countdown', { max: 1800 })
 await save('Terms_&_Conditions (1).png', 'single-terms-and-conditions', { max: 1800 })
 await save('No_Fun (1).png', 'single-no-fun', { max: 1800 })
 // vinyl
 await save('Back_Cover (1).png', 'back-cover', { max: 1800 })
-await save('Gemini_Generated_Image_k2tymwk2tymwk2ty.jpg', 'mockup-flat-lay')
 await save('Gemini_Generated_Image_cnsdm5cnsdm5cnsd.jpg', 'mockup-standing')
 // process details, 4:3 crops of the 3000px cover at its own pixels; wide enough that the thumbnails are
 // downsampled (crisp), and the lightbox shows them near 1:1

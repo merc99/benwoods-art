@@ -16,6 +16,7 @@ const DEMOS = {
   'club-crest': load(() => import('./demos/club'), 'ClubCrest'),
   'club-metal': load(() => import('./demos/club'), 'ClubMetal'),
   'club-silk': load(() => import('./demos/club'), 'ClubSilk'),
+  'club-hero': load(() => import('./demos/club'), 'ClubHero'),
   'mmo-mesh': load(() => import('./demos/mmo'), 'MmoMesh'),
   'mmo-palette': load(() => import('./demos/mmo'), 'MmoPalette'),
   'mega-holo': load(() => import('./demos/megaroll'), 'MegaHolo'),
@@ -33,4 +34,10 @@ export function DemoStage({ id }: { id: DemoId }) {
       <Demo />
     </LazyMount>
   )
+}
+
+/** A demo that sits over a case study's static cover and mounts straight away (the cover shows until it draws). */
+export function HeroDemo({ id }: { id: DemoId }) {
+  const Demo = DEMOS[id]
+  return <Demo />
 }

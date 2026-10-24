@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { DemoStage } from '@/components/lab/DemoStage'
+import { DemoCard } from '@/components/lab/DemoCard'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { lab } from '@/lib/lab'
-import { cn } from '@/lib/cn'
 import { PageIntro } from '@/components/ui/PageIntro'
 
 export const metadata: Metadata = {
@@ -78,21 +77,7 @@ export default function LabPage() {
               {g.demos.map((d) => {
                 n++
                 return (
-                  <article key={d.id} className={cn('flex min-w-0 flex-col', d.wide && 'lg:col-span-2')}>
-                    <div className="t-label flex items-center justify-between gap-4 border border-b-0 border-rule px-3 py-2 text-fg-3">
-                      <span>
-                        {String(n).padStart(2, '0')} · <span className="text-fg">{d.title}</span>
-                      </span>
-                      <span>{g.project}</span>
-                    </div>
-                    <div
-                      className={cn('relative h-[var(--h)] overflow-hidden border border-rule', d.autoOnPhone && 'max-lg:h-auto')}
-                      style={{ ['--h' as string]: `${d.height ?? 360}px` }}
-                    >
-                      <DemoStage id={d.id} />
-                    </div>
-                    <p className="mt-3 max-w-[60ch] text-fg-2">{d.note}</p>
-                  </article>
+                  <DemoCard key={d.id} demo={d} index={n} project={g.project} />
                 )
               })}
             </div>

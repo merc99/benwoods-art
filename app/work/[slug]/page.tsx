@@ -17,6 +17,9 @@ import { cn } from '@/lib/cn'
 import { PixelTiles } from '@/components/fx/PixelTiles'
 import { DeviceFrame } from '@/components/ui/DeviceFrame'
 import { Bezel, bezelRadius } from '@/components/ui/Bezel'
+import { HeroDemo, type DemoId } from '@/components/lab/DemoStage'
+import { DemoCard } from '@/components/lab/DemoCard'
+import { lab } from '@/lib/lab'
 
 export const dynamicParams = false
 
@@ -52,6 +55,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const { prev, next } = getAdjacent(slug)
   const cover = p.cover ? await imageSize(p.cover) : null
   const portrait = cover ? cover.height > cover.width * 0.9 : false
+  const demos = p.demos.flatMap((id) => lab.flatMap((g) => g.demos).filter((d) => d.id === id))
   // neighbors' covers at their own shape, for the framed previous/next thumbnails
   const thumb = async (x: typeof prev) => (x?.cover ? { src: x.cover, ...(await imageSize(x.cover)) } : null)
   const thumbs = [await thumb(prev), await thumb(next)]
@@ -102,8 +106,19 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </div>
       </header>
 
-      {/* cover: a framed product screenshot when the project has one, else the cover image */}
-      {p.coverScreen ? (
+      {/* cover: a live demo over the cover, a framed product screenshot, or the cover image */}
+      {p.heroDemo && p.cover ? (
+        <div className="shell">
+          <Bezel size="wide">
+            <div className={cn('relative aspect-[16/10] overflow-hidden bg-sunken', bezelRadius.wide.inner)}>
+              <Image src={p.cover} alt={p.coverAlt} fill priority sizes="(min-width: 1520px) 1440px, 100vw" quality={88} className="object-cover" />
+              <div className="absolute inset-0">
+                <HeroDemo id={p.heroDemo as DemoId} />
+              </div>
+            </div>
+          </Bezel>
+        </div>
+      ) : p.coverScreen ? (
         <div className="shell">
           <div className="mx-auto max-w-[1280px] pb-[clamp(1.5rem,4vw,3.5rem)]">
             <DeviceFrame src={p.coverScreen} alt={p.coverScreenAlt || p.coverAlt} priority sizes="(min-width: 1520px) 1280px, 92vw" />
@@ -171,6 +186,25 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
       </section>
+
+      {/* interactive: this project's live demos from the Lab */}
+      {demos.length > 0 && (
+        <section aria-labelledby="interactive" className="border-t border-rule">
+          <div className="shell py-14 lg:py-20">
+            <div className="rule-dash-b mb-8 flex items-end justify-between pb-4">
+              <h2 id="interactive" className="t-heading text-[clamp(1.75rem,1.2rem+2.4vw,3.25rem)]">
+                Interactive
+              </h2>
+              <span className="t-label text-fg-3">{String(demos.length).padStart(2, '0')} live demos</span>
+            </div>
+            <div className="grid gap-x-[var(--gutter)] gap-y-12 lg:grid-cols-2">
+              {demos.map((d, i) => (
+                <DemoCard key={d.id} demo={d} index={i + 1} project={p.title} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* sections: titled blocks of their own (intro, then figures or palette swatches), in order */}
       {p.sections.map((sec, k) => {

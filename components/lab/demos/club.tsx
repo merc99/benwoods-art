@@ -131,7 +131,7 @@ const SILK =
   'col*=1.-length(p*vec2(.62,1.))*.3;gl_FragColor=vec4(col,1.);}'
 
 /** The hero's WebGL silk: folds brighten toward the cursor; a click sends a gold ring out. */
-export function ClubSilk() {
+export function ClubSilk({ hint = true }: { hint?: boolean } = {}) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const visible = useInView(canvas)
   const state = useRef({ mx: 0, my: 0, tx: 0, ty: 0, cx: 0, cy: 0, pulse: 9 })
@@ -194,7 +194,76 @@ export function ClubSilk() {
           Object.assign(state.current, { cx: p.x, cy: p.y, pulse: 0 })
         }}
       />
-      <p className="t-label pointer-events-none absolute bottom-4 left-4 text-[#C9D0DD]">Move · click</p>
+      {hint && <p className="t-label pointer-events-none absolute bottom-4 left-4 text-[#C9D0DD]">Move · click</p>}
+    </div>
+  )
+}
+
+/**
+ * The case-study hero: the silk shader filling the frame with the crest on top, as on the 100K site.
+ * Moving the pointer brightens the folds and tilts the crest; clicking the crest cycles the five rank
+ * finishes, clicking the silk sends a gold ring. The canvas sits behind; the crest layer lets pointer
+ * events through to it except on the crest itself, and tilts from the same pointer.
+ */
+export function ClubHero() {
+  const crest = useRef<HTMLButtonElement>(null)
+  const target = useRef({ x: 0.5, y: 0.5 })
+  const [tier, setTier] = useState(0)
+  const visible = useInView(crest)
+
+  useEffect(() => {
+    TIERS.forEach((t) => {
+      const im = new Image()
+      im.src = t.src
+    })
+  }, [])
+
+  useEffect(() => {
+    const el = crest.current
+    if (!el || !visible || reducedMotion()) return
+    let cx = 0.5
+    let cy = 0.5
+    let raf = 0
+    const tick = () => {
+      cx += (target.current.x - cx) * 0.12
+      cy += (target.current.y - cy) * 0.12
+      el.style.setProperty('--cx', cx.toFixed(4))
+      el.style.setProperty('--cy', cy.toFixed(4))
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [visible])
+
+  return (
+    <div
+      className="relative size-full"
+      onPointerMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect()
+        target.current = { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height }
+      }}
+      onPointerLeave={() => (target.current = { x: 0.5, y: 0.5 })}
+    >
+      <ClubSilk hint={false} />
+      <div className="pointer-events-none absolute inset-0 grid place-items-center [perspective:1100px]">
+        <button
+          ref={crest}
+          type="button"
+          className={cn(s.crest, 'pointer-events-auto !w-[min(360px,34%)]')}
+          onClick={() => setTier((t) => (t + 1) % TIERS.length)}
+          aria-label={`${TIERS[tier].n} crest. Show the next finish`}
+        >
+          {TIERS.map((t, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={t.src} src={t.src} alt="" draggable={false} style={{ opacity: i === tier ? 1 : 0 }} />
+          ))}
+          <span className={cn(s.mask, s.sweep)} />
+          <span className={cn(s.mask, s.sheen)} data-legend={tier === 4 || undefined} />
+        </button>
+      </div>
+      <p className="t-label pointer-events-none absolute bottom-4 left-4 text-[#C9D0DD] max-sm:hidden" aria-live="polite">
+        {TIERS[tier].n} · move, click the crest or the silk
+      </p>
     </div>
   )
 }

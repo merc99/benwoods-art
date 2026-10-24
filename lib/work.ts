@@ -75,6 +75,10 @@ export type Project = {
   coverScreenAlt: string
   /** false: the cover only shows on cards; the case study goes straight from the header to the story. */
   pageCover: boolean
+  /** A live demo laid over the case-study cover (the static cover shows until it draws), e.g. 'club-hero'. */
+  heroDemo: string
+  /** Lab demo ids shown in an Interactive section on the case study. */
+  demos: string[]
   /** How the work was made, shown in the spec table, e.g. "Drawn by hand, digitally. No AI." */
   medium: string
   summary: string
@@ -118,6 +122,8 @@ function load(): Project[] {
         coverScreen: '',
         coverScreenAlt: '',
         pageCover: true,
+        heroDemo: '',
+        demos: [],
         medium: '',
         summary: '',
         featured: false,
