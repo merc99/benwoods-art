@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { PixelTiles } from '@/components/fx/PixelTiles'
 import { links, nav, site } from '@/lib/site'
 import { Clock } from './Clock'
 
@@ -6,7 +7,8 @@ export function Footer() {
   const year = new Date().getFullYear()
   return (
     <footer data-surface="ink" className="relative isolate overflow-hidden">
-      <div className="relative">
+      <div className="relative isolate overflow-hidden">
+        <PixelTiles seed={53} />
         <div className="shell relative pt-20 pb-20 lg:pt-28 lg:pb-28">
           <p className="t-label text-fg-3">Contact</p>
           <h2 className="t-display mt-4 max-w-[14ch] text-[clamp(3rem,1.5rem+7vw,8.5rem)]">Let&apos;s build something.</h2>
