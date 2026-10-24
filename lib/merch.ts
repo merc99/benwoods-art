@@ -50,5 +50,5 @@ export const merch: MerchItem[] = [
 export const allMerch = merch.filter((x) => x.placement === 'merch')
 
 /** The 8 on Home: a mix of brands and colors. The full set is on /work/merch. */
-const HOME = ['bwtb-mockup-2', 'sunnyside-tee-brown', 'dreamline-script-cream', 'cyberblade-slippage-red', 'dreamline-polygon-bird-navy', 'cyberblade-patch', 'dreamline-arch-olive', 'frame-1']
+const HOME = ['bwtb-mockup-2', 'sunnyside-tee-brown', 'dreamline-script-cream', 'cyberblade-slippage-red', 'dreamline-polygon-bird-navy', 'cyberblade-patch', 'dreamline-arch-olive', 'cyberblade-wordmark']
 export const homeMerch = HOME.map((s) => allMerch.find((x) => x.slug === s)).filter((x): x is MerchItem => !!x)
