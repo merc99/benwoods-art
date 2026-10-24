@@ -26,13 +26,13 @@ export const nav = [
 
 export type SocialLink = { label: string; href: string; handle: string }
 
-/** Leave an href empty to hide a link (LinkedIn until the URL is added). */
+/** Leave an href empty to hide a link. */
 const allLinks: SocialLink[] = [
   { label: 'Email', href: `mailto:${site.email}`, handle: site.email },
   { label: 'GitHub', href: 'https://github.com/merc99', handle: 'merc99' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ben-woods-b463a3147/', handle: 'Ben Woods' },
   { label: 'Instagram', href: 'https://www.instagram.com/benrz', handle: '@benrz' },
   { label: 'X', href: 'https://x.com/benwoods__', handle: '@benwoods__' },
-  { label: 'LinkedIn', href: '', handle: 'Ben Woods' },
 ]
 
 export const links = allLinks.filter((l) => l.href)
