@@ -76,7 +76,7 @@ export default function LabPage() {
               {g.demos.map((d) => {
                 n++
                 return (
-                  <article key={d.id} className={cn('flex flex-col', d.wide && 'lg:col-span-2')}>
+                  <article key={d.id} className={cn('flex min-w-0 flex-col', d.wide && 'lg:col-span-2')}>
                     <div className="t-label flex items-center justify-between gap-4 border border-b-0 border-rule px-3 py-2 text-fg-3">
                       <span>
                         {String(n).padStart(2, '0')} · <span className="text-fg">{d.title}</span>

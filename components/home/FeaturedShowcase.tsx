@@ -20,7 +20,7 @@ export function FeaturedShowcase({
 }) {
   return (
     <article>
-      <Link href={`/work/${project.slug}`} aria-label={`${project.title}: ${project.summary}`} className="group block">
+      <Link href={`/work/${project.slug}`} aria-labelledby={`${project.slug}-ft ${project.slug}-fd`} className="group block">
         <div className={half ? 'px-[2%] pt-[2%] pb-[4%]' : 'px-[2%] pt-[2%] pb-[4%] md:px-[6%] md:pt-[3%] md:pb-[4%]'}>
           <DeviceFrame
             src={screenshot}
@@ -31,7 +31,7 @@ export function FeaturedShowcase({
           />
         </div>
         <div className="mt-4 flex items-baseline justify-between gap-4">
-          <h3 className="t-title text-[clamp(1.375rem,1.15rem+0.8vw,1.875rem)]">
+          <h3 id={`${project.slug}-ft`} className="t-title text-[clamp(1.375rem,1.15rem+0.8vw,1.875rem)]">
             <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-500 ease-out group-hover:bg-[length:100%_1px]">
               {project.title}
             </span>
@@ -46,7 +46,7 @@ export function FeaturedShowcase({
             </span>
           </span>
         </div>
-        <p className="mt-2 max-w-[48ch] text-fg-2">{project.summary}</p>
+        <p id={`${project.slug}-fd`} className="mt-2 max-w-[48ch] text-fg-2">{project.summary}</p>
         <p className="t-label mt-2 text-fg-2">{project.tags.join(' · ')}</p>
       </Link>
     </article>

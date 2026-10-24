@@ -168,7 +168,7 @@ export function RatSheet() {
             </>
           )}
         </div>
-        <p className="t-label mt-4 text-[rgb(11_11_11/0.55)]">Placeholder claim data for design review.</p>
+        <p className="t-label mt-4 text-[rgb(11_11_11/0.72)]">Placeholder claim data for design review.</p>
       </div>
     </div>
   )
