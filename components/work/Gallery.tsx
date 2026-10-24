@@ -37,25 +37,41 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
   const playful = variant === 'playful'
   const groupStart = (i: number) => !!resolved[i].item.group && resolved[i].item.group !== resolved[i - 1]?.item.group
 
-  // Two half-width images side by side whose shapes differ share one row at the same height: each
-  // takes width in proportion to its aspect ratio, so neither is cropped and both end level.
-  // Matching pairs keep the plain 6 + 6 columns (identical result). Playful prints keep their loose look.
+  // Rows of same-size images (2 halves, 3 thirds or 4 quarters) whose shapes differ are evened out:
+  //  - a small difference (up to 8%): equal columns, each image trimmed to the row's average shape
+  //    (a sliver of backdrop at most), so the frames are identical;
+  //  - a bigger one (halves and thirds): one row at a shared height, each image as wide as its shape
+  //    needs, so nothing is cropped and both end level.
+  // Rows that already match render exactly as before. Playful prints keep their loose look.
+  const perRow = { half: 2, third: 3, quarter: 4 } as const
   const ratio = (i: number) => {
     const r = resolved[i]
-    return r && r.item.span === 'half' && r.size && !r.item.placeholder ? r.size.width / r.size.height : null
+    return r?.size && !r.item.placeholder ? r.size.width / r.size.height : null
   }
-  const pairedWith = new Map<number, number>()
+  const rowAspect = new Map<number, number>() // item -> shared aspect ratio (trim mode)
+  const rowFlex = new Map<number, number[]>() // first item -> all items of a level row (no-crop mode)
   if (!playful) {
-    let run = 0
+    let runStart = 0
     resolved.forEach((r, i) => {
-      run = r.item.span === 'half' && !groupStart(i) ? run + 1 : r.item.span === 'half' ? 1 : 0
-      if (run % 2 === 0 && run > 0) {
-        const a = ratio(i - 1), b = ratio(i)
-        if (a && b && Math.abs(a - b) / Math.max(a, b) > 0.02) pairedWith.set(i - 1, i)
-      }
+      const s = r.item.span ?? 'full'
+      const prev = resolved[i - 1]?.item.span ?? 'full'
+      if (i === 0 || s !== prev || groupStart(i)) runStart = i
+      if (s === 'full') return
+      const n = perRow[s]
+      if ((i - runStart) % n !== n - 1) return // not the last item of a row yet
+      const idx = Array.from({ length: n }, (_, k) => i - n + 1 + k)
+      const rs = idx.map(ratio)
+      if (rs.some((x) => x === null)) return
+      const vals = rs as number[]
+      const spread = (Math.max(...vals) - Math.min(...vals)) / Math.max(...vals)
+      if (spread <= 0.02) return
+      if (spread <= 0.08) {
+        const avg = vals.reduce((x, y) => x + y, 0) / n
+        idx.forEach((j) => rowAspect.set(j, avg))
+      } else if (s !== 'quarter') rowFlex.set(idx[0], idx)
     })
   }
-  const second = new Set(pairedWith.values())
+  const inFlexRow = new Set([...rowFlex.values()].flatMap((r) => r.slice(1)))
 
   const figure = (i: number, className: string, style?: React.CSSProperties) => {
     const { item, size } = resolved[i]
@@ -88,8 +104,15 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
             </div>
           ) : (
             <Bezel size={frame[s]}>
-              <div className={cn('relative overflow-hidden bg-sunken', bezelRadius[frame[s]].inner)}>
-                <Image src={item.src} alt={item.alt ?? ''} width={size.width} height={size.height} sizes={sizes[s]} quality={88} className="h-auto w-full" />
+              <div
+                style={rowAspect.has(i) ? { aspectRatio: rowAspect.get(i) } : undefined}
+                className={cn('relative overflow-hidden bg-sunken', bezelRadius[frame[s]].inner)}
+              >
+                {rowAspect.has(i) ? (
+                  <Image src={item.src} alt={item.alt ?? ''} fill sizes={sizes[s]} quality={88} className="object-cover" />
+                ) : (
+                  <Image src={item.src} alt={item.alt ?? ''} width={size.width} height={size.height} sizes={sizes[s]} quality={88} className="h-auto w-full" />
+                )}
               </div>
             </Bezel>
           )
@@ -109,8 +132,8 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
   return (
     <div className={cn('grid grid-cols-2 items-start gap-x-[var(--gutter)] md:grid-cols-12', playful ? 'gap-y-14' : 'gap-y-10')}>
       {resolved.map(({ item }, i) => {
-        if (second.has(i)) return null
-        const partner = pairedWith.get(i)
+        if (inFlexRow.has(i)) return null
+        const row = rowFlex.get(i)
         return (
           <Fragment key={i}>
             {groupStart(i) && (
@@ -121,12 +144,12 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
                 </span>
               </h3>
             )}
-            {partner === undefined ? (
+            {!row ? (
               figure(i, span[item.span ?? 'full'])
             ) : (
               <div className="col-span-2 flex flex-col gap-x-[var(--gutter)] gap-y-10 md:col-span-12 md:flex-row md:items-start">
                 {/* basis = the frame's border and padding (2 × (1px + 8px)), so the artwork inside lands at exactly equal height */}
-                {[i, partner].map((j) => figure(j, 'min-w-0 md:basis-[18px]', { flexGrow: ratio(j)! }))}
+                {row.map((j) => figure(j, 'min-w-0 md:basis-[18px]', { flexGrow: ratio(j)! }))}
               </div>
             )}
           </Fragment>
