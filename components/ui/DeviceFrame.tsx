@@ -1,13 +1,8 @@
 import Image from 'next/image'
 import { cn } from '@/lib/cn'
+import { Bezel, bezelRadius } from './Bezel'
 
-/**
- * A product screenshot in a complete device frame: one dark bezel with the screen inside, lifted by a
- * layered drop shadow that sits mostly below it (soft and warm on cream, deep on dark; --frame-shadow in
- * globals.css). No fade: soft fades into near-black band.
- * Inside a `group` link it lifts 4px on hover on a slow soft ease, and a deeper shadow fades in; only
- * transform and opacity animate, so the shadow never repaints per frame.
- */
+/** A product screenshot in the site's card frame (see Bezel). No fade: soft fades into near-black band. */
 export function DeviceFrame({
   src,
   alt,
@@ -27,39 +22,12 @@ export function DeviceFrame({
   sizes: string
   className?: string
 }) {
-  const radius = size === 'half' ? 'rounded-[16px]' : 'rounded-[16px] md:rounded-[22px]'
-  const screen = aspect ?? (size === 'half' ? 'aspect-[16/10] rounded-[10px]' : 'aspect-[16/10] rounded-[10px] md:aspect-[16/9] md:rounded-[14px]')
-  const ease = 'duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)]'
+  const screen = aspect ?? (size === 'half' ? 'aspect-[16/10]' : 'aspect-[16/10] md:aspect-[16/9]')
   return (
-    <div
-      className={cn(
-        'relative isolate transition-transform group-hover:-translate-y-1 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0',
-        ease,
-        className,
-      )}
-    >
-      {/* resting shadow: mostly below the frame, little spread to the sides */}
-      <span
-        aria-hidden
-        className={cn(
-          'pointer-events-none absolute inset-0 -z-10 shadow-[var(--frame-shadow)]',
-          radius,
-        )}
-      />
-      {/* hover shadow: deeper, fades in (opacity only) */}
-      <span
-        aria-hidden
-        className={cn(
-          'pointer-events-none absolute inset-0 -z-10 opacity-0 shadow-[var(--frame-shadow-hover)] transition-opacity group-hover:opacity-100 motion-reduce:transition-none',
-          ease,
-          radius,
-        )}
-      />
-      <div className={cn('relative border border-[#262624] bg-[#161615] p-1.5 md:p-2', radius)}>
-        <div className={cn('relative overflow-hidden bg-[#0c0c0b]', screen)}>
-          <Image src={src} alt={alt} fill priority={priority} quality={90} sizes={sizes} className="object-cover object-top" />
-        </div>
+    <Bezel size={size} className={className}>
+      <div className={cn('relative overflow-hidden bg-[#0c0c0b]', screen, bezelRadius[size].inner)}>
+        <Image src={src} alt={alt} fill priority={priority} quality={90} sizes={sizes} className="object-cover object-top" />
       </div>
-    </div>
+    </Bezel>
   )
 }

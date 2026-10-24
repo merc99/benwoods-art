@@ -8,6 +8,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import type { MerchItem } from '@/lib/merch'
+import { Bezel, bezelRadius } from '@/components/ui/Bezel'
+import { cn } from '@/lib/cn'
 
 const caption = (m: MerchItem) => [m.item, m.brand, m.year].filter(Boolean).join(' · ')
 
@@ -72,16 +74,11 @@ export function MerchGrid({ items }: { items: MerchItem[] }) {
               aria-label={`${m.alt}, view larger`}
               className="group block w-full text-left"
             >
-              <span className="relative block aspect-[5/4] overflow-hidden bg-sunken">
-                <Image
-                  src={m.src}
-                  alt={m.alt}
-                  fill
-                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                />
-                <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-rule ring-inset" />
-              </span>
+              <Bezel size="small">
+                <span className={cn('relative block aspect-[5/4] overflow-hidden bg-sunken', bezelRadius.small.inner)}>
+                  <Image src={m.src} alt={m.alt} fill sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw" className="object-cover" />
+                </span>
+              </Bezel>
               <span className="t-label mt-3 block text-fg-2">{caption(m)}</span>
             </button>
           </li>

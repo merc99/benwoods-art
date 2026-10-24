@@ -3,11 +3,11 @@ import Link from 'next/link'
 import { cn } from '@/lib/cn'
 import type { ProjectCard } from '@/lib/work'
 import { TileMeta } from './TileMeta'
+import { Bezel, bezelRadius } from '@/components/ui/Bezel'
 
 /**
  * A work tile: cover on top (no overlay), title, year and mono tags below.
- * The grid sets one `aspect` per row so rows scan cleanly. Every cover gets a 1px edge so dark
- * covers stay separate from the page.
+ * The grid sets one `aspect` per row so rows scan cleanly. The cover sits in the site's card frame (Bezel).
  * `wide` uses the project's `coverWide` image when it has one (full-width Home tile).
  */
 export function WorkTile({
@@ -29,9 +29,10 @@ export function WorkTile({
 }) {
   const src = (wide && project.coverWide) || project.cover
   const image = (
+    <Bezel size={wide ? 'wide' : 'half'}>
     <div
       style={project.coverBg ? { background: project.coverBg } : undefined}
-      className={cn('relative w-full overflow-hidden bg-sunken', aspect)}
+      className={cn('relative w-full overflow-hidden bg-sunken', aspect, bezelRadius[wide ? 'wide' : 'half'].inner)}
     >
       {src && (
         <Image
@@ -42,15 +43,11 @@ export function WorkTile({
           quality={88}
           priority={priority}
           style={{ objectPosition: project.coverPosition }}
-          className={cn(
-            'transition-transform duration-[900ms] ease-out group-hover:scale-[1.025] motion-reduce:transition-none motion-reduce:group-hover:scale-100',
-            project.coverFit === 'contain' ? 'object-contain' : 'object-cover',
-          )}
+          className={project.coverFit === 'contain' ? 'object-contain' : 'object-cover'}
         />
       )}
-      {/* the edge: keeps dark covers from melting into a dark page */}
-      <span aria-hidden className="pointer-events-none absolute inset-0 z-[3] ring-1 ring-rule ring-inset" />
     </div>
+    </Bezel>
   )
 
   return (
