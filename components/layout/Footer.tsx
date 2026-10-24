@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { PixelTiles } from '@/components/fx/PixelTiles'
 import { links, nav, site } from '@/lib/site'
 import { Clock } from './Clock'
+import { MercPeek } from './MercPeek'
 
 export function Footer() {
   const year = new Date().getFullYear()
@@ -18,6 +19,7 @@ export function Footer() {
           >
             {site.email} <span aria-hidden>↗</span>
           </a>
+          <MercPeek />
         </div>
       </div>
 

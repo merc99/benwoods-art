@@ -35,7 +35,11 @@ const out = async (buf, dest, opts) => {
   const dir = 'assets/merceats'
   mkdirSync('public/work/merc-eats', { recursive: true })
   const seen = new Map()
-  const files = readdirSync(dir).filter((f) => /\.(png|jpe?g)$/i.test(f)).sort((a, b) => a.localeCompare(b))
+  // phone exports (IMG_####) were added later: they go after the originals so earlier numbers never shift
+  const later = (f) => (/^IMG_\d+/i.test(f) ? 1 : 0)
+  const files = readdirSync(dir)
+    .filter((f) => /\.(png|jpe?g)$/i.test(f))
+    .sort((a, b) => later(a) - later(b) || a.localeCompare(b))
   let n = 0
   for (const f of files) {
     const hash = createHash('md5').update(readFileSync(join(dir, f))).digest('hex')
