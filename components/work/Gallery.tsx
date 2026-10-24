@@ -27,20 +27,18 @@ const TILT = ['-rotate-2', 'rotate-1', '-rotate-1', 'rotate-2', 'rotate-[0.6deg]
 /**
  * Case-study gallery: images at their own proportions (no crop), short videos, and dashed placeholder slots.
  * Items with a `group` get a heading where the group starts. `variant="playful"` tilts the prints.
- * `lightbox` opens images in the shared Lightbox. `startAt` continues figure numbers from an earlier gallery.
+ * `lightbox` opens images in the shared Lightbox.
  */
 export async function Gallery({
   items,
   title,
   variant,
   lightbox = false,
-  startAt = 0,
 }: {
   items: GalleryItem[]
   title: string
   variant?: '' | 'playful'
   lightbox?: boolean
-  startAt?: number
 }) {
   const resolved = await Promise.all(
     items.map(async (item) => {
@@ -104,7 +102,6 @@ export async function Gallery({
   const figure = (i: number, className: string, style?: React.CSSProperties) => {
     const { item, size } = resolved[i]
     const s = item.span ?? 'full'
-    const fig = startAt + i + 1
     return (
       <figure
         key={i}
@@ -149,7 +146,6 @@ export async function Gallery({
         ) : null}
         {(item.caption || item.title) && (
           <figcaption className="t-label relative mt-3 flex gap-3 text-fg-2">
-            {!playful && <span className="shrink-0">Fig. {String(fig).padStart(2, '0')}</span>}
             <span className={cn(!item.group && 'text-[0.875rem] tracking-normal normal-case [font-family:var(--font-sans)]', 'text-fg-2')}>
               {item.title && <strong className="mb-1 block font-semibold text-fg">{item.title}</strong>}
               {item.caption}

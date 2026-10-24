@@ -19,6 +19,7 @@ import { DeviceFrame } from '@/components/ui/DeviceFrame'
 import { Bezel, bezelRadius } from '@/components/ui/Bezel'
 import { HeroDemo, type DemoId } from '@/components/lab/DemoStage'
 import { DemoCard } from '@/components/lab/DemoCard'
+import { LiveFrame } from '@/components/work/LiveFrame'
 import { lab } from '@/lib/lab'
 
 export const dynamicParams = false
@@ -118,6 +119,31 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             </div>
           </Bezel>
         </div>
+      ) : p.liveFrame && (p.coverScreen || p.cover) ? (
+        <div className="shell">
+          <div className="mx-auto max-w-[1280px] pb-[clamp(1.5rem,4vw,3.5rem)]">
+            <Bezel size="wide">
+              <div className={cn('relative aspect-[16/10] overflow-hidden bg-sunken', bezelRadius.wide.inner)}>
+                <Image
+                  src={p.coverScreen || p.cover}
+                  alt={p.coverScreenAlt || p.coverAlt}
+                  fill
+                  priority
+                  quality={90}
+                  sizes="(min-width: 1520px) 1280px, 92vw"
+                  className="object-cover object-top"
+                />
+                <LiveFrame src={p.liveFrame} title={p.title} />
+              </div>
+            </Bezel>
+            <p className="t-label mt-4 text-fg-3">
+              <span className="max-lg:hidden">The live site, running in the frame. Click around · </span>
+              <a href={p.liveFrame} target="_blank" rel="noreferrer" className="text-fg underline decoration-rule-strong underline-offset-4 hover:decoration-fg">
+                Open it in a new tab ↗
+              </a>
+            </p>
+          </div>
+        </div>
       ) : p.coverScreen ? (
         <div className="shell">
           <div className="mx-auto max-w-[1280px] pb-[clamp(1.5rem,4vw,3.5rem)]">
@@ -209,9 +235,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       {/* sections: titled blocks of their own (intro, then figures or palette swatches), in order */}
       {p.sections.map((sec, k) => {
         const id = `section-${k + 1}`
-        const startAt = p.sections.slice(0, k).reduce((n, x) => n + (x.items?.length ?? 0), 0)
         const count = sec.palette?.length ?? sec.items?.length ?? 0
-        const meta = count ? `${String(count).padStart(2, '0')} ${sec.palette ? 'inks' : (sec.unit ?? 'figures')}` : ''
+        const meta = count ? `${String(count).padStart(2, '0')} ${sec.palette ? 'inks' : (sec.unit ?? 'images')}` : ''
         return (
           <section key={id} aria-labelledby={id} className="border-t border-rule">
             <div className="shell py-14 lg:py-20">
@@ -232,7 +257,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 </div>
               )}
               {sec.palette && <Palette inks={sec.palette} paper={sec.paper} />}
-              {sec.items && sec.items.length > 0 && <Gallery items={sec.items} title={p.title} lightbox={sec.lightbox} startAt={startAt} />}
+              {sec.items && sec.items.length > 0 && <Gallery items={sec.items} title={p.title} lightbox={sec.lightbox} />}
             </div>
           </section>
         )
@@ -275,7 +300,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               <h2 id="gallery" className="t-heading text-[clamp(1.75rem,1.2rem+2.4vw,3.25rem)]">
                 Gallery
               </h2>
-              <span className="t-label text-fg-3">{String(p.gallery.length).padStart(2, '0')} figures</span>
+              <span className="t-label text-fg-3">{String(p.gallery.length).padStart(2, '0')} images</span>
             </div>
             <Gallery items={p.gallery} title={p.title} variant={p.galleryStyle} />
           </div>

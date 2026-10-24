@@ -107,19 +107,14 @@ const jobs = {
     await save(buf, 'merc-eats', 'cover-portrait')
   },
 
-  // Playlist covers: the four latest covers in a row on near-black.
+  // Playlist covers: one cover, the September artwork from its full-resolution original, cropped to the
+  // card's 16:10 around its center (a single piece reads better than four tiny squares).
   async 'playlist-covers'() {
-    const p = await page()
-    const imgs = JSON.parse(readFileSync('content/playlists.json', 'utf8'))
-      .slice(0, 4)
-      .map((x) => dataUrl(`public/work/playlist-covers/${x.title}.webp`, 'image/webp'))
-    await p.setContent(`<!doctype html><html><head><style>
-        html,body{margin:0;height:100%;overflow:hidden;background:#0f0f0e}
-        body{display:flex;align-items:center;justify-content:center;gap:28px}
-        img{width:248px;height:248px;object-fit:cover;box-shadow:0 24px 40px -18px rgba(0,0,0,.8)}
-      </style></head><body>${imgs.map((u) => `<img src="${u}">`).join('')}</body></html>`)
-    await settle(p, 300)
-    await save(await p.screenshot(), 'playlist-covers', 'cover')
+    const src = 'assets/PLAYLIST ART/Stock-Pulper_gddfgdfgdfg.png'
+    const m = await sharp(src).metadata()
+    const h = Math.round((m.width * 10) / 16)
+    const buf = await sharp(src).extract({ left: 0, top: Math.round((m.height - h) / 2), width: m.width, height: h }).png().toBuffer()
+    await save(buf, 'playlist-covers', 'cover-single')
   },
 
   // Merch: one shirt on its own studio backdrop, widened to 16:10 by repeating the backdrop's edges.

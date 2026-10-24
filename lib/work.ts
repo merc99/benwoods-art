@@ -34,7 +34,7 @@ export type CaseSection = {
   items?: GalleryItem[]
   /** Open the figures in the lightbox on click. */
   lightbox?: boolean
-  /** Word after the count in the section header, e.g. "details" (default "figures"). */
+  /** Word after the count in the section header, e.g. "details" (default "images"). */
   unit?: string
   palette?: Ink[]
   /** Paper the swatches sit on (hex). */
@@ -79,6 +79,8 @@ export type Project = {
   heroDemo: string
   /** Lab demo ids shown in an Interactive section on the case study. */
   demos: string[]
+  /** The live site, run inside the cover frame on desktop (over `coverScreen` or `cover`). */
+  liveFrame: string
   /** How the work was made, shown in the spec table, e.g. "Drawn by hand, digitally. No AI." */
   medium: string
   summary: string
@@ -124,6 +126,7 @@ function load(): Project[] {
         pageCover: true,
         heroDemo: '',
         demos: [],
+        liveFrame: '',
         medium: '',
         summary: '',
         featured: false,
