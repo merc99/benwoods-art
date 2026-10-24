@@ -1,7 +1,9 @@
 'use client'
 // A quiet pixel-tile texture for page heroes: a grid of square tiles, each a small symmetric pixel motif,
 // with vertical runs of empty tiles.
-// - Idle: a slow wave flows across the grid, so tiles drift between faint and a little brighter.
+// - Idle: a slow wave flows across the grid, so tiles drift between faint and a little brighter, while soft
+//   patches of the signal color drift through and the odd brighter bloom swells and fades (stronger on
+//   touch, where there is no hover).
 // - Hover (mouse only): tiles near the pointer gather light in the signal color and let it go slowly,
 //   so moving the mouse leaves a soft trail instead of a spotlight.
 // - Click (mouse only): the tile under the pointer cycles through a few accent colors, neighbors follow softly.
@@ -174,8 +176,43 @@ export function PixelTiles({
       return 0.18 + 0.82 * smooth(0.15, 0.95, v)
     }
 
+    /**
+     * Idle warmth: soft patches of the signal color drift across the grid. Two slow, warped waves
+     * multiplied together give blobs rather than lines, and only their crests light up.
+     */
+    const warm = (tile: Tile, t: number) => {
+      const s = t * 0.00016
+      const a = Math.sin(tile.cx * 0.0032 + s * 1.3 + Math.sin(tile.cy * 0.0041 - s) * 1.7)
+      const b = Math.sin(tile.cy * 0.0027 - s * 0.9 + Math.sin(tile.cx * 0.0023 + s * 1.1) * 1.5)
+      return smooth(0.25, 0.9, a * b * 1.15 + Math.sin(tile.phase + t * 0.0009) * 0.08)
+    }
+    // ...plus the odd brighter bloom that swells somewhere and fades, so the idle state never sits still
+    const blooms: { x: number; y: number; r: number; t0: number; dur: number }[] = []
+    let nextBloom = 0
+    const spawnBloom = (now: number) => {
+      const reachY = Math.min(h, w < 768 ? 440 : 640) * 0.8 // where the tiles are still visible above the fade
+      blooms.push({ x: Math.random() * w, y: Math.random() * reachY, r: (w < 640 ? 120 : 170) + Math.random() * 110, t0: now, dur: 2600 + Math.random() * 1600 })
+      if (blooms.length > 4) blooms.shift()
+      nextBloom = now + (fine ? 2400 : 1500) + Math.random() * 1800
+    }
+    const bloomAt = (tile: Tile, now: number) => {
+      let v = 0
+      for (const b of blooms) {
+        const k = (now - b.t0) / b.dur
+        if (k < 0 || k > 1) continue
+        const env = Math.pow(Math.sin(k * Math.PI), 2)
+        v = Math.max(v, env * smooth(b.r, b.r * 0.15, Math.hypot(tile.cx - b.x, tile.cy - b.y)))
+      }
+      return v
+    }
+
     const draw = (now: number, dt: number) => {
       const t = now - t0
+      // on touch there's no hover glow, so the idle warmth carries more of the show
+      const warmK = reduce ? 0 : fine ? 0.32 : 0.5
+      const bloomK = reduce ? 0 : fine ? 0.62 : 0.85
+      if (!reduce && now >= nextBloom) spawnBloom(now)
+      for (let i = blooms.length - 1; i >= 0; i--) if (now - blooms[i].t0 > blooms[i].dur) blooms.splice(i, 1)
       ctx.setTransform(1, 0, 0, 1, 0, 0) // draw in device pixels, sprites 1:1
       ctx.imageSmoothingEnabled = false
       ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -196,7 +233,8 @@ export function PixelTiles({
 
         ctx.globalAlpha = baseAlpha * idle(tile, t) * tile.clear
         ctx.drawImage(baseSprites[tile.m], tile.dx - padD, tile.dy - padD)
-        const glow = tile.energy * tile.energy
+        const ambient = warmK || bloomK ? Math.max(warm(tile, t) * warmK, bloomAt(tile, now) * bloomK) : 0
+        const glow = Math.max(tile.energy * tile.energy, ambient * ambient * 0.6 + ambient * 0.4)
         if (glow > 0.004) {
           ctx.globalAlpha = litAlpha * glow * tile.clear
           ctx.drawImage(litSprites[tile.m], tile.dx - padD, tile.dy - padD)
