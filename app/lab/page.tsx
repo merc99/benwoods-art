@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { DemoStage } from '@/components/lab/DemoStage'
-import { GridLines } from '@/components/ui/GridLines'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { lab } from '@/lib/lab'
 import { cn } from '@/lib/cn'
+import { PixelTiles } from '@/components/fx/PixelTiles'
 
 export const metadata: Metadata = {
   title: 'Lab',
@@ -26,8 +26,8 @@ export default function LabPage() {
   let n = 0
   return (
     <>
-      <section className="relative isolate">
-        <GridLines />
+      <section className="relative isolate overflow-hidden">
+        <PixelTiles seed={31} />
         <div className="shell relative pt-10 pb-12 lg:pt-16 lg:pb-16">
           <div className="t-label flex justify-between text-fg-3">
             <span>(Index) Lab</span>

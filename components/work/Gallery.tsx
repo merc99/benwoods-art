@@ -67,7 +67,7 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
                 </div>
               ) : item.src && size ? (
                 <div className="relative bg-sunken">
-                  <Image src={item.src} alt={item.alt ?? ''} width={size.width} height={size.height} sizes={sizes[s]} className="h-auto w-full" />
+                  <Image src={item.src} alt={item.alt ?? ''} width={size.width} height={size.height} sizes={sizes[s]} quality={88} className="h-auto w-full" />
                   {!playful && <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-rule ring-inset" />}
                 </div>
               ) : null}

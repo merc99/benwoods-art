@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { nav } from '@/lib/site'
 import { cn } from '@/lib/cn'
 import { Menu } from './Menu'
@@ -13,6 +13,14 @@ export function Header() {
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [])
   const pathname = usePathname()
+  // past the top of the page: collapse the wordmark and offer the email pill
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 260)
+    on()
+    window.addEventListener('scroll', on, { passive: true })
+    return () => window.removeEventListener('scroll', on)
+  }, [pathname])
 
   return (
     <>
@@ -21,6 +29,22 @@ export function Header() {
           <Wordmark className="text-[28px] lg:text-[32px]" />
 
           <div className="flex items-center gap-1 sm:gap-2">
+            {/* appears once you scroll past the top; collapses to no width when hidden, so it leaves no gap */}
+            <div
+              className={cn(
+                'hidden overflow-hidden transition-[max-width,opacity] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none md:block',
+                scrolled ? 'max-w-40 opacity-100' : 'max-w-0 opacity-0',
+              )}
+            >
+              <Link
+                href="/about#contact"
+                tabIndex={scrolled ? 0 : -1}
+                aria-hidden={!scrolled}
+                className="t-label mr-2 inline-flex h-9 items-center gap-1.5 rounded-full bg-signal px-4 whitespace-nowrap text-[#fff8ee] transition-[filter] hover:brightness-110 dark:text-[#1c0d05]"
+              >
+                Contact <span aria-hidden>→</span>
+              </Link>
+            </div>
             <nav aria-label="Primary" className="mr-2 hidden md:block">
               <ul className="flex items-center">
                 {nav.slice(1).map((item) => {

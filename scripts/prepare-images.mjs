@@ -100,7 +100,7 @@ for (const [out, src] of Object.entries(map)) {
   if (existsSync(dest) && statSync(dest).mtimeMs >= statSync(src).mtimeMs) continue
   mkdirSync(dirname(dest), { recursive: true })
   try {
-    const info = await sharp(src).resize({ width: 2400, withoutEnlargement: true }).webp({ quality: 84 }).toFile(dest)
+    const info = await sharp(src).resize({ width: 2400, withoutEnlargement: true }).webp({ quality: 92, smartSubsample: true }).toFile(dest)
     console.log(dest, `${info.width}x${info.height}`, Math.round(info.size / 1024) + 'KB')
   } catch (e) {
     console.warn('could not write', dest, '-', e.message, '(stop the dev server and rerun)')

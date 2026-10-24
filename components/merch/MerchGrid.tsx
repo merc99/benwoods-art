@@ -17,6 +17,8 @@ export function MerchGrid({ items }: { items: MerchItem[] }) {
   const thumbs = useRef<(HTMLButtonElement | null)[]>([])
   const dialog = useRef<HTMLDivElement>(null)
   const swipe = useRef<{ x: number; id: number } | null>(null)
+  const swiped = useRef(false) // a swipe just changed photo: don't treat its click as a backdrop click
+  const photo = useRef<HTMLDivElement>(null)
 
   const go = useCallback((d: number) => setOpen((i) => (i === null ? i : (i + d + items.length) % items.length)), [items.length])
 
@@ -108,7 +110,25 @@ export function MerchGrid({ items }: { items: MerchItem[] }) {
               swipe.current = null
               if (!s || s.id !== e.pointerId) return
               const dx = e.clientX - s.x
-              if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1)
+              swiped.current = Math.abs(dx) > 50
+              if (swiped.current) go(dx < 0 ? 1 : -1)
+            }}
+            onClick={(e) => {
+              // close on any click outside the photo itself (backdrop, letterbox, empty bar space); buttons keep working
+              if (swiped.current) return void (swiped.current = false)
+              if ((e.target as HTMLElement).closest('button')) return
+              const box = photo.current?.getBoundingClientRect()
+              const img = photo.current?.querySelector('img')
+              if (box && img?.naturalWidth) {
+                // where object-contain actually draws the image inside its box
+                const scale = Math.min(box.width / img.naturalWidth, box.height / img.naturalHeight)
+                const w = img.naturalWidth * scale
+                const h = img.naturalHeight * scale
+                const l = box.left + (box.width - w) / 2
+                const t = box.top + (box.height - h) / 2
+                if (e.clientX >= l && e.clientX <= l + w && e.clientY >= t && e.clientY <= t + h) return
+              }
+              setOpen(null)
             }}
           >
             <div className="t-label flex items-center justify-between px-[var(--gutter)] py-3 text-fg-2">
@@ -124,7 +144,7 @@ export function MerchGrid({ items }: { items: MerchItem[] }) {
                 Close <X className="size-4" strokeWidth={1.5} aria-hidden />
               </button>
             </div>
-            <div className="relative min-h-0 flex-1 touch-pan-y">
+            <div ref={photo} className="relative min-h-0 flex-1 touch-pan-y">
               <Image key={current.src} src={current.src} alt={current.alt} fill sizes="100vw" className="object-contain" />
             </div>
             <div className="flex items-center justify-between gap-4 px-[var(--gutter)] py-4">

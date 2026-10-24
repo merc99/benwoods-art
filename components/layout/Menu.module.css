@@ -1,7 +1,7 @@
 /* Menu marquee: the one scoped loop in the menu. Stops under reduced motion. */
 .ticker {
   overflow: hidden;
-  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, rgb(0 0 0 / 0.16) 2%, rgb(0 0 0 / 0.5) 4%, rgb(0 0 0 / 0.84) 6%, #000 8%, #000 92%, rgb(0 0 0 / 0.84) 94%, rgb(0 0 0 / 0.5) 96%, rgb(0 0 0 / 0.16) 98%, transparent);
 }
 .track {
   display: flex;

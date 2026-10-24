@@ -1,4 +1,4 @@
-// Everything editable about the site in one place: the status strip, nav and links.
+// Everything editable about the site in one place: hero copy, nav and links.
 
 export const site = {
   name: 'Ben Woods',
@@ -10,14 +10,7 @@ export const site = {
     disciplines: ['Product design', 'Front end', 'Brand & print'],
     location: 'Nashville, TN',
   },
-  /** The mono status strip on Home. Edit `currently`; add a `note` to show a second item after it. */
-  status: {
-    currently: 'Building Check-in for web',
-    note: '',
-  } as { currently: string; note: string },
   timeZone: 'America/Chicago',
-  /** Nashville, for the coordinate detail in the hero. */
-  coords: 'N 36.1627° W 86.7816°',
   email: 'benwoods.design@gmail.com',
   /** Ben's resume in /public (the filename has spaces, so it's URL-encoded here). */
   resume: '/Benjamin%20Woods%20-%20Resume.pdf',

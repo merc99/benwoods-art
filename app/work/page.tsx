@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { GridLines } from '@/components/ui/GridLines'
+import { PixelTiles } from '@/components/fx/PixelTiles'
 import { WorkIndex } from '@/components/work/WorkIndex'
 import { getProjects, toCard } from '@/lib/work'
 
@@ -14,8 +14,8 @@ export default function WorkPage() {
 
   return (
     <>
-      <section className="relative isolate">
-        <GridLines />
+      <section className="relative isolate overflow-hidden">
+        <PixelTiles seed={11} />
         <div className="shell relative pt-10 pb-10 lg:pt-16 lg:pb-14">
           <div className="t-label flex justify-between text-fg-3">
             <span>(Index) Work</span>
@@ -30,7 +30,6 @@ export default function WorkPage() {
         </div>
       </section>
       <section className="relative isolate">
-        <GridLines />
         <div className="shell relative pb-24">
           <h2 className="sr-only">Projects</h2>
           <WorkIndex projects={projects} />

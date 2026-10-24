@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
+    // 88 for covers and galleries (smooth gradients band at the default 75); 90 for the framed product
+    // screenshots on Home, where small UI text needs to stay crisp
+    qualities: [75, 88, 90],
     deviceSizes: [375, 640, 828, 1080, 1440, 1920, 2400],
   },
 }

@@ -1,8 +1,7 @@
 import { site } from '@/lib/site'
-import { GridLines } from '@/components/ui/GridLines'
-import { StatusStrip } from './StatusStrip'
 import { DecodeLine } from './DecodeLine'
 import styles from './Hero.module.css'
+import { PixelTiles } from '@/components/fx/PixelTiles'
 
 /**
  * The hero moment (motion budget: once per visit). The name rises out of two masks, the lede fades up and the
@@ -15,18 +14,11 @@ export function Hero() {
 
   return (
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden">
-      <GridLines />
+      <PixelTiles seed={7} tall />
       <div className="shell relative">
-        <StatusStrip />
-
-        <div className="t-label flex justify-between pt-5 text-fg-3">
-          <span>Portfolio · Index 2015—{new Date().getFullYear()}</span>
-          <span className="hidden sm:inline">{site.coords}</span>
-        </div>
-
         <h1
           id="hero-title"
-          className="t-display mt-6 text-[clamp(5.5rem,25vw,18rem)] sm:mt-10 lg:-ml-[0.04em]"
+          className="t-display pt-12 text-[clamp(5.5rem,25vw,18rem)] sm:pt-16 lg:-ml-[0.04em] lg:pt-20"
         >
           <span className={styles.mask}>
             <span className={styles.rise}>{first}</span>

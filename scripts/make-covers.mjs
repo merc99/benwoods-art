@@ -21,7 +21,7 @@ async function save(buf, slug, name, width = 2560) {
   mkdirSync(`public/work/${slug}`, { recursive: true })
   await sharp(buf).toFile(`${masters}/${slug}-${name}.png`)
   rmSync(`public/work/${slug}/${name}.webp`, { force: true }) // Windows won't overwrite an open file in place
-  const info = await sharp(buf).resize({ width, withoutEnlargement: true }).webp({ quality: 86 }).toFile(`public/work/${slug}/${name}.webp`)
+  const info = await sharp(buf).resize({ width, withoutEnlargement: true }).webp({ quality: 92, smartSubsample: true }).toFile(`public/work/${slug}/${name}.webp`)
   console.log(`public/work/${slug}/${name}.webp`, `${info.width}x${info.height}`, `${Math.round(info.size / 1024)}KB`)
 }
 

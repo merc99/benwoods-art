@@ -1,0 +1,24 @@
+/* Word-by-word blur reveal (calm tier). Hidden only once JS has armed it, so text never waits on hydration. */
+.word {
+  display: inline-block;
+}
+.reveal[data-reveal='armed'] .word {
+  opacity: 0.001;
+  filter: blur(10px);
+  transform: translateY(10px);
+}
+.reveal[data-reveal='shown'] .word {
+  transition:
+    opacity 700ms var(--ease-out),
+    filter 700ms var(--ease-out),
+    transform 700ms var(--ease-out);
+  transition-delay: calc(var(--i) * 40ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal .word {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

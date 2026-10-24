@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import { GridLines } from '@/components/ui/GridLines'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { code, references, tools, type ResourceLink } from '@/lib/resources'
+import { PixelTiles } from '@/components/fx/PixelTiles'
 
 export const metadata: Metadata = {
   title: 'Resources',
@@ -39,8 +39,8 @@ export default function ResourcesPage() {
   const refCount = references.reduce((n, g) => n + g.items.length, 0)
   return (
     <>
-      <section className="relative isolate">
-        <GridLines />
+      <section className="relative isolate overflow-hidden">
+        <PixelTiles seed={43} />
         <div className="shell relative pt-10 pb-12 lg:pt-16 lg:pb-16">
           <p className="t-label text-fg-3">(Index) Resources</p>
           <h1 className="t-display mt-6 text-[clamp(3.5rem,0.5rem+12vw,12rem)]">Resources</h1>
@@ -77,7 +77,6 @@ export default function ResourcesPage() {
       </section>
 
       <section aria-labelledby="code" data-surface="ink" className="relative isolate">
-        <GridLines />
         <div className="shell relative py-14 lg:py-20">
           <SectionHeader index="03" id="code" title="Code" meta="GitHub" />
           <div className="mt-4">

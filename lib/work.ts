@@ -45,6 +45,10 @@ export type Project = {
   /** 'contain' fits the whole cover inside cropped tiles, on `coverBg` (the project's own color). */
   coverFit: 'cover' | 'contain'
   coverBg: string
+  /** A product screenshot shown in a DeviceFrame as the case-study cover instead of `cover`. */
+  coverScreen: string
+  /** Alt text for `coverScreen`. */
+  coverScreenAlt: string
   summary: string
   order: number
   featured: boolean
@@ -81,6 +85,8 @@ function load(): Project[] {
         coverPosition: 'center',
         coverFit: 'cover',
         coverBg: '',
+        coverScreen: '',
+        coverScreenAlt: '',
         summary: '',
         featured: false,
         draft: false,

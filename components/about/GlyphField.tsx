@@ -422,8 +422,11 @@ export function GlyphField({ className }: { className?: string }) {
           const flow =
             Math.sin(x * 0.16 + ts * 3.1 + Math.sin(y * 0.11 + ts * 2.2) * 1.8) *
             Math.cos(y * 0.13 - ts * 2.4 + Math.sin(x * 0.07 - ts) * 1.4)
-          const dx = reduce ? 0 : Math.cos(flow * 3 + ts) * 0.28
-          const dy = reduce ? 0 : Math.sin(flow * 3 - ts) * 0.28
+          const k = (y * cols + x) * 4
+          // the wave only moves the background glyphs; the die's cells stay on the grid so it reads crisp
+          const onDie = img[k + 3] > 40
+          const dx = reduce || onDie ? 0 : Math.cos(flow * 3 + ts) * 0.28
+          const dy = reduce || onDie ? 0 : Math.sin(flow * 3 - ts) * 0.28
 
           let ring = 0
           for (const r of ripples) {
@@ -434,11 +437,10 @@ export function GlyphField({ className }: { className?: string }) {
           }
           ring = Math.min(1, ring)
 
-          const k = (y * cols + x) * 4
           let level: number
           let band: number
           let alpha: number
-          if (img[k + 3] > 40) {
+          if (onDie) {
             band = Math.round(img[k] / 50)
             level = Math.min(LEVELS.length - 1, 2 + Math.floor((img[k + 1] / 255) * (LEVELS.length - 2)))
             alpha = 0.55 + (img[k + 1] / 255) * 0.45
@@ -462,7 +464,7 @@ export function GlyphField({ className }: { className?: string }) {
             band = 0
             alpha = 0.1 + v * 0.38
           }
-          const isNumber = !!mask && img[k + 3] > 40 && mask[k + 3] > 110
+          const isNumber = !!mask && onDie && mask[k + 3] > 110
           if (ring > 0.25 && !isNumber) {
             band = ring > 0.6 ? 3 : 2
             level = Math.min(LEVELS.length - 1, level + 2)

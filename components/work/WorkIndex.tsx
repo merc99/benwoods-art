@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { LayoutGrid, Rows3 } from 'lucide-react'
 import { categories, categoryLabel, type Category } from '@/lib/categories'
 import type { ProjectCard } from '@/lib/work'
@@ -63,6 +63,20 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
     window.history.replaceState(null, '', q ? `?${q}` : window.location.pathname)
   }
 
+  // position of the sliding highlight, measured from the active button
+  const pills = useRef<HTMLDivElement>(null)
+  const [pill, setPill] = useState({ left: 0, width: 0 })
+  useLayoutEffect(() => {
+    const measure = () => {
+      const b = pills.current?.querySelector<HTMLElement>(`[data-filter="${filter}"]`)
+      if (b) setPill({ left: b.offsetLeft, width: b.offsetWidth })
+    }
+    measure()
+    void document.fonts?.ready.then(measure)
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [filter])
+
   const shown = filter === 'all' ? projects : projects.filter((p) => p.category === filter)
   const count = (f: Filter) => (f === 'all' ? projects.length : projects.filter((p) => p.category === f).length)
   const filters: Filter[] = ['all', ...categories]
@@ -72,25 +86,33 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
       {/* controls */}
       <div className="sticky top-[var(--header-h)] z-20 -mx-[var(--gutter)] border-b border-rule bg-bg px-[var(--gutter)]">
         <div className="flex items-center justify-between gap-4 py-2">
-          <div role="group" aria-label="Filter by discipline" className="-ml-3 flex min-w-0 gap-1 overflow-x-auto [scrollbar-width:none]">
-            {filters.map((f) => (
-              <button
-                key={f}
-                type="button"
-                aria-pressed={filter === f}
-                onClick={() => set('filter', f, 'all')}
-                className={cn(
-                  't-label inline-flex h-11 shrink-0 items-center gap-2 px-3 transition-colors duration-[var(--dur-chrome)]',
-                  filter === f ? 'text-fg' : 'text-fg-3 hover:text-fg',
-                )}
-              >
-                {filter === f && <span aria-hidden className="size-1.5 rounded-full bg-signal" />}
-                {f === 'all' ? 'All' : categoryLabel[f]}
-                <span className="text-fg-3">{String(count(f)).padStart(2, '0')}</span>
-              </button>
-            ))}
+          <div className="-ml-1 min-w-0 overflow-x-auto [scrollbar-width:none]">
+            <div role="group" aria-label="Filter by discipline" ref={pills} className="relative flex w-max gap-0.5 rounded-full border border-rule p-1">
+              {/* the highlight slides under the active filter */}
+              <span
+                aria-hidden
+                className="absolute top-1 bottom-1 rounded-full bg-fg transition-[left,width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+                style={{ left: pill.left, width: pill.width, opacity: pill.width ? 1 : 0 }}
+              />
+              {filters.map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  data-filter={f}
+                  aria-pressed={filter === f}
+                  onClick={() => set('filter', f, 'all')}
+                  className={cn(
+                    't-label relative z-[1] inline-flex h-9 shrink-0 items-center gap-2 rounded-full px-3.5 transition-colors duration-300',
+                    filter === f ? 'text-bg' : 'text-fg-2 hover:text-fg',
+                  )}
+                >
+                  {f === 'all' ? 'All' : categoryLabel[f]}
+                  <span className={filter === f ? 'text-bg/60' : 'text-fg-3'}>{String(count(f)).padStart(2, '0')}</span>
+                </button>
+              ))}
+            </div>
           </div>
-          <div role="group" aria-label="View" className="flex shrink-0 border border-rule">
+          <div role="group" aria-label="View" className="flex shrink-0 gap-0.5 rounded-full border border-rule p-1">
             {(
               [
                 ['grid', 'Grid', LayoutGrid],
@@ -103,7 +125,7 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
                 aria-pressed={view === v}
                 onClick={() => set('view', v, 'grid')}
                 className={cn(
-                  't-label inline-flex h-11 items-center gap-2 px-3 transition-colors duration-[var(--dur-chrome)]',
+                  't-label inline-flex h-9 items-center gap-2 rounded-full px-3 transition-colors duration-300',
                   view === v ? 'bg-fg text-bg' : 'text-fg-2 hover:text-fg',
                 )}
               >

@@ -1,20 +1,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Foil, FoilLight } from '@/components/fx/Foil'
 import { cn } from '@/lib/cn'
 import type { ProjectCard } from '@/lib/work'
 
 /**
  * A work tile: cover on top (no overlay), title, year and mono tags below.
  * The grid sets one `aspect` per row so rows scan cleanly. Every cover gets a 1px edge so dark
- * covers stay separate from the page. `foil` is for the three flagship builds only.
+ * covers stay separate from the page.
  * `wide` uses the project's `coverWide` image when it has one (full-width Home tile).
  */
 export function WorkTile({
   project,
   sizes,
   aspect = 'aspect-[16/10]',
-  foil = false,
   priority = false,
   showSummary = false,
   wide = false,
@@ -23,7 +21,6 @@ export function WorkTile({
   project: ProjectCard
   sizes: string
   aspect?: string
-  foil?: boolean
   priority?: boolean
   showSummary?: boolean
   wide?: boolean
@@ -41,6 +38,7 @@ export function WorkTile({
           alt={project.coverAlt}
           fill
           sizes={sizes}
+          quality={88}
           priority={priority}
           style={{ objectPosition: project.coverPosition }}
           className={cn(
@@ -49,7 +47,6 @@ export function WorkTile({
           )}
         />
       )}
-      {foil && <FoilLight />}
       {/* the edge: keeps dark covers from melting into a dark page */}
       <span aria-hidden className="pointer-events-none absolute inset-0 z-[3] ring-1 ring-rule ring-inset" />
     </div>
@@ -58,7 +55,7 @@ export function WorkTile({
   return (
     <article className={cn('flex flex-col', className)}>
       <Link href={`/work/${project.slug}`} className="group flex h-full flex-col">
-        {foil ? <Foil>{image}</Foil> : image}
+        {image}
         <div className="mt-4 flex items-baseline justify-between gap-4">
           <h3 className="t-title text-[clamp(1.375rem,1.15rem+0.8vw,1.875rem)]">
             <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-500 ease-out group-hover:bg-[length:100%_1px]">

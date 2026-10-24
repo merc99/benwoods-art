@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { GridLines } from '@/components/ui/GridLines'
 import { Gallery } from '@/components/work/Gallery'
 import { PlaylistGrid } from '@/components/work/PlaylistGrid'
 import { playlists } from '@/lib/playlists'
@@ -13,6 +12,8 @@ import { SpecTable } from '@/components/work/SpecTable'
 import { imageSize } from '@/lib/image'
 import { getAdjacent, getProject, getProjects } from '@/lib/work'
 import { cn } from '@/lib/cn'
+import { PixelTiles } from '@/components/fx/PixelTiles'
+import { DeviceFrame } from '@/components/ui/DeviceFrame'
 
 export const dynamicParams = false
 
@@ -51,8 +52,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   return (
     <article>
       {/* header */}
-      <header className="relative isolate">
-        <GridLines />
+      <header className="relative isolate overflow-hidden">
+        <PixelTiles seed={p.order * 13 + 5} />
         <div className="shell relative pt-6 lg:pt-8">
           <div className="t-label flex items-center justify-between text-fg-3">
             <Link href="/work" className="inline-flex h-11 items-center gap-2 hover:text-fg">
@@ -94,8 +95,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </div>
       </header>
 
-      {/* cover */}
-      {p.cover && cover && (
+      {/* cover: a framed product screenshot when the project has one, else the cover image */}
+      {p.coverScreen ? (
+        <div className="shell">
+          <div className="mx-auto max-w-[1280px] pb-[clamp(1.5rem,4vw,3.5rem)]">
+            <DeviceFrame src={p.coverScreen} alt={p.coverScreenAlt || p.coverAlt} priority sizes="(min-width: 1520px) 1280px, 92vw" />
+          </div>
+        </div>
+      ) : p.cover && cover && (
         <div className="shell">
           <div className={cn('overflow-hidden bg-sunken', portrait && 'flex justify-center py-[var(--gutter)]')}>
             <Image
@@ -105,6 +112,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               height={cover.height}
               priority
               sizes={portrait ? '(min-width: 768px) 60vw, 100vw' : '(min-width: 1520px) 1440px, 100vw'}
+              quality={88}
               className={cn('h-auto', portrait ? 'max-h-[82svh] w-auto max-w-full' : 'w-full')}
             />
           </div>
@@ -194,7 +202,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
       {/* previous / next */}
       <nav aria-label="More work" data-surface="ink" className="relative isolate border-b border-rule">
-        <GridLines />
         <div className="shell relative grid md:grid-cols-2">
           {[
             { label: 'Previous', project: prev, arrow: '←' },

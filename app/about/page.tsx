@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
+import { RevealText } from '@/components/fx/RevealText'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Download } from 'lucide-react'
 import { GlyphFieldLazy } from '@/components/about/GlyphFieldLazy'
-import { GridLines } from '@/components/ui/GridLines'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { approach, bio, experience, stats } from '@/lib/about'
 import { links, site } from '@/lib/site'
@@ -41,11 +41,10 @@ export default function AboutPage() {
 
       {/* bio */}
       <section className="relative isolate">
-        <GridLines />
         <div className="shell relative grid gap-x-[var(--gutter)] gap-y-10 py-16 lg:grid-cols-12 lg:py-24">
           <p className="t-label text-fg-3 lg:col-span-3">(01) Bio</p>
           <div className="max-w-[60ch] lg:col-span-7 lg:col-start-4">
-            <p className="t-lede text-fg">{bio[0]}</p>
+            <RevealText as="p" text={bio[0]} className="t-lede text-fg" />
             {bio.slice(1).map((p) => (
               <p key={p.slice(0, 20)} className="mt-6 text-[1.0625rem] leading-[1.65] text-fg lg:text-[1.125rem]">
                 {p}
