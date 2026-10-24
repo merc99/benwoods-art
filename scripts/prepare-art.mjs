@@ -56,16 +56,29 @@ const out = async (buf, dest, opts) => {
 }
 
 // Playlist covers: Spotify shows them square, so a centered square of the (slightly portrait) artwork
+const covers = {}
 {
   mkdirSync('public/work/playlist-covers', { recursive: true })
   for (const p of playlistArt) {
     const t = await trimBorders(join('assets/PLAYLIST ART', p.file))
     const s = Math.min(t.width, t.height)
     const sq = await sharp(t.buffer).extract({ left: Math.floor((t.width - s) / 2), top: Math.floor((t.height - s) / 2), width: s, height: s }).png().toBuffer()
-    const dest = `public/work/playlist-covers/${p.slug}.webp`
+    // the file name carries a fingerprint of the art, so a changed cover never shows a cached old one
+    const hash = createHash('md5').update(readFileSync(join('assets/PLAYLIST ART', p.file))).digest('hex').slice(0, 8)
+    for (const f of readdirSync('public/work/playlist-covers')) if (f.startsWith(`${p.slug}.`) || f.startsWith(`${p.slug}-`)) rmSync(`public/work/playlist-covers/${f}`)
+    const dest = `public/work/playlist-covers/${p.slug}-${hash}.webp`
+    covers[p.slug] = dest.replace('public', '')
     const info = await out(sq, dest, { max: 1200 })
     report.push({ set: 'playlist', file: p.file, out: dest, title: p.title, url: p.url, matched: p.match, trim: t.trim, original: `${t.original.w}x${t.original.h}`, size: `${info.width}x${info.height}` })
   }
+}
+
+// record each cover's file in content/playlists.json
+{
+  const list = JSON.parse(readFileSync('content/playlists.json', 'utf8'))
+  for (const p of list) if (covers[p.title]) p.cover = covers[p.title]
+  const rows = list.map((p) => '  ' + JSON.stringify(p).replace(/,"/g, ', "').replace(/":/g, '": '))
+  writeFileSync('content/playlists.json', `[\n${rows.join(',\n')}\n]\n`)
 }
 
 mkdirSync('assets/review', { recursive: true })

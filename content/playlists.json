@@ -1,6 +1,6 @@
 [
-  { "title": "oct26", "month": "October 2026", "id": "2x03D0RjO9GsGcFoH8Lxsa", "file": "thisssjdsafklgj kladfjgkljda fklgjade.png", "match": "confirmed" },
-  { "title": "sep26", "month": "September 2026", "id": "6hQvbEx1wXTBsKq7STmVjs", "file": "Stock-Pulper_gddfgdfgdfg.png", "match": "confirmed" },
-  { "title": "aug26", "month": "August 2026", "id": "3zqe4tp5aK9ZYE50n7mcVJ", "file": "YAAAAAA.png", "match": "confirmed" },
-  { "title": "jun26", "month": "June 2026", "id": "0UBuzUauK46AG6kBdkfCN4", "file": "asdfsadfasdfsad.png", "match": "confirmed" }
+  {"title": "oct26", "month": "October 2026", "id": "2x03D0RjO9GsGcFoH8Lxsa", "file": "thisssjdsafklgj kladfjgkljda fklgjade.png", "match": "confirmed", "cover": "/work/playlist-covers/oct26-c5f2330b.webp"},
+  {"title": "sep26", "month": "September 2026", "id": "6hQvbEx1wXTBsKq7STmVjs", "file": "Stock-Pulper_gddfgdfgdfg.png", "match": "confirmed", "cover": "/work/playlist-covers/sep26-6f30f480.webp"},
+  {"title": "aug26", "month": "August 2026", "id": "3zqe4tp5aK9ZYE50n7mcVJ", "file": "YAAAAAA.png", "match": "confirmed", "cover": "/work/playlist-covers/aug26-92c4dabc.webp"},
+  {"title": "jun26", "month": "June 2026", "id": "0UBuzUauK46AG6kBdkfCN4", "file": "asdfsadfasdfsad.png", "match": "confirmed", "cover": "/work/playlist-covers/jun26-418a68b2.webp"}
 ]

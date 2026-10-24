@@ -16,8 +16,6 @@ import { useEffect, useRef } from 'react'
 const LEVELS = [' ', '·', '∙', ':', '+', '×', '◇', '◈', '▣', '■']
 // Facet colors: cream through amber to the site's vermilion, with one cool band for the iridescent edge.
 const BANDS = ['#f4ecdc', '#e8c9a0', '#e9a23b', '#ff5a2e', '#b9a6ff']
-/** Each face keeps its own color as the die turns (so it reads as a solid object), mostly warm with a few lilac. */
-const FACE_BAND = [1, 2, 3, 1, 4, 2, 3, 1, 2, 4, 3, 1, 2, 3, 1, 4, 2, 1, 3, 2]
 /** The number is drawn at this many subpixels per glyph cell, then each cell is filled by its coverage. */
 const SS = 4
 
@@ -138,9 +136,7 @@ export function GlyphField({ className }: { className?: string }) {
     const rctx = raster.getContext('2d', { willReadFrequently: true })!
     const numCanvas = document.createElement('canvas')
     const nctx = numCanvas.getContext('2d', { willReadFrequently: true })!
-    // the visible edges, and the face toward the viewer, one pixel per cell
-    const edgeCanvas = document.createElement('canvas')
-    const ectx = edgeCanvas.getContext('2d', { willReadFrequently: true })!
+    // the face toward the viewer, one pixel per cell
     const frontCanvas = document.createElement('canvas')
     const fctx = frontCanvas.getContext('2d', { willReadFrequently: true })!
     const atlas = document.createElement('canvas')
@@ -192,8 +188,8 @@ export function GlyphField({ className }: { className?: string }) {
       c.height = Math.round(h * dpr)
       cols = Math.ceil(w / cell)
       rows = Math.ceil(h / cell)
-      raster.width = edgeCanvas.width = frontCanvas.width = cols
-      raster.height = edgeCanvas.height = frontCanvas.height = rows
+      raster.width = frontCanvas.width = cols
+      raster.height = frontCanvas.height = rows
       numCanvas.width = cols * SS
       numCanvas.height = rows * SS
       geo = {
@@ -394,20 +390,18 @@ export function GlyphField({ className }: { className?: string }) {
         })
         g.closePath()
       }
-      ectx.clearRect(0, 0, cols, rows)
-      ectx.strokeStyle = '#fff'
-      ectx.lineWidth = 0.6
-      ectx.lineJoin = 'round'
-      for (const { f, n, i } of faces) {
-        const lum = Math.max(0, n[0] * light[0] + n[1] * light[1] + n[2] * light[2])
-        rctx.fillStyle = `rgb(${FACE_BAND[i] * 50},${Math.round(40 + lum * 215)},255)`
+      // Flat-shaded like a lit enamel die: each face's light sets both its glyph and its color, from deep
+      // vermilion in shadow through amber and sand to cream where the light hits; faces turning away from
+      // the viewer catch a lilac rim. Neighboring faces differ in light, so the facets separate on their own.
+      for (const { f, n } of faces) {
+        const d = Math.max(0, n[0] * light[0] + n[1] * light[1] + n[2] * light[2])
+        const lum = Math.min(1, 0.08 + Math.pow(d, 1.35) * 1.05)
+        const band = n[2] < 0.3 ? 4 : lum > 0.8 ? 0 : lum > 0.58 ? 1 : lum > 0.34 ? 2 : 3
+        rctx.fillStyle = `rgb(${band * 50},${Math.round(lum * 255)},255)`
         path(rctx, f)
         rctx.fill()
-        path(ectx, f)
-        ectx.stroke()
       }
       img = rctx.getImageData(0, 0, cols, rows).data
-      const edges = ectx.getImageData(0, 0, cols, rows).data
 
       // the settled number, in glyphs
       let numFade = 0
@@ -482,21 +476,14 @@ export function GlyphField({ className }: { className?: string }) {
           let level: number
           let band: number
           let alpha: number
-          const isEdge = onDie && edges[k + 3] > 100
           const onFront = !!front && front[k + 3] > 128
           const cover = mask ? mask[y * cols + x] : 0
           if (onDie) {
             const lum = img[k + 1] / 255
             band = Math.round(img[k] / 50)
-            // faces: denser glyphs the more light they catch
-            level = Math.min(8, 3 + Math.floor(lum * 6))
-            alpha = 0.4 + lum * 0.6
-            if (isEdge) {
-              // the edges: thin cream seams (a '+' line), so the twenty faces read as one cut gem
-              level = 4
-              band = 0
-              alpha = 0.95
-            }
+            // denser glyphs the more light a face catches: '+' in shadow up to '■' in full light
+            level = Math.min(LEVELS.length - 1, 4 + Math.floor(lum * 5.99))
+            alpha = 0.5 + lum * 0.5
             if (mask) {
               if (cover > 0.42) {
                 // the number: solid glyphs, amber for a natural 20
@@ -504,15 +491,13 @@ export function GlyphField({ className }: { className?: string }) {
                 band = nat20 ? 2 : 0
                 alpha = alpha * (1 - numFade) + numFade
               } else if (onFront) {
-                // the face it's printed on quiets down so the number reads; its edges glow amber
-                if (isEdge) band = nat20 ? 3 : 2
-                else {
-                  level = Math.max(1, level - Math.round(numFade * 4))
-                  alpha *= 1 - numFade * 0.55
-                }
+                // the face it's printed on darkens to small vermilion dots so the number reads
+                level = Math.max(1, level - Math.round(numFade * 7))
+                band = numFade > 0.4 ? 3 : band
+                alpha *= 1 - numFade * 0.25
               } else {
-                alpha *= 1 - numFade * 0.35
-                if (nat20 && numFade > 0.5 && !isEdge) band = 3
+                alpha *= 1 - numFade * 0.12
+                if (nat20 && numFade > 0.5) band = 3
               }
             }
           } else {
