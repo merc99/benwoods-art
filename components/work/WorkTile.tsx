@@ -54,7 +54,7 @@ export function WorkTile({
 
   return (
     <article className={cn('flex flex-col', className)}>
-      <Link href={`/work/${project.slug}`} className="group flex h-full flex-col">
+      <Link href={`/work/${project.slug}`} aria-label={`${project.title}: ${project.summary}`} className="group flex h-full flex-col">
         {image}
         <div className="mt-4 flex items-baseline justify-between gap-4">
           <h3 className="t-title text-[clamp(1.375rem,1.15rem+0.8vw,1.875rem)]">

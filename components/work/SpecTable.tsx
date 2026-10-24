@@ -1,4 +1,3 @@
-import { categoryName } from '@/lib/categories'
 import type { Project } from '@/lib/work'
 
 function host(url: string) {
@@ -13,7 +12,6 @@ function host(url: string) {
 export function SpecTable({ project }: { project: Project }) {
   const ext = { target: '_blank', rel: 'noreferrer' }
   const rows: [string, React.ReactNode | null][] = [
-    ['Discipline', categoryName[project.category]],
     ['Role', project.role],
     ['Year', project.year],
     ['Stack', project.stack.length ? project.stack.join(' · ') : null],

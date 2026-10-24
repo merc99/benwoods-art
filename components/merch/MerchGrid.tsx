@@ -69,13 +69,13 @@ export function MerchGrid({ items }: { items: MerchItem[] }) {
               }}
               type="button"
               onClick={() => setOpen(i)}
-              aria-label={`${caption(m)}: ${m.alt}. View larger`}
+              aria-label={`${m.alt}, view larger`}
               className="group block w-full text-left"
             >
               <span className="relative block aspect-[5/4] overflow-hidden bg-sunken">
                 <Image
                   src={m.src}
-                  alt=""
+                  alt={m.alt}
                   fill
                   sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"

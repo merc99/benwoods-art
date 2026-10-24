@@ -1,15 +1,12 @@
 import Link from 'next/link'
-import { Marquee } from '@/components/fx/Marquee'
-import { PixelTiles } from '@/components/fx/PixelTiles'
-import { links, nav, site, ticker } from '@/lib/site'
+import { links, nav, site } from '@/lib/site'
 import { Clock } from './Clock'
 
 export function Footer() {
   const year = new Date().getFullYear()
   return (
     <footer data-surface="ink" className="relative isolate overflow-hidden">
-      <div className="relative isolate overflow-hidden">
-        <PixelTiles seed={53} />
+      <div className="relative">
         <div className="shell relative pt-20 pb-20 lg:pt-28 lg:pb-28">
           <p className="t-label text-fg-3">Contact</p>
           <h2 className="t-display mt-4 max-w-[14ch] text-[clamp(3rem,1.5rem+7vw,8.5rem)]">Let&apos;s build something.</h2>
@@ -21,10 +18,9 @@ export function Footer() {
           </a>
         </div>
       </div>
-      <Marquee label="Disciplines" items={ticker} seconds={36} className="t-label border-y border-rule py-4 text-fg-2" />
 
       <div className="shell relative pb-8">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 pt-10 lg:grid-cols-12">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 border-t border-rule pt-10 lg:grid-cols-12">
           <div className="lg:col-span-3">
             <h3 className="t-label text-fg-3">Index</h3>
             <ul className="mt-3">

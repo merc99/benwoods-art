@@ -158,16 +158,6 @@ body::after {
 }
 
 
-/* Marquee (components/fx/Marquee.tsx): slides one copy's width, pauses on hover. */
-@keyframes marquee { to { transform: translateX(-50%); } }
-.marquee-track { animation: marquee var(--marquee-s, 40s) linear infinite; }
-.marquee:hover .marquee-track { animation-play-state: paused; }
-.marquee { mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); }
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track { animation: none; }
-}
-
 /* ---------- Type roles ---------- */
 @utility t-display {
   font-family: var(--font-display);

@@ -2,8 +2,6 @@
 // A quiet pixel-tile texture for page heroes: a grid of square tiles, each a small symmetric pixel motif,
 // with vertical runs of empty tiles.
 // - Idle: a slow wave flows across the grid, so tiles drift between faint and a little brighter.
-// - Hover (mouse only): tiles near the pointer gather light in the signal color and let it go slowly,
-//   so moving the mouse leaves a soft trail instead of a spotlight.
 // - Click (mouse only): the tile under the pointer cycles through a few accent colors, neighbors follow softly.
 // Each motif is pre-drawn once as a sprite; frames only run while the hero is on screen and the tab is visible.
 
@@ -70,7 +68,6 @@ type Tile = {
   cy: number
   m: number
   phase: number
-  energy: number
   clear: number
   /** click pop: when it starts (ms, page clock) and how strong (1 for the clicked tile, less for neighbors) */
   popAt: number
@@ -115,11 +112,8 @@ export function PixelTiles({
     let padD = 0
     let tiles: Tile[] = []
     let baseSprites: HTMLCanvasElement[] = []
-    let litSprites: HTMLCanvasElement[] = []
     let popSprites: HTMLCanvasElement[][] = [] // [color][motif]
         let baseAlpha = 0.06
-    let litAlpha = 0.8
-    const pointer = { x: -9999, y: -9999, active: false }
     let raf = 0
     let last = 0
     let t0 = performance.now()
@@ -179,28 +173,10 @@ export function PixelTiles({
       ctx.setTransform(1, 0, 0, 1, 0, 0) // draw in device pixels, sprites 1:1
       ctx.imageSmoothingEnabled = false
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      const radius = Math.max(220, Math.min(380, w * 0.22))
-      const decay = Math.exp(-dt / 1100) // light lingers about a second after the pointer leaves
       let lit = false
       for (const tile of tiles) {
-        // gather light near the pointer; a slow wobble keeps the edge from reading as a circle
-        if (pointer.active) {
-          const d = Math.hypot(tile.cx - pointer.x, tile.cy - pointer.y)
-          const wobble = 0.82 + 0.18 * Math.sin(tile.phase * 3 + t * 0.0012)
-          const target = smooth(radius, radius * 0.15, d) * wobble
-          if (target > tile.energy) tile.energy += (target - tile.energy) * (reduce ? 1 : Math.min(1, dt / 140))
-          else tile.energy *= decay
-        } else tile.energy *= decay
-        if (tile.energy < 0.004) tile.energy = 0
-        else lit = true
-
         ctx.globalAlpha = baseAlpha * idle(tile, t) * tile.clear
         ctx.drawImage(baseSprites[tile.m], tile.dx - padD, tile.dy - padD)
-        const glow = tile.energy * tile.energy
-        if (glow > 0.004) {
-          ctx.globalAlpha = litAlpha * glow * tile.clear
-          ctx.drawImage(litSprites[tile.m], tile.dx - padD, tile.dy - padD)
-        }
         if (tile.popAt >= 0) {
           // the pop: step through the colors, then fade the last one out
           const age = now - tile.popAt
@@ -235,7 +211,6 @@ export function PixelTiles({
       const glow = cs.getPropertyValue('--signal').trim() || '#ff5a2e'
       const dark = host.closest('.dark') !== null
       baseAlpha = dark ? 0.2 : 0.17
-      litAlpha = dark ? 0.95 : 0.85
 
       px = w < 640 ? Math.max(4, pixel - 2) : pixel
       pxD = Math.max(2, Math.round(px * dpr))
@@ -248,12 +223,10 @@ export function PixelTiles({
       const motifs = Array.from({ length: MOTIFS }, () => makeMotif(r0))
       const line = Math.max(1, Math.round(pxD * 0.16)) // whole device pixels, so the outline is one crisp line
       baseSprites = motifs.map((m) => sprite(m, fg, { fill: 0.3, glow: dark ? 1.5 : 0, line }))
-      litSprites = motifs.map((m) => sprite(m, glow, { fill: 0.4, glow: 5, line }))
       popSprites = POP.map((c) => motifs.map((m) => sprite(m, c, { fill: 0.55, glow: 6, line })))
 
       // vertical runs: each column alternates filled and empty stretches
       const r1 = rng(seed + 101)
-      const prev = new Map(tiles.map((t) => [`${t.dx},${t.dy}`, t.energy]))
       tiles = []
       for (let c = 0; c < cols; c++) {
         let filled = r1() < 0.6
@@ -271,7 +244,7 @@ export function PixelTiles({
           const dy = row * stepD
           const x = dx / dpr
           const y = dy / dpr
-          tiles.push({ x, y, dx, dy, cx: x + tileSize / 2, cy: y + tileSize / 2, m, phase, energy: prev.get(`${dx},${dy}`) ?? 0, clear: 1, popAt: -1, popK: 0 })
+          tiles.push({ x, y, dx, dy, cx: x + tileSize / 2, cy: y + tileSize / 2, m, phase, clear: 1, popAt: -1, popK: 0 })
         }
       }
       measure()
@@ -315,7 +288,7 @@ export function PixelTiles({
       last = now
       const lit = draw(now, dt)
       // keep running while the idle wave plays (on screen) or while light is still fading
-      raf = visible && (!reduce || lit || pointer.active) ? requestAnimationFrame(frame) : 0
+      raf = visible && (!reduce || lit) ? requestAnimationFrame(frame) : 0
       if (!raf) last = 0
     }
     const start = () => {
@@ -349,14 +322,6 @@ export function PixelTiles({
     }
     document.addEventListener('visibilitychange', onVis)
 
-    const move = (e: PointerEvent) => {
-      if (e.pointerType !== 'mouse') return
-      const r = canvas.getBoundingClientRect()
-      pointer.x = e.clientX - r.left
-      pointer.y = e.clientY - r.top
-      pointer.active = true
-      start()
-    }
     /** Click a tile: it cycles through the pop colors; the eight around it follow a beat later, softer. */
     const click = (e: MouseEvent) => {
       if (e.button !== 0) return
@@ -391,13 +356,7 @@ export function PixelTiles({
       start()
     }
 
-    const leave = () => {
-      pointer.active = false
-      start()
-    }
     if (fine) {
-      host.addEventListener('pointermove', move)
-      host.addEventListener('pointerleave', leave)
       host.addEventListener('click', click)
     }
     if (!reduce) start()
@@ -409,8 +368,6 @@ export function PixelTiles({
       mo.disconnect()
       io.disconnect()
       document.removeEventListener('visibilitychange', onVis)
-      host.removeEventListener('pointermove', move)
-      host.removeEventListener('pointerleave', leave)
       host.removeEventListener('click', click)
     }
   }, [seed, pixel])

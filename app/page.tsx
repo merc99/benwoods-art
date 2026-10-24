@@ -3,7 +3,7 @@ import { Hero } from '@/components/home/Hero'
 import { MerchGrid } from '@/components/merch/MerchGrid'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { WorkTile } from '@/components/work/WorkTile'
-import { homeMerch } from '@/lib/merch'
+import { allMerch, homeMerch } from '@/lib/merch'
 import { bySlug } from '@/lib/work'
 
 const half = '(min-width: 768px) 50vw, 100vw'
@@ -30,8 +30,7 @@ export default function Home() {
               <FeaturedShowcase
                 project={checkin}
                 screenshot="/work/checkin/feed-dark-hq.webp"
-                live={['Maya checked in · 5x5 squats', '3 of 5 in today', 'Priya reacted 🙏', '22-day crew streak']}
-                screenshotAlt="Check-in's desktop feed in dark mode: a sky-blue 5am Lifters crew banner, a join request and posts with reactions, beside a rail showing 2 of 5 crewmates in today."
+                screenshotAlt="Check-in’s desktop feed in dark mode, with a crew banner, posts and today’s check-ins."
                 
               />
             </div>
@@ -40,8 +39,7 @@ export default function Home() {
                 half
                 project={club}
                 screenshot="/work/100k-club/featured-hero.webp"
-                live={['Slipboard graded a slip · Win +2.4u', 'New rank: Rising Sharp', '7-leg parlay graded']}
-                screenshotAlt="The 100K Club landing page hero: the gold 100K Club crest with sports balls on a smoky navy backdrop, above the line Where every slip counts, and anyone can rise."
+                screenshotAlt="The 100K Club landing page, with the gold crest on smoky navy."
               />
             </div>
             <div className="md:col-span-6">
@@ -49,8 +47,7 @@ export default function Home() {
                 half
                 project={mmo}
                 screenshot="/work/mmo-nodes/featured-landing.webp"
-                live={['+310,492 MMO earned today', 'Merc reached level 18', 'Renzo Castle cleared']}
-                screenshotAlt="The MMO Nodes landing page: a huge mmo nodes wordmark and Stake. Level. Earn. on a lilac-to-sky gradient, with a black START button."
+                screenshotAlt="The MMO Nodes landing page, with the wordmark on a lilac-to-sky gradient."
               />
             </div>
           </div>
@@ -73,13 +70,14 @@ export default function Home() {
         <div className="shell relative py-20 lg:py-28">
           <SectionHeader index="03" id="brand-title" title="Brand & illustration" meta="2022—2025" />
           <div className={`mt-10 lg:mt-12 ${grid}`}>
+            {/* newest first: 2025, 2025, 2024, 2024, then the illustration series 2024, 2023, 2022 */}
             <WorkTile project={dreamline} sizes={half} className="md:col-span-6" />
             <WorkTile project={mamies} sizes={half} className="md:col-span-6" />
+            <WorkTile project={gilded} sizes={half} className="md:col-span-6" />
+            <WorkTile project={flexible} sizes={half} className="md:col-span-6" />
             <WorkTile project={evershift} sizes={third} aspect="aspect-[4/5]" className="md:col-span-4" />
             <WorkTile project={wagdie} sizes={third} aspect="aspect-[4/5]" className="md:col-span-4" />
             <WorkTile project={retro} sizes={third} aspect="aspect-[4/5]" className="md:col-span-4" />
-            <WorkTile project={gilded} sizes={half} className="md:col-span-6" />
-            <WorkTile project={flexible} sizes={half} className="md:col-span-6" />
           </div>
         </div>
       </section>
@@ -87,7 +85,7 @@ export default function Home() {
       {/* 04 Merch */}
       <section aria-labelledby="merch-title" className="relative isolate border-t border-rule">
         <div className="shell relative py-20 lg:py-28">
-          <SectionHeader index="04" id="merch-title" title="Merch" meta={`${homeMerch.length} pieces`} />
+          <SectionHeader index="04" id="merch-title" title="Merch" href="/work/merch" hrefLabel={`All ${allMerch.length} pieces`} />
           <div className="mt-10 lg:mt-12">
             <MerchGrid items={homeMerch} />
           </div>

@@ -6,15 +6,7 @@ export const bio = [
   'Before that came ten years of freelance brand and illustration work for clients across food, lifestyle and wellness.',
 ]
 
-export const approach =
-  'I’m constantly building and exploring, and staying creative in all things, whether that’s writing music in Ableton, building audio-reactive visualizers in TouchDesigner or finding new ways to build fun products and ideas.'
-
-export const stats = [
-  { value: '10+', label: 'Years designing' },
-  { value: '20+', label: 'Creative projects' },
-  { value: '05', label: 'Builds in 2026' },
-  { value: '15+', label: 'Tools used' },
-]
+export const approach = 'Outside client work I write music in Ableton and build audio-reactive visuals in TouchDesigner.'
 
 export const experience = [
   {

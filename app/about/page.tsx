@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Download } from 'lucide-react'
 import { GlyphFieldLazy } from '@/components/about/GlyphFieldLazy'
 import { SectionHeader } from '@/components/ui/SectionHeader'
-import { approach, bio, experience, stats } from '@/lib/about'
+import { approach, bio, experience } from '@/lib/about'
 import { links, site } from '@/lib/site'
 import { latestPlaylist } from '@/lib/playlists'
 
@@ -92,18 +92,6 @@ export default function AboutPage() {
             All playlist covers <span aria-hidden>→</span>
           </Link>
         </div>
-      </section>
-
-      {/* numbers */}
-      <section aria-label="In numbers" className="border-y border-rule">
-        <dl className="shell grid grid-cols-2 lg:grid-cols-4">
-          {stats.map((s, i) => (
-            <div key={s.label} className={`py-8 lg:py-10 ${i % 2 ? 'pl-[var(--gutter)]' : ''} ${i > 0 ? 'lg:border-l lg:border-rule lg:pl-[var(--gutter)]' : ''} ${i % 2 ? 'border-l border-rule' : ''} ${i > 1 ? 'max-lg:border-t max-lg:border-rule' : ''}`}>
-              <dt className="t-label text-fg-3">{s.label}</dt>
-              <dd className="t-display mt-3 text-[clamp(3rem,2rem+3vw,5rem)]">{s.value}</dd>
-            </div>
-          ))}
-        </dl>
       </section>
 
       {/* experience */}

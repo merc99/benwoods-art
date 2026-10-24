@@ -17,7 +17,7 @@ export function Wordmark({ className, onNavigate }: { className?: string; onNavi
   return (
     <Link
       href="/"
-      aria-label="Ben Woods, home"
+      aria-label="Ben Woods"
       onClick={onNavigate}
       onPointerEnter={(e) => e.pointerType === 'mouse' && play()}
       onFocus={play}

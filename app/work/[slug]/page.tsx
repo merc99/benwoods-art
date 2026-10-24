@@ -6,7 +6,7 @@ import { Gallery } from '@/components/work/Gallery'
 import { PlaylistGrid } from '@/components/work/PlaylistGrid'
 import { playlists } from '@/lib/playlists'
 import { MerchGrid } from '@/components/merch/MerchGrid'
-import { homeMerch } from '@/lib/merch'
+import { allMerch } from '@/lib/merch'
 import { Prose } from '@/components/work/Prose'
 import { SpecTable } from '@/components/work/SpecTable'
 import { imageSize } from '@/lib/image'
@@ -178,9 +178,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               <h2 id="merch" className="t-heading text-[clamp(1.75rem,1.2rem+2.4vw,3.25rem)]">
                 The shirts
               </h2>
-              <span className="t-label text-fg-2">{String(homeMerch.length).padStart(2, '0')} pieces</span>
+              <span className="t-label text-fg-2">{String(allMerch.length).padStart(2, '0')} pieces</span>
             </div>
-            <MerchGrid items={homeMerch} />
+            <MerchGrid items={allMerch} />
           </div>
         </section>
       )}
