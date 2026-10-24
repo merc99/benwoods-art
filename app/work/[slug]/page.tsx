@@ -52,6 +52,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const { prev, next } = getAdjacent(slug)
   const cover = p.cover ? await imageSize(p.cover) : null
   const portrait = cover ? cover.height > cover.width * 0.9 : false
+  // neighbors' covers at their own shape, for the framed previous/next thumbnails
+  const thumb = async (x: typeof prev) => (x?.cover ? { src: x.cover, ...(await imageSize(x.cover)) } : null)
+  const thumbs = [await thumb(prev), await thumb(next)]
 
   return (
     <article>
@@ -265,17 +268,21 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                   i === 0 && 'md:pr-[var(--gutter)]',
                 )}
               >
-                {project.cover && (
-                  <span className="relative hidden aspect-[4/3] w-28 shrink-0 overflow-hidden bg-sunken sm:block lg:w-40">
-                    <Image
-                      src={project.cover}
-                      alt=""
-                      fill
-                      sizes="160px"
-                      style={{ objectPosition: project.coverPosition }}
-                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    />
-                  </span>
+                {thumbs[i] && (
+                  // the cover whole, at its own shape, in the site's card frame (lifts on hover like other cards)
+                  <Bezel size="small" className="hidden shrink-0 sm:block">
+                    <span className={cn('block overflow-hidden bg-sunken', bezelRadius.small.inner)}>
+                      <Image
+                        src={thumbs[i].src}
+                        alt=""
+                        width={thumbs[i].width}
+                        height={thumbs[i].height}
+                        sizes="240px"
+                        quality={88}
+                        className="block h-20 w-auto max-w-[9rem] object-cover lg:h-28 lg:max-w-[12rem]"
+                      />
+                    </span>
+                  </Bezel>
                 )}
                 <span className="min-w-0">
                   <span className="t-label block text-fg-3">

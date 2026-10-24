@@ -1,7 +1,8 @@
 'use client'
 // Merc peeks up from the bottom right of the footer's contact block once you reach it, and ducks back
 // down when you scroll away. A "Meet Merc" bubble shows briefly when he arrives and again on hover or
-// focus. He links to his page, so he stays hidden on it. Reduced motion: he fades in and out instead.
+// focus. He links to his page; on his own page he says "That's me" and takes you back to the top.
+// Reduced motion: he fades in and out instead.
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -35,13 +36,13 @@ export function MercPeek() {
     }
   }, [up])
 
-  if (pathname === '/work/merc-eats') return null
+  const home = pathname === '/work/merc-eats'
 
   return (
     <div ref={ref} className="absolute right-[var(--gutter)] -bottom-3.5 w-[76px] sm:w-[118px] lg:w-[164px]">
       <Link
-        href="/work/merc-eats"
-        aria-label="Meet Merc, my cat"
+        href={home ? '#top' : '/work/merc-eats'}
+        aria-label={home ? "That's Merc. Back to top" : 'Meet Merc, my cat'}
         tabIndex={up ? 0 : -1}
         className={cn(
           'group relative block outline-none',
@@ -58,7 +59,7 @@ export function MercPeek() {
             up && hello ? 'scale-100 opacity-100' : 'scale-90 opacity-0',
           )}
         >
-          Meet Merc →
+          {home ? 'That’s me ↑' : 'Meet Merc →'}
         </span>
         <Image
           src="/merc/peek.webp"

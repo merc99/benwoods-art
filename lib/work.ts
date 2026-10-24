@@ -61,6 +61,8 @@ export type Project = {
   cover: string
   /** Optional 2:1 cover for the full-width Home tile. */
   coverWide: string
+  /** Optional cover for grid cards only, when `cover` doesn't crop well to the card's shape. */
+  coverTile: string
   coverAlt: string
   /** CSS object-position for cropped tiles, e.g. "top" or "left top". Defaults to center. */
   coverPosition: string
@@ -88,7 +90,7 @@ export type Project = {
 /** What list views and tiles need (safe to pass to client components). */
 export type ProjectCard = Pick<
   Project,
-  'title' | 'slug' | 'category' | 'tags' | 'year' | 'role' | 'cover' | 'coverWide' | 'coverAlt' | 'coverPosition' | 'coverFit' | 'coverBg' | 'summary' | 'featured'
+  'title' | 'slug' | 'category' | 'tags' | 'year' | 'role' | 'cover' | 'coverWide' | 'coverTile' | 'coverAlt' | 'coverPosition' | 'coverFit' | 'coverBg' | 'summary' | 'featured'
 >
 
 const dir = join(process.cwd(), 'content', 'work')
@@ -108,6 +110,7 @@ function load(): Project[] {
         galleryStyle: '',
         cover: '',
         coverWide: '',
+        coverTile: '',
         coverAlt: '',
         coverPosition: 'center',
         coverFit: 'cover',
@@ -146,8 +149,8 @@ export function bySlug(slugs: string[]): Project[] {
 }
 
 export function toCard(p: Project): ProjectCard {
-  const { title, slug, category, tags, year, role, cover, coverWide, coverAlt, coverPosition, coverFit, coverBg, summary, featured } = p
-  return { title, slug, category, tags, year, role, cover, coverWide, coverAlt, coverPosition, coverFit, coverBg, summary, featured }
+  const { title, slug, category, tags, year, role, cover, coverWide, coverTile, coverAlt, coverPosition, coverFit, coverBg, summary, featured } = p
+  return { title, slug, category, tags, year, role, cover, coverWide, coverTile, coverAlt, coverPosition, coverFit, coverBg, summary, featured }
 }
 
 /** Previous and next project in site order, wrapping around. */

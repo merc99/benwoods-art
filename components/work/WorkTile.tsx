@@ -8,7 +8,8 @@ import { Bezel, bezelRadius } from '@/components/ui/Bezel'
 /**
  * A work tile: cover on top (no overlay), title, year and mono tags below.
  * The grid sets one `aspect` per row so rows scan cleanly. The cover sits in the site's card frame (Bezel).
- * `wide` uses the project's `coverWide` image when it has one (full-width Home tile).
+ * `wide` uses the project's `coverWide` image when it has one (full-width Home tile); other cards use
+ * `coverTile` when set.
  */
 export function WorkTile({
   project,
@@ -27,7 +28,7 @@ export function WorkTile({
   wide?: boolean
   className?: string
 }) {
-  const src = (wide && project.coverWide) || project.cover
+  const src = (wide && project.coverWide) || project.coverTile || project.cover
   const image = (
     <Bezel size={wide ? 'wide' : 'half'}>
     <div
