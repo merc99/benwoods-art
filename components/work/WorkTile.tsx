@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { cn } from '@/lib/cn'
 import type { ProjectCard } from '@/lib/work'
+import { TileMeta } from './TileMeta'
 
 /**
  * A work tile: cover on top (no overlay), title, year and mono tags below.
@@ -56,21 +57,7 @@ export function WorkTile({
     <article className={cn('flex flex-col', className)}>
       <Link href={`/work/${project.slug}`} aria-labelledby={`${project.slug}-title`} className="group flex h-full flex-col">
         {image}
-        <div className="mt-4 flex items-baseline justify-between gap-4">
-          <h3 id={`${project.slug}-title`} className="t-title text-[clamp(1.375rem,1.15rem+0.8vw,1.875rem)]">
-            <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-500 ease-out group-hover:bg-[length:100%_1px]">
-              {project.title}
-            </span>
-          </h3>
-          <span className="t-label shrink-0 text-fg-2">
-            {project.year}
-            <span aria-hidden className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none">
-              ↗
-            </span>
-          </span>
-        </div>
-        {showSummary && <p className="mt-2 max-w-[48ch] text-fg-2">{project.summary}</p>}
-        <p className="t-label mt-2 text-fg-2">{project.tags.join(' · ')}</p>
+        <TileMeta project={project} titleId={`${project.slug}-title`} showSummary={showSummary} />
       </Link>
     </article>
   )

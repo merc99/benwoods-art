@@ -158,6 +158,21 @@ body::after {
 }
 
 
+
+/* At least a 44px tap area without changing how anything looks: an invisible box centered on the element. */
+@utility hit-44 {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}
+
 /* ---------- Type roles ---------- */
 @utility t-display {
   font-family: var(--font-display);

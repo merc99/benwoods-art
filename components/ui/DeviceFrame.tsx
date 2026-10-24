@@ -16,7 +16,6 @@ export function DeviceFrame({
   priority = false,
   sizes,
   className,
-  children,
 }: {
   src: string
   alt: string
@@ -27,8 +26,6 @@ export function DeviceFrame({
   priority?: boolean
   sizes: string
   className?: string
-  /** Overlays that ride along with the frame (e.g. a live chip). */
-  children?: React.ReactNode
 }) {
   const radius = size === 'half' ? 'rounded-[16px]' : 'rounded-[16px] md:rounded-[22px]'
   const screen = aspect ?? (size === 'half' ? 'aspect-[16/10] rounded-[10px]' : 'aspect-[16/10] rounded-[10px] md:aspect-[16/9] md:rounded-[14px]')
@@ -63,7 +60,6 @@ export function DeviceFrame({
           <Image src={src} alt={alt} fill priority={priority} quality={90} sizes={sizes} className="object-cover object-top" />
         </div>
       </div>
-      {children}
     </div>
   )
 }

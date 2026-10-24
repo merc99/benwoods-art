@@ -121,8 +121,9 @@ export function toCard(p: Project): ProjectCard {
 }
 
 /** Previous and next project in site order, wrapping around. */
-export function getAdjacent(slug: string): { prev: Project; next: Project } {
+/** Neighbors in Work order (flagships first). No wraparound: the first has no prev, the last no next. */
+export function getAdjacent(slug: string): { prev: Project | null; next: Project | null } {
   const all = getProjects()
   const i = all.findIndex((p) => p.slug === slug)
-  return { prev: all[(i - 1 + all.length) % all.length], next: all[(i + 1) % all.length] }
+  return { prev: i > 0 ? all[i - 1] : null, next: i >= 0 && i < all.length - 1 ? all[i + 1] : null }
 }

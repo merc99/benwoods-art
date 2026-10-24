@@ -19,7 +19,7 @@ export function SpecTable({ project }: { project: Project }) {
     [
       'Live',
       project.liveUrl ? (
-        <a href={project.liveUrl} {...ext} className="underline decoration-rule-strong underline-offset-4 hover:decoration-fg">
+        <a href={project.liveUrl} {...ext} className="hit-44 underline decoration-rule-strong underline-offset-4 hover:decoration-fg">
           {host(project.liveUrl)} ↗
         </a>
       ) : null,
@@ -27,7 +27,7 @@ export function SpecTable({ project }: { project: Project }) {
     [
       'GitHub',
       project.repoUrl ? (
-        <a href={project.repoUrl} {...ext} className="underline decoration-rule-strong underline-offset-4 hover:decoration-fg">
+        <a href={project.repoUrl} {...ext} className="hit-44 underline decoration-rule-strong underline-offset-4 hover:decoration-fg">
           {project.repoUrl.replace('https://github.com/', '')} ↗
         </a>
       ) : null,

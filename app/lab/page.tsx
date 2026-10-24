@@ -4,11 +4,13 @@ import { DemoStage } from '@/components/lab/DemoStage'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { lab } from '@/lib/lab'
 import { cn } from '@/lib/cn'
-import { PixelTiles } from '@/components/fx/PixelTiles'
+import { PageIntro } from '@/components/ui/PageIntro'
 
 export const metadata: Metadata = {
   title: 'Lab',
   description: 'Live interaction demos from Ben Woods’ recent builds: Check-in, 100K Club, MMO Nodes, Mega Roll and Rat Mats.',
+  alternates: { canonical: '/lab' },
+  openGraph: { type: 'website', siteName: 'Ben Woods', url: '/lab', title: 'Lab — Ben Woods', description: 'Live interaction demos from Ben Woods’ recent builds: Check-in, 100K Club, MMO Nodes, Mega Roll and Rat Mats.' },
 }
 
 const live = [
@@ -26,17 +28,18 @@ export default function LabPage() {
   let n = 0
   return (
     <>
-      <section className="relative isolate overflow-hidden">
-        <PixelTiles seed={31} />
-        <div className="shell relative pt-10 pb-12 lg:pt-16 lg:pb-16">
-          <div className="t-label flex justify-between text-fg-3">
-            <span>(Index) Lab</span>
-            <span>{String(count).padStart(2, '0')} live demos</span>
-          </div>
-          <h1 className="t-display mt-6 text-[clamp(4.5rem,1rem+16vw,15rem)]">Lab</h1>
-          <p className="t-lede mt-6 max-w-[36ch] text-fg-2">
-            Interactive pieces from recent projects.
-          </p>
+      <PageIntro
+        label="(Index) Lab"
+        meta={`${String(count).padStart(2, '0')} live demos`}
+        title="Lab"
+        lede="Interactive pieces from recent projects."
+        seed={31}
+        bordered={false}
+        revealLede={false}
+        padding="pt-10 pb-12 lg:pt-16 lg:pb-16"
+        titleSize="text-[clamp(4.5rem,1rem+16vw,15rem)]"
+        ledeClass="mt-6 max-w-[36ch]"
+      >
 
           <ul className="mt-12 grid border-t border-rule-strong sm:grid-cols-2 lg:grid-cols-4">
             {live.map((l) => (
@@ -58,8 +61,7 @@ export default function LabPage() {
               </li>
             ))}
           </ul>
-        </div>
-      </section>
+      </PageIntro>
 
       {lab.map((g, gi) => (
         <section key={g.slug} aria-labelledby={`lab-${g.slug}`} className="border-t border-rule">

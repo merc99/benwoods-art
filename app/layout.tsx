@@ -10,8 +10,8 @@ import { site } from '@/lib/site'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' })
-const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-space-grotesk', display: 'swap' })
-const mono = Roboto_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-roboto-mono', display: 'swap' })
+const grotesk = Space_Grotesk({ subsets: ['latin'], weight: ['600', '700'], variable: '--font-space-grotesk', display: 'swap' })
+const mono = Roboto_Mono({ subsets: ['latin'], weight: ['500'], variable: '--font-roboto-mono', display: 'swap' })
 // Munro by Ten by Twenty (Font Squirrel lists it under the SIL Open Font License 1.1). See app/fonts/README.md.
 const munro = localFont({ src: './fonts/Munro.woff2', variable: '--font-munro', display: 'swap', weight: '400' })
 
@@ -19,7 +19,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: 'Ben Woods — Designer and builder', template: '%s — Ben Woods' },
   description: site.description,
-  openGraph: { type: 'website', siteName: 'Ben Woods', url: site.url, description: site.description },
+  alternates: { canonical: '/' },
+  openGraph: { type: 'website', siteName: 'Ben Woods', url: '/', description: site.description },
   twitter: { card: 'summary_large_image', creator: '@benwoods__' },
 }
 

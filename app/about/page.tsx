@@ -12,6 +12,8 @@ import { latestPlaylist } from '@/lib/playlists'
 export const metadata: Metadata = {
   title: 'About',
   description: 'Ben Woods is a designer in Nashville working across product design, front end, brand and print.',
+  alternates: { canonical: '/about' },
+  openGraph: { type: 'website', siteName: 'Ben Woods', url: '/about', title: 'About — Ben Woods', description: 'Ben Woods is a designer in Nashville working across product design, front end, brand and print.' },
 }
 
 export default function AboutPage() {

@@ -102,7 +102,7 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
                   aria-pressed={filter === f}
                   onClick={() => set('filter', f, 'all')}
                   className={cn(
-                    't-label relative z-[1] inline-flex h-9 shrink-0 items-center gap-2 rounded-full px-3.5 transition-colors duration-300',
+                    'hit-44 t-label z-[1] inline-flex h-9 shrink-0 items-center gap-2 rounded-full px-3.5 transition-colors duration-300',
                     filter === f ? 'text-bg' : 'text-fg-2 hover:text-fg',
                   )}
                 >
@@ -125,7 +125,7 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
                 aria-pressed={view === v}
                 onClick={() => set('view', v, 'grid')}
                 className={cn(
-                  't-label inline-flex h-9 items-center gap-2 rounded-full px-3 transition-colors duration-300',
+                  'hit-44 t-label inline-flex h-9 items-center gap-2 rounded-full px-3 transition-colors duration-300',
                   view === v ? 'bg-fg text-bg' : 'text-fg-2 hover:text-fg',
                 )}
               >

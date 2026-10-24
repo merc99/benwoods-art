@@ -12,7 +12,7 @@ export function Footer() {
           <h2 className="t-display mt-4 max-w-[14ch] text-[clamp(3rem,1.5rem+7vw,8.5rem)]">Let&apos;s build something.</h2>
           <a
             href={`mailto:${site.email}`}
-            className="t-lede mt-8 inline-flex items-center gap-3 border-b border-rule-strong pb-1 text-fg transition-colors hover:border-fg"
+            className="hit-44 t-lede mt-8 inline-flex items-center gap-3 border-b border-rule-strong pb-1 text-fg transition-colors hover:border-fg"
           >
             {site.email} <span aria-hidden>↗</span>
           </a>
@@ -26,7 +26,7 @@ export function Footer() {
             <ul className="mt-3">
               {nav.map((n) => (
                 <li key={n.href}>
-                  <Link href={n.href} className="inline-flex h-9 items-center text-fg-2 hover:text-fg">
+                  <Link href={n.href} className="hit-44 inline-flex h-9 items-center text-fg-2 hover:text-fg">
                     {n.label}
                   </Link>
                 </li>
@@ -41,7 +41,7 @@ export function Footer() {
                   <a
                     href={l.href}
                     {...(l.href.startsWith('http') && { target: '_blank', rel: 'noreferrer' })}
-                    className="inline-flex h-9 items-center gap-1.5 text-fg-2 hover:text-fg"
+                    className="hit-44 inline-flex h-9 items-center gap-1.5 text-fg-2 hover:text-fg"
                   >
                     {l.label} <span aria-hidden className="text-fg-3">↗</span>
                   </a>

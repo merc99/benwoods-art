@@ -283,11 +283,21 @@ export function PixelTiles({
       draw(performance.now(), 0)
     }
 
+    // the idle fade is slow, so it only needs ~20fps; click flashes draw every frame until they finish
+    const IDLE_MS = 50
+    let lastDraw = 0
+    let popping = false
     const frame = (now: number) => {
+      if (!popping && now - lastDraw < IDLE_MS) {
+        raf = visible && !reduce ? requestAnimationFrame(frame) : 0
+        return
+      }
       const dt = last ? Math.min(64, now - last) : 16
       last = now
+      lastDraw = now
       const lit = draw(now, dt)
-      // keep running while the idle wave plays (on screen) or while light is still fading
+      popping = lit
+      // keep running while the idle wave plays (on screen) or while a flash is still fading
       raf = visible && (!reduce || lit) ? requestAnimationFrame(frame) : 0
       if (!raf) last = 0
     }
@@ -347,6 +357,7 @@ export function PixelTiles({
         const d = Math.hypot(t.cx - hit.cx, t.cy - hit.cy)
         if (t === hit) {
           t.popAt = now
+          popping = true
           t.popK = 1
         } else if (d < reach) {
           t.popAt = now + (reduce ? 0 : 90)

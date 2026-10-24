@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { code, references, tools, type ResourceLink } from '@/lib/resources'
-import { PixelTiles } from '@/components/fx/PixelTiles'
+import { PageIntro } from '@/components/ui/PageIntro'
 
 export const metadata: Metadata = {
   title: 'Resources',
   description: 'The tools Ben Woods uses, a curated list of UI references, and code.',
+  alternates: { canonical: '/resources' },
+  openGraph: { type: 'website', siteName: 'Ben Woods', url: '/resources', title: 'Resources — Ben Woods', description: 'The tools Ben Woods uses, a curated list of UI references, and code.' },
 }
 
 function LinkList({ items, numbered = true }: { items: ResourceLink[]; numbered?: boolean }) {
@@ -39,14 +41,17 @@ export default function ResourcesPage() {
   const refCount = references.reduce((n, g) => n + g.items.length, 0)
   return (
     <>
-      <section className="relative isolate overflow-hidden">
-        <PixelTiles seed={43} />
-        <div className="shell relative pt-10 pb-12 lg:pt-16 lg:pb-16">
-          <p className="t-label text-fg-3">(Index) Resources</p>
-          <h1 className="t-display mt-6 text-[clamp(3.5rem,0.5rem+12vw,12rem)]">Resources</h1>
-          <p className="t-lede mt-6 max-w-[34ch] text-fg-2">What I build with, where I look for proven patterns, and the code.</p>
-        </div>
-      </section>
+      <PageIntro
+        label="(Index) Resources"
+        title="Resources"
+        lede="What I build with, where I look for proven patterns, and the code."
+        seed={43}
+        bordered={false}
+        revealLede={false}
+        padding="pt-10 pb-12 lg:pt-16 lg:pb-16"
+        titleSize="text-[clamp(3.5rem,0.5rem+12vw,12rem)]"
+        ledeClass="mt-6 max-w-[34ch]"
+      />
 
       <section aria-labelledby="tools" className="border-t border-rule">
         <div className="shell py-14 lg:py-20">

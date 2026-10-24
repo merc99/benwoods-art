@@ -27,7 +27,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: p.title,
     description: p.summary,
-    openGraph: { title: `${p.title} — Ben Woods`, description: p.summary },
+    alternates: { canonical: `/work/${p.slug}` },
+    openGraph: { type: 'article', siteName: 'Ben Woods', url: `/work/${p.slug}`, title: `${p.title} — Ben Woods`, description: p.summary },
   }
 }
 
@@ -102,21 +103,24 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             <DeviceFrame src={p.coverScreen} alt={p.coverScreenAlt || p.coverAlt} priority sizes="(min-width: 1520px) 1280px, 92vw" />
           </div>
         </div>
-      ) : p.cover && cover && (
-        <div className="shell">
-          <div className={cn('overflow-hidden bg-sunken', portrait && 'flex justify-center py-[var(--gutter)]')}>
-            <Image
-              src={p.cover}
-              alt={p.coverAlt}
-              width={cover.width}
-              height={cover.height}
-              priority
-              sizes={portrait ? '(min-width: 768px) 60vw, 100vw' : '(min-width: 1520px) 1440px, 100vw'}
-              quality={88}
-              className={cn('h-auto', portrait ? 'max-h-[82svh] w-auto max-w-full' : 'w-full')}
-            />
+      ) : (
+        p.cover &&
+        cover && (
+          <div className="shell">
+            <div className={cn('overflow-hidden bg-sunken', portrait && 'flex justify-center py-[var(--gutter)]')}>
+              <Image
+                src={p.cover}
+                alt={p.coverAlt}
+                width={cover.width}
+                height={cover.height}
+                priority
+                sizes={portrait ? '(min-width: 768px) 60vw, 100vw' : '(min-width: 1520px) 1440px, 100vw'}
+                quality={88}
+                className={cn('h-auto', portrait ? 'max-h-[82svh] w-auto max-w-full' : 'w-full')}
+              />
+            </div>
           </div>
-        </div>
+        )
       )}
 
       {/* spec + story */}
@@ -206,38 +210,43 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           {[
             { label: 'Previous', project: prev, arrow: '←' },
             { label: 'Next', project: next, arrow: '→' },
-          ].map(({ label, project, arrow }, i) => (
-            <Link
-              key={label}
-              href={`/work/${project.slug}`}
-              className={cn(
-                'group flex items-center gap-5 py-10 lg:py-14',
-                i === 1 && 'border-t border-rule md:flex-row-reverse md:border-t-0 md:border-l md:pl-[var(--gutter)] md:text-right',
-                i === 0 && 'md:pr-[var(--gutter)]',
-              )}
-            >
-              {project.cover && (
-                <span className="relative hidden aspect-[4/3] w-28 shrink-0 overflow-hidden bg-sunken sm:block lg:w-40">
-                  <Image
-                    src={project.cover}
-                    alt=""
-                    fill
-                    sizes="160px"
-                    style={{ objectPosition: project.coverPosition }}
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
+          ].map(({ label, project, arrow }, i) =>
+            !project ? (
+              // keeps Next in the right column when there's no Previous
+              <div key={label} aria-hidden className="hidden md:block" />
+            ) : (
+              <Link
+                key={label}
+                href={`/work/${project.slug}`}
+                className={cn(
+                  'group flex items-center gap-5 py-10 lg:py-14',
+                  i === 1 && 'border-t border-rule md:flex-row-reverse md:border-t-0 md:border-l md:pl-[var(--gutter)] md:text-right',
+                  i === 0 && 'md:pr-[var(--gutter)]',
+                )}
+              >
+                {project.cover && (
+                  <span className="relative hidden aspect-[4/3] w-28 shrink-0 overflow-hidden bg-sunken sm:block lg:w-40">
+                    <Image
+                      src={project.cover}
+                      alt=""
+                      fill
+                      sizes="160px"
+                      style={{ objectPosition: project.coverPosition }}
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                  </span>
+                )}
+                <span className="min-w-0">
+                  <span className="t-label block text-fg-3">
+                    {i === 0 && <span aria-hidden>{arrow} </span>}
+                    {label}
+                    {i === 1 && <span aria-hidden> {arrow}</span>}
+                  </span>
+                  <span className="t-heading mt-2 block text-[clamp(1.75rem,1.1rem+2.6vw,3.5rem)]">{project.title}</span>
                 </span>
-              )}
-              <span className="min-w-0">
-                <span className="t-label block text-fg-3">
-                  {i === 0 && <span aria-hidden>{arrow} </span>}
-                  {label}
-                  {i === 1 && <span aria-hidden> {arrow}</span>}
-                </span>
-                <span className="t-heading mt-2 block text-[clamp(1.75rem,1.1rem+2.6vw,3.5rem)]">{project.title}</span>
-              </span>
-            </Link>
-          ))}
+              </Link>
+            ),
+          )}
         </div>
       </nav>
     </article>

@@ -56,7 +56,7 @@ export function PlaylistGrid({ playlists }: { playlists: Playlist[] }) {
               href={p.url}
               target="_blank"
               rel="noreferrer"
-              className="t-label mt-1 inline-flex h-9 items-center gap-1.5 text-fg-2 underline decoration-rule-strong underline-offset-4 hover:text-fg hover:decoration-fg"
+              className="hit-44 t-label mt-1 inline-flex h-9 items-center gap-1.5 text-fg-2 underline decoration-rule-strong underline-offset-4 hover:text-fg hover:decoration-fg"
             >
               Listen on Spotify <span aria-hidden>↗</span>
             </a>
