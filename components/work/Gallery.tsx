@@ -84,7 +84,7 @@ export async function Gallery({ items, title, variant }: { items: GalleryItem[];
                 )
               ) : null}
               {item.caption && (
-                <figcaption className="t-label mt-3 flex gap-3 text-fg-2">
+                <figcaption className="t-label relative mt-3 flex gap-3 text-fg-2">
                   {!playful && <span className="shrink-0">Fig. {String(fig).padStart(2, '0')}</span>}
                   <span className={cn(!item.group && 'text-[0.875rem] tracking-normal normal-case [font-family:var(--font-sans)]', 'text-fg-2')}>
                     {item.caption}

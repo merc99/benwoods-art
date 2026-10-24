@@ -98,12 +98,12 @@ const jobs = {
     await save(await p.screenshot(), 'mmo-nodes', 'cover-mark')
   },
 
-  // Merc Eats: the wizard drawing on its own kraft paper, cropped to 16:10 around the drawing.
+  // Merc Eats: the portrait on its own kraft paper, cropped to 16:10 from the bottom (he's drawn cut off there).
   async 'merc-eats'() {
-    const src = 'assets/merceats/fasdfasdgasdgasd.png'
+    const src = 'assets/merceats/sfgjfdgjdfgjdfgj.png'
     const m = await sharp(src).metadata()
     const h = Math.round((m.width * 10) / 16)
-    const buf = await sharp(src).extract({ left: 0, top: Math.round((m.height - h) / 2), width: m.width, height: h }).png().toBuffer()
+    const buf = await sharp(src).extract({ left: 0, top: m.height - h, width: m.width, height: h }).png().toBuffer()
     await save(buf, 'merc-eats', 'cover')
   },
 
