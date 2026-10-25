@@ -5,8 +5,11 @@
 //   - Drag the D20 to spin it on any axis; flick and it keeps spinning with inertia, then settles on a face.
 //   - Tap the D20 (or focus it and press Space/Enter) to roll: a quick tumble that settles on a face.
 //   - When it settles, the face toward you shows its number in glyphs, then fades. A natural 20 flourishes.
-// Each frame the die is flat-shaded into a tiny offscreen raster (one pixel per glyph cell); each cell then
-// draws the glyph for its brightness from a pre-rendered atlas. The raster also hit-tests the die.
+// The die is drawn as clean flat linework over the glyph field: a dark body that dims the waves behind it,
+// faint back edges seen through it, brighter front edges and vertex dots, and the number set in type. (The
+// older look, the die shaded in glyphs like the field, is still there at ?d20=glyph.)
+// Each frame the die is also filled into a tiny offscreen raster (one pixel per glyph cell), which hit-tests
+// it; each background cell draws the glyph for its brightness from a pre-rendered atlas.
 // Motion budget: the one scoped loop on About. No pointer tracking beyond direct manipulation. Pauses
 // offscreen and on hidden tabs. Reduced motion: still frame, no waves, ripples or inertia; a roll jumps
 // straight to its result.
@@ -43,6 +46,22 @@ const norm = (v: V3): V3 => {
   const m = Math.hypot(v[0], v[1], v[2]) || 1
   return [v[0] / m, v[1] / m, v[2] / m]
 }
+/** The 30 edges, each with the two faces that meet there. */
+const EDGES: { a: number; b: number; f: [number, number] }[] = (() => {
+  const out: { a: number; b: number; f: [number, number] }[] = []
+  const seen = new Map<string, number>()
+  FACES.forEach((f, fi) =>
+    [[f[0], f[1]], [f[1], f[2]], [f[0], f[2]]].forEach(([a, b]) => {
+      const key = a < b ? `${a}-${b}` : `${b}-${a}`
+      const at = seen.get(key)
+      if (at === undefined) {
+        seen.set(key, out.length)
+        out.push({ a, b, f: [fi, -1] })
+      } else out[at].f[1] = fi
+    }),
+  )
+  return out
+})()
 /** Outward unit normal of each face, in model space. */
 const NORMALS: V3[] = FACES.map((f) => norm([0, 1, 2].map((c) => (VERTS[f[0]][c] + VERTS[f[1]][c] + VERTS[f[2]][c]) / 3) as V3))
 /** Numbers like a real die: opposite faces sum to 21. */
@@ -132,6 +151,7 @@ export function GlyphField({ className }: { className?: string }) {
     const ctx = c.getContext('2d')
     if (!ctx) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const lineStyle = new URLSearchParams(location.search).get('d20') !== 'glyph'
 
     const raster = document.createElement('canvas')
     const rctx = raster.getContext('2d', { willReadFrequently: true })!
@@ -413,7 +433,7 @@ export function GlyphField({ className }: { className?: string }) {
         const age = t - shown.t0
         numFade = reduce ? 1 : age < 180 ? age / 180 : age < NUMBER_MS - 500 ? 1 : Math.max(0, (NUMBER_MS - age) / 500)
         if (!reduce && age > NUMBER_MS) shown = null
-        else {
+        else if (!lineStyle) {
           // printed on the face toward the viewer, like a real die
           const top = faces[faces.length - 1]
           fctx.clearRect(0, 0, cols, rows)
@@ -461,7 +481,8 @@ export function GlyphField({ className }: { className?: string }) {
             Math.cos(y * 0.13 - ts * 2.4 + Math.sin(x * 0.07 - ts) * 1.4)
           const k = (y * cols + x) * 4
           // the wave only moves the background glyphs; the die's cells stay on the grid so it reads crisp
-          const onDie = img[k + 3] > 40
+          // (in the line style the field runs on under the die; its dark body dims it there)
+          const onDie = !lineStyle && img[k + 3] > 40
           const dx = reduce || onDie ? 0 : Math.cos(flow * 3 + ts) * 0.28
           const dy = reduce || onDie ? 0 : Math.sin(flow * 3 - ts) * 0.28
 
@@ -519,6 +540,96 @@ export function GlyphField({ className }: { className?: string }) {
           const size = step * 2 * (1 + (isNumber ? 0 : ring) * 0.9)
           ctx.globalAlpha = alpha
           ctx.drawImage(atlas, level * s, band * s, s, s, (x + 0.5 + dx) * step - size / 2, (y + 0.5 + dy) * step - size / 2, size, size)
+        }
+      }
+
+      if (lineStyle) {
+        // the die in flat linework, in device px (raster cell units times one cell)
+        const X = (v: number) => (ox + P[v][0] * scale) * step
+        const Y = (v: number) => (oy + P[v][1] * scale) * step
+        const tri = (f: number[]) => {
+          ctx.moveTo(X(f[0]), Y(f[0]))
+          ctx.lineTo(X(f[1]), Y(f[1]))
+          ctx.lineTo(X(f[2]), Y(f[2]))
+          ctx.closePath()
+        }
+        const facing = new Set(faces.map((x) => x.i))
+        ctx.lineCap = 'round'
+        ctx.lineJoin = 'round'
+        // body: dims the glyph waves behind the die so its lines read
+        ctx.globalAlpha = 0.88
+        ctx.fillStyle = '#0f0f0e'
+        ctx.beginPath()
+        for (const { f } of faces) tri(f)
+        ctx.fill()
+        // back edges, faint, seen through the body
+        ctx.strokeStyle = '#f4ecdc'
+        ctx.lineWidth = dpr
+        ctx.globalAlpha = 0.13
+        ctx.beginPath()
+        for (const e of EDGES)
+          if (!facing.has(e.f[0]) && !facing.has(e.f[1])) {
+            ctx.moveTo(X(e.a), Y(e.a))
+            ctx.lineTo(X(e.b), Y(e.b))
+          }
+        ctx.stroke()
+        // a whisper of light on each front face, so the facets turn as it spins
+        ctx.fillStyle = '#f4ecdc'
+        for (const { f, n } of faces) {
+          const d = Math.max(0, n[0] * light[0] + n[1] * light[1] + n[2] * light[2])
+          ctx.globalAlpha = 0.015 + Math.pow(d, 1.6) * 0.08
+          ctx.beginPath()
+          tri(f)
+          ctx.fill()
+        }
+        const top = faces[faces.length - 1]
+        if (shown && numFade > 0 && top) {
+          ctx.fillStyle = '#ff5a2e'
+          ctx.globalAlpha = numFade * 0.16
+          ctx.beginPath()
+          tri(top.f)
+          ctx.fill()
+        }
+        // front edges, then the outline a touch stronger
+        ctx.lineWidth = 1.1 * dpr
+        ctx.globalAlpha = 0.6
+        ctx.beginPath()
+        for (const e of EDGES)
+          if (facing.has(e.f[0]) && facing.has(e.f[1])) {
+            ctx.moveTo(X(e.a), Y(e.a))
+            ctx.lineTo(X(e.b), Y(e.b))
+          }
+        ctx.stroke()
+        ctx.lineWidth = 1.4 * dpr
+        ctx.globalAlpha = 0.85
+        ctx.beginPath()
+        for (const e of EDGES)
+          if (facing.has(e.f[0]) !== facing.has(e.f[1])) {
+            ctx.moveTo(X(e.a), Y(e.a))
+            ctx.lineTo(X(e.b), Y(e.b))
+          }
+        ctx.stroke()
+        // vertex dots in the signal color, where the front edges meet
+        const front = new Set(faces.flatMap((x) => x.f))
+        ctx.fillStyle = '#ff5a2e'
+        ctx.globalAlpha = 0.9
+        ctx.beginPath()
+        for (const v of front) {
+          ctx.moveTo(X(v) + 2 * dpr, Y(v))
+          ctx.arc(X(v), Y(v), 2 * dpr, 0, Math.PI * 2)
+        }
+        ctx.fill()
+        // the number, set in type on the face toward you
+        if (shown && numFade > 0 && top) {
+          const cx = (X(top.f[0]) + X(top.f[1]) + X(top.f[2])) / 3
+          const cy = (Y(top.f[0]) + Y(top.f[1]) + Y(top.f[2])) / 3
+          const size = scale * step * (shown.n > 9 ? 0.82 : 0.98)
+          ctx.font = `600 ${Math.round(size)}px "Space Grotesk", ui-sans-serif, sans-serif`
+          ctx.textAlign = 'center'
+          ctx.textBaseline = 'middle'
+          ctx.fillStyle = nat20 ? '#ffb02e' : '#f4ecdc'
+          ctx.globalAlpha = numFade
+          ctx.fillText(String(shown.n), cx, cy + size * 0.04)
         }
       }
       ctx.globalAlpha = 1
@@ -596,7 +707,7 @@ export function GlyphField({ className }: { className?: string }) {
       <canvas
         ref={canvas}
         role="img"
-        aria-label="A D20 drawn in glyphs, turning slowly inside a field of drifting characters. Click the field to send a ripple; drag the D20 to spin it."
+        aria-label="A D20 turning slowly inside a field of drifting characters. Click the field to send a ripple; drag the D20 to spin it."
         className="block size-full cursor-pointer touch-pan-y"
       />
       {/* keyboard target over the die; pointer clicks pass through to the canvas */}
