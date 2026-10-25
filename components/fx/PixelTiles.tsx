@@ -73,7 +73,10 @@ type Tile = {
   m: number
   phase: number
   energy: number
+  /** behind body text: the glows (hover, warmth, pops) are muted to this */
   clear: number
+  /** ...and the faint resting pattern to this, so text sits on a quiet texture, not a blank band */
+  dim: number
   /** click pop: when it starts (ms, page clock) and how strong (1 for the clicked tile, less for neighbors) */
   popAt: number
   popK: number
@@ -234,7 +237,7 @@ export function PixelTiles({
         if (tile.energy < 0.004) tile.energy = 0
         else lit = true
 
-        ctx.globalAlpha = baseAlpha * idle(tile, t) * tile.clear
+        ctx.globalAlpha = baseAlpha * idle(tile, t) * tile.dim
         ctx.drawImage(baseSprites[tile.m], tile.dx - padD, tile.dy - padD)
         const ambient = warmK || bloomK ? Math.max(warm(tile, t) * warmK, bloomAt(tile, now) * bloomK) : 0
         const glow = Math.max(tile.energy * tile.energy, ambient * ambient * 0.6 + ambient * 0.4)
@@ -318,7 +321,7 @@ export function PixelTiles({
           const dy = row * stepD
           const x = dx / dpr
           const y = dy / dpr
-          tiles.push({ x, y, dx, dy, cx: x + tileSize / 2, cy: y + tileSize / 2, m, phase, energy: prev.get(`${dx},${dy}`) ?? 0, clear: 1, popAt: -1, popK: 0 })
+          tiles.push({ x, y, dx, dy, cx: x + tileSize / 2, cy: y + tileSize / 2, m, phase, energy: prev.get(`${dx},${dy}`) ?? 0, clear: 1, dim: 1, popAt: -1, popK: 0 })
         }
       }
       measure()
@@ -353,6 +356,7 @@ export function PixelTiles({
       for (const tile of tiles) {
         const hit = rects.some((r) => tile.x < r.r && tile.x + tileSize > r.l && tile.y < r.b && tile.y + tileSize > r.t)
         tile.clear = hit ? 0.16 : 1
+        tile.dim = hit ? 0.55 : 1
       }
       draw(performance.now(), 0)
     }
