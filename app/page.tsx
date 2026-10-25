@@ -23,15 +23,17 @@ export default function Home() {
 
       {/* 01 Featured builds: a full-bleed ink section in both themes */}
       <section id="selected" data-surface="ink" aria-labelledby="featured-title" className="relative isolate">
-        <div className="shell relative pt-12 pb-20 lg:pt-20 lg:pb-28">
-          <SectionHeader index="01" id="featured-title" title="Featured builds" meta="Designed and built" href="/work" hrefLabel="All work" />
+        <div className="shell relative pb-20 lg:pb-28">
+          {/* the hero ends on this rule; the header below it takes the place of a separate Selected work line */}
+          <div className="border-t border-rule pt-8 lg:pt-10">
+            <SectionHeader down index="01" id="featured-title" title="Featured builds" meta="Designed and built" href="/work" hrefLabel="All work" />
+          </div>
           <div className={`mt-10 lg:mt-12 ${grid}`}>
             <div className="md:col-span-12">
               <FeaturedShowcase
                 project={checkin}
                 screenshot="/work/checkin/feed-dark-hq.webp"
                 screenshotAlt="Check-in’s desktop feed in dark mode, with a crew banner, posts and today’s check-ins."
-                
               />
             </div>
             <div className="md:col-span-6">

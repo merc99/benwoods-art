@@ -10,6 +10,7 @@ export function SectionHeader({
   href,
   hrefLabel,
   id,
+  down = false,
   className,
 }: {
   index: string
@@ -18,11 +19,13 @@ export function SectionHeader({
   href?: string
   hrefLabel?: string
   id?: string
+  /** A small down arrow after the index: the first section under a hero, which it continues from. */
+  down?: boolean
   className?: string
 }) {
   return (
     <div className={cn('rule-dash-b grid grid-cols-1 items-end gap-x-[var(--gutter)] pb-4 lg:grid-cols-12', className)}>
-      <span className="t-label pb-2 text-fg-3 lg:col-span-3 lg:pb-1">({index})</span>
+      <span className="t-label pb-2 text-fg-3 lg:col-span-3 lg:pb-1">({index}){down && <span aria-hidden className="ml-2">↓</span>}</span>
       <RevealText as="h2" id={id} text={title} className="t-heading text-[clamp(1.75rem,1.2rem+2.4vw,3.25rem)] lg:col-span-6" />
       <div className="t-label flex items-center justify-between gap-4 pt-3 text-fg-3 lg:col-span-3 lg:justify-end lg:pt-0 lg:pb-1">
         {meta && <span>{meta}</span>}

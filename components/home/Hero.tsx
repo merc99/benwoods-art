@@ -34,12 +34,6 @@ export function Hero() {
           <p className={`${styles.fade} t-lede col-span-4 max-w-[30ch] text-fg lg:col-span-6 lg:col-start-4`}>{hero.lede}</p>
         </div>
 
-        <div className="t-label flex items-center justify-between border-t border-rule py-3 text-fg-3">
-          <a href="#selected" className="inline-flex h-11 items-center gap-2 hover:text-fg">
-            Selected work <span aria-hidden>↓</span>
-          </a>
-          <span>(01—04)</span>
-        </div>
       </div>
     </section>
   )
