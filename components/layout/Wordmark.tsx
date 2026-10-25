@@ -38,15 +38,24 @@ export function Wordmark({ className, onNavigate, compactOnHero = false }: { cla
     <Link
       href="/"
       aria-label="Ben Woods"
-      onClick={onNavigate}
+      onClick={(e) => {
+        onNavigate?.()
+        // already on Home: go back up to the landing instead of doing nothing
+        if (pathname === '/') {
+          e.preventDefault()
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+      }}
       onPointerEnter={(e) => e.pointerType === 'mouse' && setHover((h) => h + 1)}
       // keyboard focus only (a click or a page change also focuses the link)
       onFocus={(e) => e.currentTarget.matches(':focus-visible') && setHover((h) => h + 1)}
       className={cn('relative inline-flex h-11 items-center font-pixel leading-none whitespace-pre', className)}
     >
       {compact ? (
+        // the b decodes like the full name does (on load and hover); the dot stays put in the signal color
         <span aria-hidden="true" className="animate-[wm-in_300ms_ease-out_both] motion-reduce:animate-none">
-          b<span className="text-signal">.</span>
+          <DecodeText text="b" srText={false} run={`b-${hover}`} delay={hover ? 0 : undefined} />
+          <span className="text-signal">.</span>
         </span>
       ) : (
         // replays on page change, on hover/focus, and when it opens out from "b." (that one without the load delay)

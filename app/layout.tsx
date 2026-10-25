@@ -5,6 +5,7 @@ import { ThemeProvider } from 'next-themes'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { ImageFade } from '@/components/fx/ImageFade'
+import { MailCopy } from '@/components/fx/MailCopy'
 import { CommandPalette } from '@/components/layout/CommandPalette'
 import { getProjects } from '@/lib/work'
 import { site } from '@/lib/site'
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
           <Footer />
           <ImageFade />
+          <MailCopy />
           <CommandPalette projects={getProjects().map(({ title, slug, category }) => ({ title, slug, category }))} />
         </ThemeProvider>
       </body>

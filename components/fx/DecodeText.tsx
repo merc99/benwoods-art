@@ -11,7 +11,7 @@ const GLYPHS = 'abcdefghijklmnopqrstuvwxyz0123456789'
 const useIso = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
 /** One timing for every decode on the site. */
-export const DECODE = { delay: 420, duration: 1100, window: 260 }
+export const DECODE = { delay: 380, duration: 850, window: 210 }
 
 export function DecodeText({
   text,
@@ -45,7 +45,7 @@ export function DecodeText({
     let raf = 0
     let lastSwap = 0
     const tick = (t: number) => {
-      const swap = t - lastSwap > 70
+      const swap = t - lastSwap > 60
       if (swap) lastSwap = t
       let done = true
       for (let i = 0; i < n; i++) {
