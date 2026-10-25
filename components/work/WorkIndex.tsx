@@ -77,6 +77,32 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
     return () => window.removeEventListener('resize', measure)
   }, [filter])
 
+  // the filter row scrolls sideways on narrow screens: fade whichever edge has more to see, instead of a hard cut
+  const strip = useRef<HTMLDivElement>(null)
+  const [edge, setEdge] = useState({ l: false, r: false })
+  useEffect(() => {
+    const el = strip.current
+    if (!el) return
+    const check = () => setEdge({ l: el.scrollLeft > 2, r: el.scrollLeft + el.clientWidth < el.scrollWidth - 2 })
+    check()
+    el.addEventListener('scroll', check, { passive: true })
+    const ro = new ResizeObserver(check)
+    ro.observe(el)
+    if (el.firstElementChild) ro.observe(el.firstElementChild)
+    return () => {
+      el.removeEventListener('scroll', check)
+      ro.disconnect()
+    }
+  }, [])
+  // keep the chosen filter in view (only after a choice, so loading the page never scrolls it)
+  const chosen = useRef(false)
+  useEffect(() => {
+    if (!chosen.current) return void (chosen.current = true)
+    pills.current?.querySelector<HTMLElement>(`[data-filter="${filter}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' })
+  }, [filter])
+  const fade = 64
+  const mask = `linear-gradient(to right, ${edge.l ? 'transparent' : '#000'} 0, #000 ${edge.l ? fade : 0}px, #000 calc(100% - ${edge.r ? fade : 0}px), ${edge.r ? 'transparent' : '#000'} 100%)`
+
   const shown = filter === 'all' ? projects : projects.filter((p) => p.category === filter)
   const count = (f: Filter) => (f === 'all' ? projects.length : projects.filter((p) => p.category === f).length)
   const filters: Filter[] = ['all', ...categories]
@@ -86,7 +112,7 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
       {/* controls */}
       <div className="sticky top-[var(--header-h)] z-20 -mx-[var(--gutter)] border-b border-rule bg-bg px-[var(--gutter)]">
         <div className="flex items-center justify-between gap-4 py-2">
-          <div className="-ml-1 min-w-0 overflow-x-auto [scrollbar-width:none]">
+          <div ref={strip} className="-ml-1 min-w-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" style={{ maskImage: mask, WebkitMaskImage: mask }}>
             <div role="group" aria-label="Filter by discipline" ref={pills} className="relative flex w-max gap-0.5 rounded-full border border-rule p-1">
               {/* the highlight slides under the active filter */}
               <span
