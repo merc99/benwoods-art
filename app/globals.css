@@ -246,7 +246,10 @@ body::after {
   z-index: 100;
   background: var(--fg);
   color: var(--bg);
-  padding: 10px 14px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
 }
 .skip-link:focus { top: 12px; }
 

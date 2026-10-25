@@ -27,7 +27,7 @@ export function SectionHeader({
       <div className="t-label flex items-center justify-between gap-4 pt-3 text-fg-3 lg:col-span-3 lg:justify-end lg:pt-0 lg:pb-1">
         {meta && <span>{meta}</span>}
         {href && (
-          <Link href={href} className="inline-flex h-11 items-center gap-1.5 text-fg-2 hover:text-fg lg:h-auto">
+          <Link href={href} className="hit-44 inline-flex h-11 items-center gap-1.5 text-fg-2 hover:text-fg lg:h-auto">
             {hrefLabel} <span aria-hidden>→</span>
           </Link>
         )}
