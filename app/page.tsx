@@ -22,8 +22,8 @@ export default function Home() {
       <Hero />
 
       {/* 01 Featured builds: a full-bleed ink section in both themes */}
-      <section id="selected" data-surface="ink" aria-labelledby="featured-title" className="relative isolate scroll-mt-[var(--header-h)]">
-        <div className="shell relative pt-10 pb-20 lg:pt-14 lg:pb-28">
+      <section id="selected" data-surface="ink" aria-labelledby="featured-title" className="relative isolate">
+        <div className="shell relative pt-12 pb-20 lg:pt-20 lg:pb-28">
           <SectionHeader index="01" id="featured-title" title="Featured builds" meta="Designed and built" href="/work" hrefLabel="All work" />
           <div className={`mt-10 lg:mt-12 ${grid}`}>
             <div className="md:col-span-12">
@@ -55,7 +55,7 @@ export default function Home() {
       </section>
 
       {/* 02 Products */}
-      <section id="products" aria-labelledby="products-title" className="relative isolate scroll-mt-[var(--header-h)]">
+      <section aria-labelledby="products-title" className="relative isolate">
         <div className="shell relative py-20 lg:py-28">
           <SectionHeader index="02" id="products-title" title="Products" meta="Brand, product, packaging" />
           <div className={`mt-10 lg:mt-12 ${grid}`}>
@@ -66,7 +66,7 @@ export default function Home() {
       </section>
 
       {/* 03 Brand and illustration */}
-      <section id="brand" aria-labelledby="brand-title" className="relative isolate scroll-mt-[var(--header-h)] border-t border-rule">
+      <section aria-labelledby="brand-title" className="relative isolate border-t border-rule">
         <div className="shell relative py-20 lg:py-28">
           <SectionHeader index="03" id="brand-title" title="Brand & illustration" meta="2022—2025" />
           <div className={`mt-10 lg:mt-12 ${grid}`}>
@@ -83,7 +83,7 @@ export default function Home() {
       </section>
 
       {/* 04 Merch */}
-      <section id="merch" aria-labelledby="merch-title" className="relative isolate scroll-mt-[var(--header-h)] border-t border-rule">
+      <section aria-labelledby="merch-title" className="relative isolate border-t border-rule">
         <div className="shell relative py-20 lg:py-28">
           <SectionHeader index="04" id="merch-title" title="Merch" href="/work/merch" hrefLabel={`All ${allMerch.length} pieces`} />
           <div className="mt-10 lg:mt-12">

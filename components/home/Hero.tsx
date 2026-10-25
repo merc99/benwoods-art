@@ -6,13 +6,6 @@ import { PixelTiles } from '@/components/fx/PixelTiles'
  * The hero moment (motion budget: once per visit). The name rises out of two masks and the subline fades up.
  * All of it is CSS on server-rendered text, so nothing waits on JavaScript.
  */
-const SECTIONS = [
-  ['01', 'Featured builds', '#selected'],
-  ['02', 'Products', '#products'],
-  ['03', 'Brand & illustration', '#brand'],
-  ['04', 'Merch', '#merch'],
-] as const
-
 export function Hero() {
   const { hero } = site
   const [first, last] = hero.title.split(' ')
@@ -41,23 +34,12 @@ export function Hero() {
           <p className={`${styles.fade} t-lede col-span-4 max-w-[30ch] text-fg lg:col-span-6 lg:col-start-4`}>{hero.lede}</p>
         </div>
 
-        {/* an index of the page: each section's number and name, jumping to it */}
-        <nav aria-label="On this page" className="border-t border-rule">
-          <ol className="grid grid-cols-2 lg:grid-cols-4">
-            {SECTIONS.map(([n, label, href]) => (
-              <li key={href} className="border-b border-rule lg:border-b-0 [&:nth-child(odd)]:border-r lg:border-r lg:last:border-r-0">
-                <a href={href} className="group t-label flex h-full items-center justify-between gap-3 py-3.5 pr-3 text-fg-2 transition-colors hover:text-fg [li:nth-child(even)_&]:pl-3 lg:pl-3 lg:[li:first-child_&]:pl-0">
-                  <span>
-                    <span className="text-fg-3">({n})</span> {label}
-                  </span>
-                  <span aria-hidden className="text-fg-3 transition-transform duration-300 group-hover:translate-y-0.5 group-hover:text-fg motion-reduce:transition-none">
-                    ↓
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </nav>
+        <div className="t-label flex items-center justify-between border-t border-rule py-3 text-fg-3">
+          <a href="#selected" className="inline-flex h-11 items-center gap-2 hover:text-fg">
+            Selected work <span aria-hidden>↓</span>
+          </a>
+          <span>(01—04)</span>
+        </div>
       </div>
     </section>
   )
