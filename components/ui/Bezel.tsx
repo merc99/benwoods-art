@@ -28,7 +28,7 @@ export function Bezel({
   return (
     <div
       className={cn(
-        'relative isolate transition-transform group-hover:-translate-y-1 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0',
+        'relative isolate transition-transform [backface-visibility:hidden] [will-change:translate] group-hover:-translate-y-1 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0',
         ease,
         className,
       )}
