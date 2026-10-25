@@ -134,7 +134,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                   sizes="(min-width: 1520px) 1280px, 92vw"
                   className="object-cover object-top"
                 />
-                <LiveFrame src={p.liveFrame} title={p.title} />
+                <LiveFrame src={p.liveFrame} title={p.title} width={p.liveFrameWidth} />
               </div>
             </Bezel>
             <p className="t-label mt-4 text-fg-3">

@@ -83,6 +83,8 @@ export type Project = {
   demos: string[]
   /** The live site, run inside the cover frame on desktop (over `coverScreen` or `cover`). */
   liveFrame: string
+  /** The viewport width the live frame renders at (default 1440). */
+  liveFrameWidth: number
   /** How the work was made, shown in the spec table, e.g. "Drawn by hand, digitally. No AI." */
   medium: string
   summary: string
@@ -130,6 +132,7 @@ function load(): Project[] {
         demos: [],
         coverGlow: [],
         liveFrame: '',
+        liveFrameWidth: 1440,
         medium: '',
         summary: '',
         featured: false,

@@ -7,12 +7,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/cn'
 
-const VW = 1440
-const VH = 900
 // the iframe is this much wider than what shows, so the site's own scrollbar sits outside the frame
 const SCROLLBAR = 24
 
-export function LiveFrame({ src, title }: { src: string; title: string }) {
+/** `width`: the desktop viewport the site renders at (its height follows at 16:10), e.g. wide enough for a full side panel. */
+export function LiveFrame({ src, title, width = 1440 }: { src: string; title: string; width?: number }) {
+  const VW = width
+  const VH = Math.round((width * 10) / 16)
   const box = useRef<HTMLDivElement>(null)
   const [on, setOn] = useState(false)
   const [loaded, setLoaded] = useState(false)
@@ -37,7 +38,7 @@ export function LiveFrame({ src, title }: { src: string; title: string }) {
       ro.disconnect()
       io.disconnect()
     }
-  }, [])
+  }, [VW])
 
   return (
     <div ref={box} className="absolute inset-0 overflow-hidden">
