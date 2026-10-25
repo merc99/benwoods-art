@@ -46,8 +46,24 @@ export function LiveFrame({ src, title, width = 1440 }: { src: string; title: st
         <iframe
           src={src}
           title={`${title}, the live site`}
-          // reveal after the site's own intro has played, behind the matching still
-          onLoad={() => window.setTimeout(() => setLoaded(true), 1400)}
+          // Reveal once the site has settled behind the matching still. Same-origin sites (the hosted MMO copy): wait
+          // for its fonts and until every finite animation (the intro) has finished. Cross-origin: a fixed wait.
+          onLoad={(e) => {
+            const frame = e.currentTarget
+            let doc: Document | null = null
+            try {
+              doc = frame.contentDocument
+            } catch {}
+            if (!doc) return void window.setTimeout(() => setLoaded(true), 1400)
+            const started = performance.now()
+            const settled = () =>
+              doc!.getAnimations().every((a) => a.playState !== 'running' || a.effect?.getTiming().iterations === Infinity)
+            const poll = () => {
+              if ((settled() && performance.now() - started > 300) || performance.now() - started > 5000) setLoaded(true)
+              else window.setTimeout(poll, 100)
+            }
+            void doc.fonts.ready.then(poll)
+          }}
           referrerPolicy="no-referrer"
           allow="clipboard-write"
           style={{ width: VW + SCROLLBAR, height: VH, transform: `scale(${scale})` }}
