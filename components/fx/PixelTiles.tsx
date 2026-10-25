@@ -434,14 +434,19 @@ export function PixelTiles({
       if (e.button !== 0) return
       // leave real controls and text alone
       if ((e.target as HTMLElement).closest('a,button,input,textarea,select,label,[role=button]')) return
-      // and the text itself (its line boxes, not the full-width block around it), so selecting text still works
-      const range = document.createRange()
-      const walker = document.createTreeWalker(e.target as Node, NodeFilter.SHOW_TEXT)
-      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-        if (!n.textContent?.trim()) continue
-        range.selectNodeContents(n)
-        for (const q of range.getClientRects())
-          if (e.clientX >= q.left - 4 && e.clientX <= q.right + 4 && e.clientY >= q.top - 4 && e.clientY <= q.bottom + 4) return
+      // a click that ends a text selection (drag or double-click) is for the text, not the tiles
+      if (!(window.getSelection()?.isCollapsed ?? true)) return
+      // big titles (BEN WOODS, page titles) let clicks through to the tiles behind them; other text (its line boxes,
+      // not the full-width block around it) keeps them, so reading and selecting copy stays calm
+      if (!(e.target as HTMLElement).closest('h1,h2')) {
+        const range = document.createRange()
+        const walker = document.createTreeWalker(e.target as Node, NodeFilter.SHOW_TEXT)
+        for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+          if (!n.textContent?.trim()) continue
+          range.selectNodeContents(n)
+          for (const q of range.getClientRects())
+            if (e.clientX >= q.left - 4 && e.clientX <= q.right + 4 && e.clientY >= q.top - 4 && e.clientY <= q.bottom + 4) return
+        }
       }
       const r = canvas.getBoundingClientRect()
       const x = e.clientX - r.left
