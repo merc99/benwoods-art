@@ -76,7 +76,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               Case study {String(n).padStart(2, '0')} / {String(all.length).padStart(2, '0')}
             </span>
           </div>
-          <h1 className="t-display mt-6 text-[clamp(3.25rem,0.75rem+11vw,11rem)] lg:mt-10">{p.title}</h1>
+          <h1 className="t-display mt-6 cursor-default text-[clamp(3.25rem,0.75rem+11vw,11rem)] lg:mt-10">{p.title}</h1>
           <div className="mt-8 grid gap-x-[var(--gutter)] gap-y-6 pb-10 lg:grid-cols-12 lg:pb-14">
             <p className="t-lede max-w-[32ch] text-fg lg:col-span-7">{p.summary}</p>
             <div className="flex flex-col gap-4 lg:col-span-5 lg:items-end lg:justify-end">

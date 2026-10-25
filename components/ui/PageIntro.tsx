@@ -47,7 +47,7 @@ export function PageIntro({
         ) : (
           <p className="t-label text-fg-3">{label}</p>
         )}
-        <h1 className={cn('t-display mt-6', titleSize)}>{title}</h1>
+        <h1 className={cn('t-display mt-6 cursor-default', titleSize)}>{title}</h1>
         {lede &&
           (revealLede ? (
             <RevealText as="p" text={lede} className={cn('t-lede text-fg-2', ledeClass)} />

@@ -13,7 +13,7 @@ export function Hero() {
   const [first, last] = hero.title.split(' ')
 
   return (
-    <section aria-labelledby="hero-title" className="relative isolate flex min-h-[calc(100svh-var(--header-h))] flex-col overflow-hidden">
+    <section aria-labelledby="hero-title" className="relative isolate flex cursor-default min-h-[calc(100svh-var(--header-h))] flex-col overflow-hidden">
       <PixelTiles seed={7} tall tappable />
       <div className="shell relative flex w-full flex-1 flex-col">
         {/* the name and lede sit centered in the space above the Selected work line */}
