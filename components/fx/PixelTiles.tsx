@@ -313,7 +313,8 @@ export function PixelTiles({
         for (let row = 0; row < rows; row++) {
           if (run <= 0) {
             filled = !filled
-            run = 1 + Math.floor(r1() * (filled ? 5 : 3))
+            // longer filled runs, short gaps: the pattern reads full with a few breathing holes
+            run = 1 + Math.floor(r1() * (filled ? 7 : 2))
           }
           run--
           const m = Math.floor(r1() * MOTIFS)
