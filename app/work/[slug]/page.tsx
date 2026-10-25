@@ -20,6 +20,7 @@ import { Bezel, bezelRadius } from '@/components/ui/Bezel'
 import { HeroDemo, type DemoId } from '@/components/lab/DemoStage'
 import { DemoCard } from '@/components/lab/DemoCard'
 import { LiveFrame } from '@/components/work/LiveFrame'
+import { GlowCover } from '@/components/work/GlowCover'
 import { lab } from '@/lib/lab'
 
 export const dynamicParams = false
@@ -158,16 +159,28 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           <div className={cn('shell', portrait && 'flex justify-center')}>
             <Bezel size="wide" className={cn(portrait && 'max-w-full')}>
             <div className={cn('overflow-hidden bg-sunken', bezelRadius.wide.inner)}>
-              <Image
-                src={p.cover}
-                alt={p.coverAlt}
-                width={cover.width}
-                height={cover.height}
-                priority
-                sizes={portrait ? '(min-width: 768px) 60vw, 100vw' : '(min-width: 1520px) 1440px, 100vw'}
-                quality={88}
-                className={cn('h-auto', portrait ? 'block max-h-[78svh] w-auto max-w-full' : 'w-full')}
-              />
+              {p.coverGlow.length ? (
+                <GlowCover
+                  src={p.coverGlow[p.coverGlow.length - 1].src}
+                  srcSet={p.coverGlow.map((g) => `${g.src} ${g.w}w`).join(', ')}
+                  width={cover.width}
+                  height={cover.height}
+                  alt={p.coverAlt}
+                  sizes={portrait ? '(min-width: 768px) 60vw, 100vw' : '(min-width: 1520px) 1440px, 100vw'}
+                  className={cn('h-auto', portrait ? 'block max-h-[78svh] w-auto max-w-full' : 'w-full')}
+                />
+              ) : (
+                <Image
+                  src={p.cover}
+                  alt={p.coverAlt}
+                  width={cover.width}
+                  height={cover.height}
+                  priority
+                  sizes={portrait ? '(min-width: 768px) 60vw, 100vw' : '(min-width: 1520px) 1440px, 100vw'}
+                  quality={88}
+                  className={cn('h-auto', portrait ? 'block max-h-[78svh] w-auto max-w-full' : 'w-full')}
+                />
+              )}
             </div>
             </Bezel>
           </div>

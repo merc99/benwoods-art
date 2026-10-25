@@ -1,0 +1,43 @@
+/* Glow cover (see GlowCover.tsx). --mx/--my follow the pointer, --on fades the effect in and out. */
+.box {
+  --mx: 50%;
+  --my: 45%;
+  --on: 0;
+  --r: clamp(140px, 22vw, 300px);
+}
+.layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: var(--on);
+}
+.glow {
+  filter: contrast(1.8) brightness(2) saturate(1.5) blur(5px);
+  mask-image: radial-gradient(circle var(--r) at var(--mx) var(--my), #000 0%, rgb(0 0 0 / 0.55) 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle var(--r) at var(--mx) var(--my), #000 0%, rgb(0 0 0 / 0.55) 40%, transparent 100%);
+}
+/* the crisp core, shimmering: a soft diagonal band sweeps through the lit circle */
+.core {
+  filter: contrast(1.5) brightness(1.6) saturate(1.25);
+  mask-image:
+    radial-gradient(circle calc(var(--r) * 0.62) at var(--mx) var(--my), #000 0%, transparent 100%),
+    linear-gradient(115deg, rgb(0 0 0 / 0.35) 0%, rgb(0 0 0 / 0.35) 38%, #000 50%, rgb(0 0 0 / 0.35) 62%, rgb(0 0 0 / 0.35) 100%);
+  -webkit-mask-image:
+    radial-gradient(circle calc(var(--r) * 0.62) at var(--mx) var(--my), #000 0%, transparent 100%),
+    linear-gradient(115deg, rgb(0 0 0 / 0.35) 0%, rgb(0 0 0 / 0.35) 38%, #000 50%, rgb(0 0 0 / 0.35) 62%, rgb(0 0 0 / 0.35) 100%);
+  mask-size: 100% 100%, 300% 300%;
+  -webkit-mask-size: 100% 100%, 300% 300%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+  animation: shimmer 3.6s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% { mask-position: 0 0, 100% 100%; -webkit-mask-position: 0 0, 100% 100%; }
+  100% { mask-position: 0 0, 0% 0%; -webkit-mask-position: 0 0, 0% 0%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .core { animation: none; }
+}
