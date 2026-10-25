@@ -436,23 +436,18 @@ export function PixelTiles({
       if ((e.target as HTMLElement).closest('a,button,input,textarea,select,label,[role=button]')) return
       // a click that ends a text selection (drag or double-click) is for the text, not the tiles
       if (!(window.getSelection()?.isCollapsed ?? true)) return
-      // big titles (BEN WOODS, page titles) let clicks through to the tiles behind them; other text (its line boxes,
-      // not the full-width block around it) keeps them, so reading and selecting copy stays calm
-      if (!(e.target as HTMLElement).closest('h1,h2')) {
-        const range = document.createRange()
-        const walker = document.createTreeWalker(e.target as Node, NodeFilter.SHOW_TEXT)
-        for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-          if (!n.textContent?.trim()) continue
-          range.selectNodeContents(n)
-          for (const q of range.getClientRects())
-            if (e.clientX >= q.left - 4 && e.clientX <= q.right + 4 && e.clientY >= q.top - 4 && e.clientY <= q.bottom + 4) return
-        }
-      }
+      // a plain click on text (titles, the lede) goes through to the tiles behind it. The nearest tile starts the
+      // ripple, so a click in an empty run or on tiles faded under text still spreads out to the visible ones.
       const r = canvas.getBoundingClientRect()
       const x = e.clientX - r.left
       const y = e.clientY - r.top
-      const hit = tiles.find((t) => x >= t.x && x <= t.x + tileSize && y >= t.y && y <= t.y + tileSize)
-      if (!hit || hit.clear < 0.5) return
+      let hit: Tile | undefined
+      let best = tileSize * 1.5
+      for (const t of tiles) {
+        const d = Math.hypot(t.cx - x, t.cy - y)
+        if (d < best) (best = d), (hit = t)
+      }
+      if (!hit) return
       const now = performance.now()
       // a ripple: the pop spreads ring by ring about four tiles out, each ring a beat later and a little softer
       const step = (N + 1) * pxD / dpr // one tile, center to center
