@@ -1,7 +1,7 @@
 export type Category = 'product' | 'brand' | 'illustration' | 'swag' | 'personal'
 
 /** Filter order on the Work page. */
-export const categories: Category[] = ['product', 'illustration', 'brand', 'swag', 'personal']
+export const categories: Category[] = ['product', 'illustration', 'swag', 'brand', 'personal']
 
 export const categoryLabel: Record<Category, string> = {
   product: 'Product design',
