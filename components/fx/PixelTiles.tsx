@@ -118,7 +118,10 @@ export function PixelTiles({
     let tiles: Tile[] = []
     let baseSprites: HTMLCanvasElement[] = []
     let litSprites: HTMLCanvasElement[] = []
-    let popSprites: HTMLCanvasElement[][] = [] // [color][motif]
+    // click colors, drawn only the first time a tile is clicked (never on touch, where there is no click pop)
+    let popSprites: (HTMLCanvasElement | undefined)[][] = [] // [color][motif]
+    let popOf: (i: number, m: number) => HTMLCanvasElement = () => document.createElement('canvas')
+    let built = '' // the size this was last built for (rebuilding is the expensive part)
         let baseAlpha = 0.06
     let litAlpha = 0.8
     const pointer = { x: -9999, y: -9999, active: false }
@@ -249,7 +252,7 @@ export function PixelTiles({
             const i = Math.min(POP.length - 1, Math.floor(age / POP_STEP))
             const fade = age < POP.length * POP_STEP ? 1 : 1 - (age - POP.length * POP_STEP) / POP_FADE
             ctx.globalAlpha = Math.max(0, fade) * tile.popK * tile.clear
-            ctx.drawImage(popSprites[i][tile.m], tile.dx - padD, tile.dy - padD)
+            ctx.drawImage(popOf(i, tile.m), tile.dx - padD, tile.dy - padD)
             lit = true
           }
         }
@@ -258,11 +261,16 @@ export function PixelTiles({
       return lit
     }
 
-    const build = () => {
+    const build = (force = false) => {
       const r = host.getBoundingClientRect()
+      // full screen density (up to 3x on phones), so every motif pixel lands on whole device pixels
+      const nextDpr = Math.min(window.devicePixelRatio || 1, 3)
+      const key = `${Math.ceil(r.width)}x${Math.ceil(r.height)}@${nextDpr}`
+      if (!force && key === built) return
+      built = key
       w = Math.ceil(r.width)
       h = Math.ceil(r.height)
-      dpr = Math.min(window.devicePixelRatio || 1, 2)
+      dpr = nextDpr
       canvas.width = Math.max(1, Math.round(w * dpr))
       canvas.height = Math.max(1, Math.round(h * dpr))
       canvas.style.width = `${w}px`
@@ -287,7 +295,8 @@ export function PixelTiles({
       const line = Math.max(1, Math.round(pxD * 0.16)) // whole device pixels, so the outline is one crisp line
       baseSprites = motifs.map((m) => sprite(m, fg, { fill: 0.3, glow: dark ? 1.5 : 0, line }))
       litSprites = motifs.map((m) => sprite(m, glow, { fill: 0.4, glow: 5, line }))
-      popSprites = POP.map((c) => motifs.map((m) => sprite(m, c, { fill: 0.55, glow: 6, line })))
+      popSprites = POP.map(() => [])
+      popOf = (i, m) => (popSprites[i][m] ??= sprite(motifs[m], POP[i], { fill: 0.55, glow: 6, line }))
 
       // vertical runs: each column alternates filled and empty stretches
       const r1 = rng(seed + 101)
@@ -357,6 +366,7 @@ export function PixelTiles({
       if (!raf) last = 0
     }
     const start = () => {
+      if (!built) return
       if (!raf && visible) raf = requestAnimationFrame(frame)
     }
     const stop = () => {
@@ -365,20 +375,33 @@ export function PixelTiles({
       last = 0
     }
 
-    build()
-    t0 = performance.now()
-    const ro = new ResizeObserver(() => build())
+    // Built once the pattern is near the screen, and for the first screen only after the page has painted
+    // (an idle moment), so the hero's own type animation never waits on it. It fades in when ready.
+    let scheduled = 0
+    const first = () => {
+      if (built || scheduled) return
+      const run = () => {
+        build()
+        t0 = performance.now()
+        canvas.style.opacity = '1'
+        if (!reduce) start()
+      }
+      const ric = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback
+      scheduled = ric ? ric(run, { timeout: 700 }) : window.setTimeout(run, 250)
+    }
+    const ro = new ResizeObserver(() => built && build())
     // text can shift after fonts load or reveal animations settle, so re-measure a few times
     void document.fonts?.ready.then(() => measure())
     const remeasure = [400, 1500].map((ms) => window.setTimeout(measure, ms))
     ro.observe(host)
-    const mo = new MutationObserver(() => build())
+    const mo = new MutationObserver(() => built && build(true))
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
     const io = new IntersectionObserver(([e]) => {
       visible = e.isIntersecting && document.visibilityState === 'visible'
+      if (e.isIntersecting) first()
       if (visible) start()
       else stop()
-    })
+    }, { rootMargin: '300px 0px' })
     io.observe(host)
     const onVis = () => {
       visible = document.visibilityState === 'visible'
@@ -442,6 +465,8 @@ export function PixelTiles({
 
     return () => {
       stop()
+      const cic = (window as Window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback
+      if (scheduled) (cic ?? clearTimeout)(scheduled)
       remeasure.forEach(clearTimeout)
       ro.disconnect()
       mo.disconnect()
@@ -459,7 +484,7 @@ export function PixelTiles({
     <canvas
       ref={ref}
       aria-hidden="true"
-      style={{ maskImage: fade, WebkitMaskImage: fade }}
+      style={{ maskImage: fade, WebkitMaskImage: fade, opacity: 0, transition: 'opacity 700ms ease-out' }}
       className={cn(
         'pointer-events-none absolute inset-0 -z-10',
         tall ? '[--tiles-end:560px] md:[--tiles-end:1000px]' : '[--tiles-end:440px] md:[--tiles-end:640px]',
