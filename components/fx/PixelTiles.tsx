@@ -493,7 +493,7 @@ export function PixelTiles({
       style={{ maskImage: fade, WebkitMaskImage: fade, opacity: 0, transition: 'opacity 700ms ease-out' }}
       className={cn(
         'pointer-events-none absolute inset-0 -z-10',
-        tall ? '[--tiles-end:560px] md:[--tiles-end:1000px]' : '[--tiles-end:440px] md:[--tiles-end:640px]',
+        tall ? '[--tiles-end:min(100%,max(560px,88svh))] md:[--tiles-end:min(100%,max(1000px,92svh))]' : '[--tiles-end:440px] md:[--tiles-end:640px]',
         className,
       )}
     />
