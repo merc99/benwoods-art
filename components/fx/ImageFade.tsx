@@ -16,10 +16,14 @@ export function ImageFade() {
       seen.add(img)
       if (img.complete && img.naturalWidth > 0) return
       if (img.getAttribute('fetchpriority') === 'high') return
+      // the fade rides on top of the image's own transitions (e.g. a hover zoom) and is removed once done, so
+      // those keep their own timing and easing
+      const own = getComputedStyle(img).transition
       img.style.opacity = '0'
-      img.style.transition = FADE
+      img.style.transition = own && own !== 'all 0s ease 0s' ? own + ', ' + FADE : FADE
       const show = () => {
         img.style.opacity = ''
+        window.setTimeout(() => (img.style.transition = ''), 460)
         img.removeEventListener('load', show)
         img.removeEventListener('error', show)
       }

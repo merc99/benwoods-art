@@ -1,23 +1,20 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 import { useScramble } from '@/components/fx/useScramble'
 import { cn } from '@/lib/cn'
 
-// Decoded once per visit: page changes in the app remount headers and menus, and the flag lives for the whole visit.
-let decoded = false
-
-/** The pixel "ben woods" wordmark. Decodes once per visit and again on mouse hover (motion budget: moment). */
+/** The pixel "ben woods" wordmark. Decodes on every page and again on mouse hover (motion budget: moment). */
 export function Wordmark({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
   const text = 'ben woods'
   const { ref, play } = useScramble(text)
 
+  const pathname = usePathname()
   useEffect(() => {
-    if (decoded) return
-    decoded = true
     play()
-  }, [play])
+  }, [play, pathname])
 
   return (
     <Link
