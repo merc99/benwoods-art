@@ -46,7 +46,8 @@ export function LiveFrame({ src, title, width = 1440 }: { src: string; title: st
         <iframe
           src={src}
           title={`${title}, the live site`}
-          onLoad={() => setLoaded(true)}
+          // reveal after the site's own intro has played, behind the matching still
+          onLoad={() => window.setTimeout(() => setLoaded(true), 1400)}
           referrerPolicy="no-referrer"
           allow="clipboard-write"
           style={{ width: VW + SCROLLBAR, height: VH, transform: `scale(${scale})` }}
