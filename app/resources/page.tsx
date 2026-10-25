@@ -19,11 +19,11 @@ function LinkList({ items, numbered = true }: { items: ResourceLink[]; numbered?
             href={l.href}
             target="_blank"
             rel="noreferrer"
-            className="group grid grid-cols-[2.5rem_minmax(0,1fr)_1.5rem] items-baseline gap-x-4 gap-y-1 py-4 transition-[padding,background-color] duration-200 hover:bg-sunken hover:pl-3 md:grid-cols-[3.5rem_minmax(0,16rem)_minmax(0,1fr)_1.5rem]"
+            className="group grid grid-cols-[1.75rem_minmax(0,1fr)_1.25rem] items-baseline gap-x-3 gap-y-0 py-2.5 transition-[padding,background-color] md:gap-x-4 md:gap-y-1 md:py-4 duration-200 hover:bg-sunken hover:pl-3 md:grid-cols-[3.5rem_minmax(0,16rem)_minmax(0,1fr)_1.5rem]"
           >
             <span className="t-label text-fg-3">{numbered ? String(i + 1).padStart(2, '0') : ''}</span>
-            <span className="t-title text-[1.25rem]">{l.name}</span>
-            <span className="col-start-2 text-fg-2 md:col-start-auto">{l.note}</span>
+            <span className="t-title text-[1rem] md:text-[1.25rem]">{l.name}</span>
+            <span className="col-start-2 text-[0.875rem] leading-snug text-fg-2 md:col-start-auto md:text-base">{l.note}</span>
             <span
               aria-hidden
               className="col-start-3 row-start-1 text-right text-fg-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 md:col-start-auto md:row-start-auto"
@@ -54,7 +54,7 @@ export default function ResourcesPage() {
       />
 
       <section aria-labelledby="tools" className="border-t border-rule">
-        <div className="shell py-14 lg:py-20">
+        <div className="shell py-10 lg:py-20">
           <SectionHeader index="01" id="tools" title="Tools I use" meta={`${tools.length} tools`} />
           <div className="mt-4">
             <LinkList items={tools} />
@@ -63,12 +63,12 @@ export default function ResourcesPage() {
       </section>
 
       <section aria-labelledby="refs" className="border-t border-rule">
-        <div className="shell py-14 lg:py-20">
+        <div className="shell py-10 lg:py-20">
           <SectionHeader index="02" id="refs" title="UI references" meta={`${refCount} sites`} />
           <p className="mt-6 max-w-[60ch] text-fg-2">
             Sites I use for UI patterns, components and references.
           </p>
-          <div className="mt-8 grid gap-x-[var(--gutter)] gap-y-10 lg:grid-cols-12">
+          <div className="mt-6 grid gap-x-[var(--gutter)] gap-y-6 lg:mt-8 lg:grid-cols-12 lg:gap-y-10">
             {references.map((g) => (
               <div key={g.group} className="contents">
                 <h3 className="t-label pt-4 text-fg-3 lg:col-span-3">{g.group}</h3>
@@ -82,7 +82,7 @@ export default function ResourcesPage() {
       </section>
 
       <section aria-labelledby="code" data-surface="ink" className="relative isolate">
-        <div className="shell relative py-14 lg:py-20">
+        <div className="shell relative py-10 lg:py-20">
           <SectionHeader index="03" id="code" title="Code" meta="GitHub" />
           <div className="mt-4">
             <LinkList items={code} />

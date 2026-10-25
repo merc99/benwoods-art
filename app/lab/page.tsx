@@ -40,18 +40,18 @@ export default function LabPage() {
         ledeClass="mt-6 max-w-[36ch]"
       >
 
-          <ul className="mt-12 grid border-t border-rule-strong sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-8 grid grid-cols-2 border-t border-rule-strong lg:mt-12 lg:grid-cols-4">
             {live.map((l) => (
-              <li key={l.label} className="border-b border-rule sm:odd:border-r lg:border-r lg:[&:nth-child(4n)]:border-r-0">
+              <li key={l.label} className="border-b border-rule odd:border-r lg:border-r lg:[&:nth-child(4n)]:border-r-0">
                 <a
                   href={l.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="group flex h-full items-baseline justify-between gap-4 px-0 py-4 hover:bg-sunken sm:px-4"
+                  className="group flex h-full items-baseline justify-between gap-2 py-3 hover:bg-sunken max-lg:[li:nth-child(even)_&]:pl-3 max-lg:[li:nth-child(odd)_&]:pr-2 lg:gap-4 lg:px-4 lg:py-4"
                 >
                   <span>
-                    <span className="t-title block text-[1.375rem]">{l.label}</span>
-                    <span className="t-label mt-1 block text-fg-3">{l.note}</span>
+                    <span className="t-title block text-[1.0625rem] lg:text-[1.375rem]">{l.label}</span>
+                    <span className="t-label mt-1 block text-[0.75rem] text-fg-3 lg:text-[0.8125rem]">{l.note}</span>
                   </span>
                   <span aria-hidden className="text-fg-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
                     ↗
