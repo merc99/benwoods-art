@@ -21,8 +21,8 @@ export default function Home() {
     <>
       <Hero />
 
-      {/* 01 Featured builds: a full-bleed ink section in both themes */}
-      <section id="selected" data-surface="ink" aria-labelledby="featured-title" className="relative isolate">
+      {/* 01 Featured builds: follows the theme like the sections below it */}
+      <section id="selected" aria-labelledby="featured-title" className="relative isolate">
         <div className="shell relative pt-20 pb-14 lg:pt-28 lg:pb-20">
           <SectionHeader index="01" id="featured-title" title="Featured builds" meta="Designed and built" href="/work" hrefLabel="All work" />
           <div className={`mt-10 lg:mt-12 ${grid}`}>
