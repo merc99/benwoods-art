@@ -1,6 +1,7 @@
 import { site } from '@/lib/site'
 import styles from './Hero.module.css'
 import { PixelTiles } from '@/components/fx/PixelTiles'
+import { LedeScramble } from './LedeScramble'
 
 /**
  * The hero moment (motion budget: once per visit). The name rises out of two masks and the subline fades up.
@@ -36,7 +37,8 @@ export function Hero() {
         </h1>
 
         <div className="mt-10 grid grid-cols-4 gap-x-[var(--gutter)] pb-10 lg:mt-[min(3.5rem,5svh)] lg:grid-cols-12 lg:pb-14">
-          <p className={`${styles.fade} t-lede col-span-4 max-w-[30ch] text-fg lg:col-span-12 lg:max-w-[calc(30ch+1.107*min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh)))] lg:pl-[calc(1.107*min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh)))]`}>{hero.lede}</p>
+          <p className={`${styles.fade} t-lede col-span-4 max-w-[30ch] text-fg lg:col-span-12 lg:max-w-[calc(30ch+1.107*min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh)))] lg:pl-[calc(1.107*min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh)))]`}><LedeScramble text={hero.lede} />
+          </p>
         </div>
         </div>
 
