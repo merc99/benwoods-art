@@ -425,7 +425,7 @@ export function PixelTiles({
       pointer.active = true
       start()
     }
-    /** Click a tile: it cycles through the pop colors; the eight around it follow a beat later, softer. */
+    /** Click a tile: it cycles through the pop colors, and the pop ripples out a few rings, later and softer each ring. */
     const click = (e: MouseEvent) => {
       if (e.button !== 0) return
       // leave real controls and text alone
@@ -445,16 +445,15 @@ export function PixelTiles({
       const hit = tiles.find((t) => x >= t.x && x <= t.x + tileSize && y >= t.y && y <= t.y + tileSize)
       if (!hit || hit.clear < 0.5) return
       const now = performance.now()
-      const reach = tileSize * 1.6
+      // a ripple: the pop spreads ring by ring about four tiles out, each ring a beat later and a little softer
+      const step = (N + 1) * pxD / dpr // one tile, center to center
+      const rings = 4
       for (const t of tiles) {
-        const d = Math.hypot(t.cx - hit.cx, t.cy - hit.cy)
-        if (t === hit) {
-          t.popAt = now
-          t.popK = 1
-        } else if (d < reach) {
-          t.popAt = now + (reduce ? 0 : 90)
-          t.popK = Math.max(t.popAt > now ? t.popK : 0, 0.45)
-        }
+        const ring = Math.round(Math.hypot(t.cx - hit.cx, t.cy - hit.cy) / step)
+        if (ring > rings) continue
+        const k = ring === 0 ? 1 : Math.max(0.18, 0.75 * Math.pow(1 - ring / (rings + 1), 1.2))
+        t.popAt = now + (reduce ? 0 : ring * 70)
+        t.popK = ring === 0 ? 1 : k
       }
       start()
     }
