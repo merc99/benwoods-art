@@ -568,14 +568,6 @@ export function GlyphField({ className }: { className?: string }) {
         const cx0 = ox * step
         const cy0 = oy * step
         const R = scale * step * 1.9 // about the die's radius
-        // a faint glow around the die, violet into vermilion, so it sits in the field instead of on it
-        const halo = ctx.createRadialGradient(cx0, cy0, R * 0.6, cx0, cy0, R * 1.6)
-        halo.addColorStop(0, 'rgba(167,139,250,0.10)')
-        halo.addColorStop(0.45, 'rgba(255,90,46,0.04)')
-        halo.addColorStop(1, 'rgba(255,90,46,0)')
-        ctx.globalAlpha = 1
-        ctx.fillStyle = halo
-        ctx.fillRect(cx0 - R * 1.7, cy0 - R * 1.7, R * 3.4, R * 3.4)
         // body: dims the glyph waves behind the die so its lines read
         ctx.globalAlpha = 0.88
         ctx.fillStyle = '#0f0f0e'
@@ -593,18 +585,21 @@ export function GlyphField({ className }: { className?: string }) {
             ctx.lineTo(X(e.b), Y(e.b))
           }
         ctx.stroke()
-        // Each front face is tinted by the light it catches, like a lit enamel die in the glyph look: cream where
-        // the light hits, through amber to vermilion in shadow, and a violet rim on faces turning away. Kept
-        // translucent so the back edges still show through.
+        // Each front face catches cream light by how squarely it faces the light, and faces turning away from
+        // you pick up a violet rim, so it reads as a lit solid. Kept translucent so the back edges show through.
         for (const { f, n } of faces) {
           const d = Math.max(0, n[0] * light[0] + n[1] * light[1] + n[2] * light[2])
-          const lum = Math.min(1, 0.08 + Math.pow(d, 1.35) * 1.05)
-          const band = n[2] < 0.3 ? 4 : lum > 0.8 ? 0 : lum > 0.58 ? 1 : lum > 0.34 ? 2 : 3
-          ctx.fillStyle = BANDS[band]
-          ctx.globalAlpha = band === 4 ? 0.13 + (0.3 - n[2]) * 0.25 : band === 0 ? 0.025 + lum * 0.08 : 0.04 + lum * 0.11
           ctx.beginPath()
           tri(f)
+          ctx.fillStyle = '#f4ecdc'
+          ctx.globalAlpha = 0.015 + Math.pow(d, 1.8) * 0.13
           ctx.fill()
+          const rim = Math.max(0, 0.55 - n[2]) / 0.55
+          if (rim > 0) {
+            ctx.fillStyle = '#a78bfa'
+            ctx.globalAlpha = rim * rim * 0.3
+            ctx.fill()
+          }
         }
         // a soft sheen from the light's side, over the whole body
         ctx.save()
@@ -614,7 +609,7 @@ export function GlyphField({ className }: { className?: string }) {
         const hx = cx0 + light[0] * R * 0.75
         const hy = cy0 + light[1] * R * 0.75
         const sheen = ctx.createRadialGradient(hx, hy, 0, hx, hy, R * 1.3)
-        sheen.addColorStop(0, 'rgba(255,236,210,0.11)')
+        sheen.addColorStop(0, 'rgba(244,236,220,0.09)')
         sheen.addColorStop(0.5, 'rgba(244,236,220,0.03)')
         sheen.addColorStop(1, 'rgba(244,236,220,0)')
         ctx.globalAlpha = 1
