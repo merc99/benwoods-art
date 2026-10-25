@@ -16,6 +16,8 @@ export function ImageFade() {
       seen.add(img)
       if (img.complete && img.naturalWidth > 0) return
       if (img.getAttribute('fetchpriority') === 'high') return
+      // images with motion of their own (Merc's peek, lightbox photos) opt out
+      if (img.closest('[data-no-fade]')) return
       // the fade rides on top of the image's own transitions (e.g. a hover zoom) and is removed once done, so
       // those keep their own timing and easing
       const own = getComputedStyle(img).transition

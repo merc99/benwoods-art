@@ -80,6 +80,7 @@ export function Lightbox({
         <motion.div
           ref={dialog}
           role="dialog"
+          data-no-fade
           aria-modal="true"
           aria-label={`Photo ${open + 1} of ${items.length}`}
           data-surface="ink"

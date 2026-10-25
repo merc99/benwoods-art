@@ -60,7 +60,7 @@ export function MercPeek() {
   const home = pathname === '/work/merc-eats'
 
   return (
-    <div ref={ref} className="absolute right-[var(--gutter)] -bottom-3.5 w-[76px] sm:w-[118px] lg:w-[164px]">
+    <div ref={ref} data-no-fade className="absolute right-[var(--gutter)] -bottom-3.5 w-[76px] sm:w-[118px] lg:w-[164px]">
       <Link
         href={home ? '#top' : '/work/merc-eats'}
         aria-label={home ? "That's Merc. Back to top" : 'Meet Merc, my cat'}
