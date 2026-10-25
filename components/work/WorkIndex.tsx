@@ -1,16 +1,13 @@
 'use client'
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { LayoutGrid, Rows3 } from 'lucide-react'
 import { categories, categoryLabel, type Category } from '@/lib/categories'
 import type { ProjectCard } from '@/lib/work'
 import { cn } from '@/lib/cn'
-import { WorkLedger } from './WorkLedger'
 import { WorkTile } from './WorkTile'
 import styles from './WorkIndex.module.css'
 
 type Filter = 'all' | Category
-type View = 'grid' | 'list'
 
 /**
  * Rows grouped by discipline so each row holds one kind of cover and one ratio: three across, or
@@ -41,21 +38,18 @@ const spanClass: Record<number, string> = { 4: 'md:col-span-4', 6: 'md:col-span-
 
 export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
   const [filter, setFilter] = useState<Filter>('all')
-  const [view, setView] = useState<View>('grid')
 
-  // The page is static, so a shared ?filter= / ?view= link is applied once on load.
+  // The page is static, so a shared ?filter= link is applied once on load.
   useEffect(() => {
     const q = new URLSearchParams(window.location.search)
     const f = q.get('filter')
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time read of the URL after hydration
     if (f && (categories as string[]).includes(f)) setFilter(f as Category)
-    if (q.get('view') === 'list') setView('list')
   }, [])
 
   // Instant on the client; the URL keeps the choice so it can be shared or restored.
-  const set = (key: 'filter' | 'view', value: string, fallback: string) => {
-    if (key === 'filter') setFilter(value as Filter)
-    else setView(value as View)
+  const set = (key: 'filter', value: string, fallback: string) => {
+    setFilter(value as Filter)
     const next = new URLSearchParams(window.location.search)
     if (value === fallback) next.delete(key)
     else next.set(key, value)
@@ -112,7 +106,11 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
       {/* controls */}
       <div className="sticky top-[var(--header-h)] z-20 -mx-[var(--gutter)] border-b border-rule bg-bg px-[var(--gutter)]">
         <div className="flex items-center justify-between gap-4 py-2">
-          <div ref={strip} className="-ml-1 min-w-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" style={{ maskImage: mask, WebkitMaskImage: mask }}>
+          <div
+            ref={strip}
+            className="-ml-1 min-w-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            style={{ maskImage: mask, WebkitMaskImage: mask }}
+          >
             <div role="group" aria-label="Filter by discipline" ref={pills} className="relative flex w-max gap-0.5 rounded-full border border-rule p-1">
               {/* the highlight slides under the active filter */}
               <span
@@ -138,28 +136,6 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
               ))}
             </div>
           </div>
-          <div role="group" aria-label="View" className="flex shrink-0 gap-0.5 rounded-full border border-rule p-1">
-            {(
-              [
-                ['grid', 'Grid', LayoutGrid],
-                ['list', 'List', Rows3],
-              ] as const
-            ).map(([v, label, Icon]) => (
-              <button
-                key={v}
-                type="button"
-                aria-pressed={view === v}
-                onClick={() => set('view', v, 'grid')}
-                className={cn(
-                  'hit-44 t-label inline-flex h-9 items-center gap-2 rounded-full px-3 transition-colors duration-300',
-                  view === v ? 'bg-fg text-bg' : 'text-fg-2 hover:text-fg',
-                )}
-              >
-                <Icon className="size-4" strokeWidth={1.5} aria-hidden />
-                <span className="max-sm:sr-only">{label}</span>
-              </button>
-            ))}
-          </div>
         </div>
       </div>
 
@@ -167,26 +143,22 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
         {shown.length} {shown.length === 1 ? 'project' : 'projects'}
       </p>
 
-      {/* key on filter + view so the new set fades in (calm) */}
-      <div key={`${filter}-${view}`} className={cn(styles.fade, 'pt-8 lg:pt-10')}>
-        {view === 'list' ? (
-          <WorkLedger projects={shown} />
-        ) : (
-          <div className="grid gap-x-[calc(var(--gutter)*1.25)] gap-y-14 md:grid-cols-12 lg:gap-y-20">
-            {rows(shown).flatMap((row, r) =>
-              row.items.map((p) => (
-                <WorkTile
-                  key={p.slug}
-                  project={p}
-                  priority={r === 0}
-                  aspect={row.aspect}
-                  sizes={row.span === 6 ? '(min-width: 768px) 50vw, 100vw' : '(min-width: 768px) 33vw, 100vw'}
-                  className={spanClass[row.span]}
-                />
-              )),
-            )}
-          </div>
-        )}
+      {/* key on the filter so the new set fades in (calm) */}
+      <div key={filter} className={cn(styles.fade, 'pt-8 lg:pt-10')}>
+        <div className="grid gap-x-[calc(var(--gutter)*1.25)] gap-y-14 md:grid-cols-12 lg:gap-y-20">
+          {rows(shown).flatMap((row, r) =>
+            row.items.map((p) => (
+              <WorkTile
+                key={p.slug}
+                project={p}
+                priority={r === 0}
+                aspect={row.aspect}
+                sizes={row.span === 6 ? '(min-width: 768px) 50vw, 100vw' : '(min-width: 768px) 33vw, 100vw'}
+                className={spanClass[row.span]}
+              />
+            )),
+          )}
+        </div>
       </div>
     </div>
   )
