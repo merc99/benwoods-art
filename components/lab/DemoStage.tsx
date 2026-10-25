@@ -40,17 +40,32 @@ export function DemoStage({ id }: { id: DemoId }) {
 }
 
 /**
- * A demo that sits over a case study's still cover (a capture of the demo's own first frame). It mounts straight away
- * but stays invisible until it has drawn: its images decoded, fonts ready and a few frames painted, then fades in over
+ * A demo that sits over a case study's still cover (a capture of the demo's own first frame). It mounts once the page
+ * has loaded and the browser is idle (the still covers the gap, so the page's first paint never waits on it), and stays invisible until it has drawn: its images decoded, fonts ready and a few frames painted, then fades in over
  * the still, so the swap doesn't show.
  */
 export function HeroDemo({ id }: { id: DemoId }) {
   const Demo = DEMOS[id]
   const box = useRef<HTMLDivElement>(null)
   const [shown, setShown] = useState(false)
+  const [mount, setMount] = useState(false)
+  useEffect(() => {
+    let id = 0
+    const go = () => {
+      const ric = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback
+      id = ric ? ric(() => setMount(true), { timeout: 1500 }) : window.setTimeout(() => setMount(true), 300)
+    }
+    if (document.readyState === 'complete') go()
+    else window.addEventListener('load', go, { once: true })
+    return () => {
+      window.removeEventListener('load', go)
+      const cic = (window as Window & { cancelIdleCallback?: (n: number) => void }).cancelIdleCallback
+      ;(cic ?? clearTimeout)(id)
+    }
+  }, [])
   useEffect(() => {
     const el = box.current
-    if (!el) return
+    if (!el || !mount) return
     let gone = false
     const started = performance.now()
     const check = async () => {
@@ -68,10 +83,10 @@ export function HeroDemo({ id }: { id: DemoId }) {
     return () => {
       gone = true
     }
-  }, [])
+  }, [mount])
   return (
     <div ref={box} className={`size-full transition-opacity duration-500 ${shown ? 'opacity-100' : 'opacity-0'}`}>
-      <Demo />
+      {mount && <Demo />}
     </div>
   )
 }
