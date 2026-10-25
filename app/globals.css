@@ -253,64 +253,6 @@ body::after {
 }
 .skip-link:focus { top: 12px; }
 
-/* ---------- Route changes (View Transitions; see app/template.tsx) ----------
-   The header and footer chrome hold still; the page fades out fast and the new one fades in with an 8px rise; a
-   project's image frame (cover-<slug>) morphs from the card or thumbnail you clicked to its new place. */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-}
-/* named frames with no partner on the other page (the cards you didn't click) leave and arrive with the page;
-   before the page rules, which win the tie in specificity */
-::view-transition-old(*):only-child {
-  animation: vt-fade 150ms var(--ease-in) both reverse;
-}
-::view-transition-new(*):only-child {
-  animation: vt-fade 260ms var(--ease-out) 90ms both;
-}
-::view-transition-old(.page-out) {
-  animation: vt-fade 150ms var(--ease-in) both reverse;
-}
-::view-transition-new(.page-in) {
-  animation:
-    vt-fade 260ms var(--ease-out) 90ms both,
-    vt-rise 380ms var(--ease-out) both;
-}
-::view-transition-group(.morph) {
-  animation-duration: 520ms;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  z-index: 2;
-}
-/* the two snapshots of the frame (card and cover can differ in shape) cross over mid-flight, softened by a blur */
-::view-transition-old(.morph),
-::view-transition-new(.morph) {
-  height: 100%;
-  object-fit: cover;
-  animation-duration: 520ms;
-}
-::view-transition-image-pair(.morph) {
-  animation: vt-soften 520ms var(--ease-out);
-}
-@keyframes vt-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes vt-rise {
-  from { transform: translateY(8px); }
-  to { transform: none; }
-}
-@keyframes vt-soften {
-  40% { filter: blur(2px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*),
-  ::view-transition-image-pair(*) {
-    animation: none !important;
-  }
-}
-
 /* In-page links (Selected work, Back to top, #contact) glide instead of jumping; reduced motion below keeps the jump. */
 html {
   scroll-behavior: smooth;
