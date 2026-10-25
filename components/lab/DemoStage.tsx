@@ -24,8 +24,6 @@ const DEMOS = {
   'mmo-palette': load(() => import('./demos/mmo'), 'MmoPalette'),
   'mega-holo': load(() => import('./demos/megaroll'), 'MegaHolo'),
   'mega-fan': load(() => import('./demos/megaroll'), 'MegaFan'),
-  'rat-sheet': load(() => import('./demos/ratmats'), 'RatSheet'),
-  'rat-ticker': load(() => import('./demos/ratmats'), 'RatTicker'),
 } as const
 
 export type DemoId = keyof typeof DEMOS

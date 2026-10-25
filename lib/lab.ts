@@ -60,13 +60,4 @@ export const lab: LabGroup[] = [
       { id: 'mega-fan', title: 'Playable ability cards', note: 'Tap to shuffle the fan, or drag the top card up to play it. Enter plays it from the keyboard.', height: 400 },
     ],
   },
-  {
-    project: 'Rat Mats',
-    slug: 'rat-mats',
-    liveUrl: 'https://rat-mats.netlify.app/',
-    demos: [
-      { id: 'rat-sheet', title: 'The Sheet and the Registry', note: 'Every number in a 500-mat edition, with 12 marked squares. Type a number to find it on the sheet.', wide: true, height: 360, autoOnPhone: true },
-      { id: 'rat-ticker', title: 'Scroll-direction ticker', note: 'A ticker that changes direction as you scroll the page.', wide: true, height: 200 },
-    ],
-  },
 ]
