@@ -153,7 +153,7 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
                 project={p}
                 priority={r === 0}
                 aspect={row.aspect}
-                sizes={row.span === 6 ? '(min-width: 768px) 50vw, 100vw' : '(min-width: 768px) 33vw, 100vw'}
+                sizes={row.span === 6 ? '(min-width: 768px) 50vw, 90vw' : '(min-width: 768px) 33vw, 90vw'}
                 className={spanClass[row.span]}
               />
             )),

@@ -15,8 +15,8 @@ const span = {
 }
 const sizes = {
   full: '(min-width: 1520px) 1440px, 100vw',
-  half: '(min-width: 768px) 50vw, 100vw',
-  third: '(min-width: 768px) 33vw, 100vw',
+  half: '(min-width: 768px) 50vw, 90vw',
+  third: '(min-width: 768px) 33vw, 90vw',
   quarter: '(min-width: 768px) 25vw, 50vw',
 }
 // frame size per span (the site's card frame); playful prints keep their own paper look

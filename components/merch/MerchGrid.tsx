@@ -27,7 +27,6 @@ export function MerchGrid({ items }: { items: MerchItem[] }) {
               }}
               type="button"
               onClick={() => setOpen(i)}
-              aria-label={`${m.alt}, view larger`}
               className="group block w-full text-left"
             >
               <Bezel size="small">
@@ -36,6 +35,7 @@ export function MerchGrid({ items }: { items: MerchItem[] }) {
                 </span>
               </Bezel>
               <span className="t-label mt-3 block text-fg-2">{caption(m)}</span>
+              <span className="sr-only">, view larger</span>
             </button>
           </li>
         ))}

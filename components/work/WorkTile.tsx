@@ -38,7 +38,8 @@ export function WorkTile({
       {src && (
         <Image
           src={src}
-          alt={project.coverAlt}
+          // decorative here: the card is named by its visible title, year and tags; the case study describes the art
+          alt=""
           fill
           sizes={sizes}
           quality={88}
@@ -53,7 +54,7 @@ export function WorkTile({
 
   return (
     <article className={cn('flex flex-col', className)}>
-      <Link href={`/work/${project.slug}`} aria-labelledby={`${project.slug}-title`} className="group flex h-full flex-col">
+      <Link href={`/work/${project.slug}`} className="group flex h-full flex-col">
         {image}
         <TileMeta project={project} titleId={`${project.slug}-title`} showSummary={showSummary} />
       </Link>

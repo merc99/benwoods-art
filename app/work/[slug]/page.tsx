@@ -166,7 +166,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                   width={cover.width}
                   height={cover.height}
                   alt={p.coverAlt}
-                  sizes={portrait ? '(min-width: 768px) 60vw, 100vw' : '(min-width: 1520px) 1440px, 100vw'}
+                  sizes={portrait ? '(min-width: 768px) 60vw, 90vw' : '(min-width: 1520px) 1440px, 100vw'}
                   className={cn('h-auto', portrait ? 'block max-h-[78svh] w-auto max-w-full' : 'w-full')}
                 />
               ) : (
@@ -176,7 +176,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                   width={cover.width}
                   height={cover.height}
                   priority
-                  sizes={portrait ? '(min-width: 768px) 60vw, 100vw' : '(min-width: 1520px) 1440px, 100vw'}
+                  sizes={portrait ? '(min-width: 768px) 60vw, 90vw' : '(min-width: 1520px) 1440px, 100vw'}
                   quality={88}
                   className={cn('h-auto', portrait ? 'block max-h-[78svh] w-auto max-w-full' : 'w-full')}
                 />

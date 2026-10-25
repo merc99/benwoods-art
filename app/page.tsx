@@ -6,8 +6,8 @@ import { WorkTile } from '@/components/work/WorkTile'
 import { allMerch, homeMerch } from '@/lib/merch'
 import { bySlug } from '@/lib/work'
 
-const half = '(min-width: 768px) 50vw, 100vw'
-const third = '(min-width: 768px) 33vw, 100vw'
+const half = '(min-width: 768px) 50vw, 90vw'
+const third = '(min-width: 768px) 33vw, 90vw'
 // One ratio per row so every row scans cleanly: 2:1 full width, 16:10 halves, 4:5 for illustration.
 const grid = 'grid gap-x-[calc(var(--gutter)*1.25)] gap-y-14 md:grid-cols-12 lg:gap-y-20'
 
