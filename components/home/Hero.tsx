@@ -15,11 +15,11 @@ export function Hero() {
     <section aria-labelledby="hero-title" className="relative isolate flex min-h-[calc(100svh-var(--header-h))] flex-col overflow-hidden">
       <PixelTiles seed={7} tall />
       <div className="shell relative flex w-full flex-1 flex-col">
-        {/* on phones the name and lede sit centered in the space above the Selected work line */}
-        <div className="max-lg:my-auto">
+        {/* the name and lede sit centered in the space above the Selected work line */}
+        <div className="my-auto">
         <h1
           id="hero-title"
-          className="t-display pt-8 text-[min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh))] sm:pt-16 lg:-ml-[0.04em] lg:pt-[min(5rem,7svh)]"
+          className="t-display pt-8 text-[min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh))] sm:pt-16 lg:-ml-[0.04em] lg:pt-0"
         >
           {/* one accessible name; the two animated lines are visual only */}
           <span className="sr-only">{hero.title}</span>
