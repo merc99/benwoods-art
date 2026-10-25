@@ -35,6 +35,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
+      // smooth in-page jumps; Next turns it off for route changes, so pages still open at the top instantly
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${inter.variable} ${grotesk.variable} ${mono.variable} ${munro.variable}`}
     >

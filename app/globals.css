@@ -250,6 +250,11 @@ body::after {
 }
 .skip-link:focus { top: 12px; }
 
+/* In-page links (Selected work, Back to top, #contact) glide instead of jumping; reduced motion below keeps the jump. */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Hover is mouse-only (motion budget rule 6): Tailwind v4's `hover:` already applies only under (hover: hover). */
 
 @media (prefers-reduced-motion: reduce) {
