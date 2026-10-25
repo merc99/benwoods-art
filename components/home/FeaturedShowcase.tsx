@@ -22,17 +22,20 @@ export function FeaturedShowcase({
   return (
     <article>
       <Link href={`/work/${project.slug}`} className="group block">
-        <div className={half ? 'px-[2%] pt-[2%] pb-[4%]' : 'px-[2%] pt-[2%] pb-[4%] md:px-[6%] md:pt-[3%] md:pb-[4%]'}>
-          <DeviceFrame
-            src={screenshot}
-            // decorative in the card: the link is named by its visible title, summary and tags
-            alt=""
-            size={half ? 'half' : 'wide'}
-            priority={!half}
-            sizes={half ? '(min-width: 768px) 46vw, 94vw' : '(min-width: 768px) 86vw, 94vw'}
-          />
+        {/* the frame and its title, summary and tags share one side inset, so the text starts where the image does */}
+        <div className={half ? 'px-[2%]' : 'px-[2%] md:px-[6%]'}>
+          <div className={half ? 'pt-[2%] pb-[4%]' : 'pt-[2%] pb-[4%] md:pt-[3%]'}>
+            <DeviceFrame
+              src={screenshot}
+              // decorative in the card: the link is named by its visible title, summary and tags
+              alt=""
+              size={half ? 'half' : 'wide'}
+              priority={!half}
+              sizes={half ? '(min-width: 768px) 46vw, 94vw' : '(min-width: 768px) 86vw, 94vw'}
+            />
+          </div>
+          <TileMeta project={project} titleId={`${project.slug}-ft`} summaryId={`${project.slug}-fd`} showSummary />
         </div>
-        <TileMeta project={project} titleId={`${project.slug}-ft`} summaryId={`${project.slug}-fd`} showSummary />
       </Link>
     </article>
   )
