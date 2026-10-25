@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import { useEffect, useRef, useState } from 'react'
 import { LazyMount } from './LazyMount'
 
 const load = <K extends string>(mod: () => Promise<Record<K, React.ComponentType>>, name: K) =>
@@ -38,8 +39,39 @@ export function DemoStage({ id }: { id: DemoId }) {
   )
 }
 
-/** A demo that sits over a case study's static cover and mounts straight away (the cover shows until it draws). */
+/**
+ * A demo that sits over a case study's still cover (a capture of the demo's own first frame). It mounts straight away
+ * but stays invisible until it has drawn: its images decoded, fonts ready and a few frames painted, then fades in over
+ * the still, so the swap doesn't show.
+ */
 export function HeroDemo({ id }: { id: DemoId }) {
   const Demo = DEMOS[id]
-  return <Demo />
+  const box = useRef<HTMLDivElement>(null)
+  const [shown, setShown] = useState(false)
+  useEffect(() => {
+    const el = box.current
+    if (!el) return
+    let gone = false
+    const started = performance.now()
+    const check = async () => {
+      if (gone) return
+      const imgs = [...el.querySelectorAll('img')]
+      const mounted = el.childElementCount > 0 && el.firstElementChild!.childElementCount > 0
+      if (!mounted && performance.now() - started < 4000) return void window.setTimeout(check, 80)
+      await Promise.all(imgs.map((i) => (i.complete ? Promise.resolve() : i.decode().catch(() => {}))))
+      await document.fonts?.ready
+      // a few frames so canvases and springs have painted their first state
+      for (let k = 0; k < 6; k++) await new Promise((r) => requestAnimationFrame(r))
+      if (!gone) setShown(true)
+    }
+    void check()
+    return () => {
+      gone = true
+    }
+  }, [])
+  return (
+    <div ref={box} className={`size-full transition-opacity duration-500 ${shown ? 'opacity-100' : 'opacity-0'}`}>
+      <Demo />
+    </div>
+  )
 }

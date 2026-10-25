@@ -77,6 +77,10 @@ export type Project = {
   pageCover: boolean
   /** A live demo laid over the case-study cover (the static cover shows until it draws), e.g. 'club-hero'. */
   heroDemo: string
+  /** A capture of the hero demo's first frame, shown under it until it draws (so the swap is seamless). */
+  heroStill: string
+  /** The hero demo's own background color, so the frame never shows the site's color while it loads. */
+  heroBg: string
   /** Sharp cover sizes (WebP, served as-is) that switch the case-study cover to a hover glow on its linework. */
   coverGlow: { src: string; w: number }[]
   /** Lab demo ids shown in an Interactive section on the case study. */
@@ -129,6 +133,8 @@ function load(): Project[] {
         coverScreenAlt: '',
         pageCover: true,
         heroDemo: '',
+        heroStill: '',
+        heroBg: '',
         demos: [],
         coverGlow: [],
         liveFrame: '',

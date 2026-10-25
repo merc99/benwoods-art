@@ -112,8 +112,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       {p.heroDemo && p.cover ? (
         <div className="shell">
           <Bezel size="wide">
-            <div className={cn('relative aspect-[16/10] overflow-hidden bg-sunken', bezelRadius.wide.inner)}>
-              <Image src={p.cover} alt={p.coverAlt} fill priority sizes="(min-width: 1520px) 1440px, 100vw" quality={88} className="object-cover" />
+            <div style={p.heroBg ? { background: p.heroBg } : undefined} className={cn('relative aspect-[16/10] overflow-hidden bg-sunken', bezelRadius.wide.inner)}>
+              <Image src={p.heroStill || p.cover} alt={p.coverAlt} fill priority sizes="(min-width: 1520px) 1440px, 100vw" quality={90} className="object-cover" />
               <div className="absolute inset-0">
                 <HeroDemo id={p.heroDemo as DemoId} />
               </div>
