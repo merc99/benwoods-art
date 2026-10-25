@@ -5,12 +5,17 @@ import { useEffect } from 'react'
 import { useScramble } from '@/components/fx/useScramble'
 import { cn } from '@/lib/cn'
 
-/** The pixel "ben woods" wordmark. Decodes once on load and again on mouse hover (motion budget: moment). */
+// Decoded once per visit: page changes in the app remount headers and menus, and the flag lives for the whole visit.
+let decoded = false
+
+/** The pixel "ben woods" wordmark. Decodes once per visit and again on mouse hover (motion budget: moment). */
 export function Wordmark({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
   const text = 'ben woods'
   const { ref, play } = useScramble(text)
 
   useEffect(() => {
+    if (decoded) return
+    decoded = true
     play()
   }, [play])
 
@@ -20,7 +25,8 @@ export function Wordmark({ className, onNavigate }: { className?: string; onNavi
       aria-label="Ben Woods"
       onClick={onNavigate}
       onPointerEnter={(e) => e.pointerType === 'mouse' && play()}
-      onFocus={play}
+      // keyboard focus only (a click or a page change also focuses the link)
+      onFocus={(e) => e.currentTarget.matches(':focus-visible') && play()}
       className={cn('relative inline-flex h-11 items-center font-pixel leading-none', className)}
     >
       {/* The invisible copy holds the width so the scramble never shifts the layout. */}
