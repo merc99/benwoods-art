@@ -286,7 +286,9 @@ export function PixelTiles({
       baseAlpha = dark ? 0.2 : 0.17
       litAlpha = dark ? 0.95 : 0.85
 
-      px = w < 640 ? Math.max(4, pixel - 2) : pixel
+      // smaller motifs on narrow screens, so a phone shows about as many tiles across as a desktop does
+      px = w < 640 ? Math.max(2.5, pixel * 0.43) : w < 1024 ? Math.max(4, pixel * 0.7) : pixel
+      const gk = Math.max(0.5, px / pixel) // glows shrink with the motifs so small tiles stay crisp
       pxD = Math.max(2, Math.round(px * dpr))
       padD = Math.round(PAD * dpr)
       tileSize = (N * pxD) / dpr
@@ -296,10 +298,10 @@ export function PixelTiles({
       const r0 = rng(seed)
       const motifs = Array.from({ length: MOTIFS }, () => makeMotif(r0))
       const line = Math.max(1, Math.round(pxD * 0.16)) // whole device pixels, so the outline is one crisp line
-      baseSprites = motifs.map((m) => sprite(m, fg, { fill: 0.3, glow: dark ? 1.5 : 0, line }))
-      litSprites = motifs.map((m) => sprite(m, glow, { fill: 0.4, glow: 5, line }))
+      baseSprites = motifs.map((m) => sprite(m, fg, { fill: 0.3, glow: dark ? 1.5 * gk : 0, line }))
+      litSprites = motifs.map((m) => sprite(m, glow, { fill: 0.4, glow: 5 * gk, line }))
       popSprites = POP.map(() => [])
-      popOf = (i, m) => (popSprites[i][m] ??= sprite(motifs[m], POP[i], { fill: 0.55, glow: 6, line }))
+      popOf = (i, m) => (popSprites[i][m] ??= sprite(motifs[m], POP[i], { fill: 0.55, glow: 6 * gk, line }))
 
       // vertical runs: each column alternates filled and empty stretches
       const r1 = rng(seed + 101)
