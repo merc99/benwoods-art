@@ -360,10 +360,20 @@ export function PixelTiles({
         if (!r.width || r.width * r.height > origin.width * origin.height * 0.4) continue
         rects.push({ l: r.left - origin.left - 6, t: r.top - origin.top - 6, r: r.right - origin.left + 6, b: r.bottom - origin.top + 6 })
       }
+      // a soft fade, not a band: tiles right under text dim the most, and the next tile out eases back to full
+      const feather = tileSize
       for (const tile of tiles) {
-        const hit = rects.some((r) => tile.x < r.r && tile.x + tileSize > r.l && tile.y < r.b && tile.y + tileSize > r.t)
-        tile.clear = hit ? 0.16 : 1
-        tile.dim = hit ? 0.55 : 1
+        let d = Infinity
+        for (const r of rects) {
+          const dx = Math.max(r.l - (tile.x + tileSize), 0, tile.x - r.r)
+          const dy = Math.max(r.t - (tile.y + tileSize), 0, tile.y - r.b)
+          d = Math.min(d, Math.hypot(dx, dy))
+          if (d === 0) break
+        }
+        const k = Math.min(1, d / feather) // 0 under the text, 1 a tile away
+        const s = k * k * (3 - 2 * k)
+        tile.clear = 0.4 + 0.6 * s
+        tile.dim = 0.72 + 0.28 * s
       }
       draw(performance.now(), 0)
     }
