@@ -18,15 +18,23 @@ export function LiveFrame({ src, title, width = 1440 }: { src: string; title: st
   const [on, setOn] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [scale, setScale] = useState(0)
-  // Scrolling over the frame scrolls the page, not the site inside it, until you click into the site; leaving
-  // the frame hands the wheel back to the page. Same-origin sites get the page's wheel forwarded (hover and
-  // clicks work as normal); cross-origin ones sit under a clear layer that a click lifts.
+  // Scrolling over the frame scrolls the page natively (the site sits under a clear layer, so the wheel never
+  // reaches it) until you click into the site; that click is passed straight through where the browser allows
+  // it (the hosted MMO copy). Leaving the frame puts the layer back.
   const [active, setActive] = useState(false)
-  const [sameOrigin, setSameOrigin] = useState(false)
-  const activeRef = useRef(false)
-  useEffect(() => {
-    activeRef.current = active
-  }, [active])
+  const frameRef = useRef<HTMLIFrameElement>(null)
+  /** Pass the activating click through to whatever sits under it inside a same-origin site. */
+  const passClick = (e: React.PointerEvent) => {
+    const f = frameRef.current
+    let doc: Document | null = null
+    try {
+      doc = f?.contentDocument ?? null
+    } catch {}
+    if (!f || !doc) return
+    const r = f.getBoundingClientRect()
+    const target = doc.elementFromPoint((e.clientX - r.left) / scale, (e.clientY - r.top) / scale) as HTMLElement | null
+    window.setTimeout(() => target?.click(), 0)
+  }
 
   useEffect(() => {
     const el = box.current
@@ -51,17 +59,23 @@ export function LiveFrame({ src, title, width = 1440 }: { src: string; title: st
 
   return (
     <div ref={box} className="absolute inset-0 overflow-hidden" onPointerLeave={() => setActive(false)}>
-      {/* cross-origin: a clear layer keeps the wheel on the page until a click lets you into the site */}
-      {loaded && !sameOrigin && !active && (
+      {/* a clear layer keeps the wheel on the page until a click lets you into the site */}
+      {loaded && !active && (
         <button
           type="button"
           aria-label={`Use the live ${title} site`}
-          onClick={() => setActive(true)}
+          onPointerDown={(e) => {
+            if (e.button !== 0) return
+            setActive(true)
+            passClick(e)
+          }}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActive(true)}
           className="absolute inset-0 z-10 cursor-pointer bg-transparent"
         />
       )}
       {on && scale > 0 && (
         <iframe
+          ref={frameRef}
           src={src}
           title={`${title}, the live site`}
           // Reveal once the site has settled behind the matching still. Same-origin sites (the hosted MMO copy): wait
@@ -73,18 +87,6 @@ export function LiveFrame({ src, title, width = 1440 }: { src: string; title: st
               doc = frame.contentDocument
             } catch {}
             if (!doc) return void window.setTimeout(() => setLoaded(true), 1400)
-            setSameOrigin(true)
-            const win = frame.contentWindow!
-            win.addEventListener(
-              'wheel',
-              (ev) => {
-                if (activeRef.current) return
-                ev.preventDefault()
-                window.scrollBy({ top: ev.deltaY * (ev.deltaMode === 1 ? 16 : 1), left: 0 })
-              },
-              { passive: false },
-            )
-            win.addEventListener('pointerdown', () => setActive(true))
             const started = performance.now()
             const settled = () =>
               doc!.getAnimations().every((a) => a.playState !== 'running' || a.effect?.getTiming().iterations === Infinity)

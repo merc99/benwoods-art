@@ -11,6 +11,8 @@ export function PlaylistGrid({ playlists }: { playlists: Playlist[] }) {
   const [playing, setPlaying] = useState<string | null>(null)
   // the player's own load: a label while Spotify answers, and a direct link if it hasn't after 6s
   const [ready, setReady] = useState(false)
+  // like the live frames: scrolling over the player scrolls the page until you click into it
+  const [inside, setInside] = useState(false)
   const [slow, setSlow] = useState(false)
   useEffect(() => {
     if (!playing) return
@@ -24,7 +26,7 @@ export function PlaylistGrid({ playlists }: { playlists: Playlist[] }) {
         return (
           <li key={p.id}>
             {/* while playing, the tile takes the Spotify player's standard 352px height */}
-            <div className={`relative overflow-hidden ${on ? 'h-[352px] rounded-[12px] bg-[#121212]' : 'aspect-square bg-sunken'}`}>
+            <div onPointerLeave={() => setInside(false)} className={`relative overflow-hidden ${on ? 'h-[352px] rounded-[12px] bg-[#121212]' : 'aspect-square bg-sunken'}`}>
               {on && !ready && (
                 <div className="absolute inset-0 grid place-items-center text-center">
                   {slow ? (
@@ -37,6 +39,9 @@ export function PlaylistGrid({ playlists }: { playlists: Playlist[] }) {
                     </p>
                   )}
                 </div>
+              )}
+              {on && ready && !inside && (
+                <button type="button" aria-label={`Use the ${p.title} player`} onClick={() => setInside(true)} className="absolute inset-0 z-[5] cursor-pointer bg-transparent" />
               )}
               {on ? (
                 <iframe
@@ -64,6 +69,7 @@ export function PlaylistGrid({ playlists }: { playlists: Playlist[] }) {
                 type="button"
                 onClick={() => {
                   setReady(false)
+                  setInside(false)
                   setSlow(false)
                   setPlaying(on ? null : p.id)
                 }}
