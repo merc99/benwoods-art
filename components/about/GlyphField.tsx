@@ -17,9 +17,12 @@
 import { useEffect, useRef } from 'react'
 
 const LEVELS = [' ', '·', '∙', ':', '+', '×', '◇', '◈', '▣', '■']
-// Facet colors from the site's own palette (the pixel tiles' pop colors): cream, a light amber, amber,
-// the signal vermilion, and violet for the rim glow.
-const BANDS = ['#f4ecdc', '#ffd27a', '#ffb02e', '#ff5a2e', '#a78bfa']
+// Colors from the site's own palette: cream, a light amber, amber, the signal vermilion and violet shade the
+// die; green and blue join them for the click ripple.
+const BANDS = ['#f4ecdc', '#ffd27a', '#ffb02e', '#ff5a2e', '#a78bfa', '#3ddc97', '#38bdf8']
+/** A ripple runs through the same colors as a click on the hero tiles, front to back: vermilion, amber,
+ *  green, blue, violet. */
+const RING_BANDS = [3, 2, 5, 6, 4]
 /** The number is drawn at this many subpixels per glyph cell, then each cell is filled by its coverage. */
 const SS = 4
 
@@ -487,11 +490,15 @@ export function GlyphField({ className }: { className?: string }) {
           const dy = reduce || onDie ? 0 : Math.sin(flow * 3 - ts) * 0.28
 
           let ring = 0
+          let peak = 0
+          let ringOff = 0 // where this cell sits across the strongest ring: + ahead of its crest, - behind it
           for (const r of ripples) {
             const age = t - r.t0
             if (age < 0) continue
             const off = (Math.hypot(x - r.x, y - r.y) - age * RIPPLE_SPEED) / RIPPLE_WIDTH
-            ring += Math.exp(-off * off) * (1 - age / RIPPLE_LIFE) * (r.s ?? 1)
+            const v = Math.exp(-off * off) * (1 - age / RIPPLE_LIFE) * (r.s ?? 1)
+            ring += v
+            if (v > peak) (peak = v), (ringOff = off)
           }
           ring = Math.min(1, ring)
 
@@ -533,7 +540,9 @@ export function GlyphField({ className }: { className?: string }) {
           }
           const isNumber = !!mask && onDie && cover > 0.42
           if (ring > 0.25 && !isNumber) {
-            band = ring > 0.6 ? 3 : 2
+            // the leading edge is vermilion, the trailing edge violet, like the tile pop's color run
+            const u = Math.min(0.999, Math.max(0, (1.1 - ringOff) / 2.2))
+            band = RING_BANDS[Math.floor(u * RING_BANDS.length)]
             level = Math.min(LEVELS.length - 1, level + 2)
             alpha = Math.min(1, alpha + ring * 0.5)
           }
@@ -556,6 +565,17 @@ export function GlyphField({ className }: { className?: string }) {
         const facing = new Set(faces.map((x) => x.i))
         ctx.lineCap = 'round'
         ctx.lineJoin = 'round'
+        const cx0 = ox * step
+        const cy0 = oy * step
+        const R = scale * step * 1.9 // about the die's radius
+        // a faint glow around the die, violet into vermilion, so it sits in the field instead of on it
+        const halo = ctx.createRadialGradient(cx0, cy0, R * 0.6, cx0, cy0, R * 1.6)
+        halo.addColorStop(0, 'rgba(167,139,250,0.10)')
+        halo.addColorStop(0.45, 'rgba(255,90,46,0.04)')
+        halo.addColorStop(1, 'rgba(255,90,46,0)')
+        ctx.globalAlpha = 1
+        ctx.fillStyle = halo
+        ctx.fillRect(cx0 - R * 1.7, cy0 - R * 1.7, R * 3.4, R * 3.4)
         // body: dims the glyph waves behind the die so its lines read
         ctx.globalAlpha = 0.88
         ctx.fillStyle = '#0f0f0e'
@@ -573,15 +593,34 @@ export function GlyphField({ className }: { className?: string }) {
             ctx.lineTo(X(e.b), Y(e.b))
           }
         ctx.stroke()
-        // a whisper of light on each front face, so the facets turn as it spins
-        ctx.fillStyle = '#f4ecdc'
+        // Each front face is tinted by the light it catches, like a lit enamel die in the glyph look: cream where
+        // the light hits, through amber to vermilion in shadow, and a violet rim on faces turning away. Kept
+        // translucent so the back edges still show through.
         for (const { f, n } of faces) {
           const d = Math.max(0, n[0] * light[0] + n[1] * light[1] + n[2] * light[2])
-          ctx.globalAlpha = 0.015 + Math.pow(d, 1.6) * 0.08
+          const lum = Math.min(1, 0.08 + Math.pow(d, 1.35) * 1.05)
+          const band = n[2] < 0.3 ? 4 : lum > 0.8 ? 0 : lum > 0.58 ? 1 : lum > 0.34 ? 2 : 3
+          ctx.fillStyle = BANDS[band]
+          ctx.globalAlpha = band === 4 ? 0.13 + (0.3 - n[2]) * 0.25 : band === 0 ? 0.025 + lum * 0.08 : 0.04 + lum * 0.11
           ctx.beginPath()
           tri(f)
           ctx.fill()
         }
+        // a soft sheen from the light's side, over the whole body
+        ctx.save()
+        ctx.beginPath()
+        for (const { f } of faces) tri(f)
+        ctx.clip()
+        const hx = cx0 + light[0] * R * 0.75
+        const hy = cy0 + light[1] * R * 0.75
+        const sheen = ctx.createRadialGradient(hx, hy, 0, hx, hy, R * 1.3)
+        sheen.addColorStop(0, 'rgba(255,236,210,0.11)')
+        sheen.addColorStop(0.5, 'rgba(244,236,220,0.03)')
+        sheen.addColorStop(1, 'rgba(244,236,220,0)')
+        ctx.globalAlpha = 1
+        ctx.fillStyle = sheen
+        ctx.fillRect(cx0 - R * 2, cy0 - R * 2, R * 4, R * 4)
+        ctx.restore()
         const top = faces[faces.length - 1]
         if (shown && numFade > 0 && top) {
           ctx.fillStyle = '#ff5a2e'
@@ -600,15 +639,24 @@ export function GlyphField({ className }: { className?: string }) {
             ctx.lineTo(X(e.b), Y(e.b))
           }
         ctx.stroke()
+        const outline = () => {
+          ctx.beginPath()
+          for (const e of EDGES)
+            if (facing.has(e.f[0]) !== facing.has(e.f[1])) {
+              ctx.moveTo(X(e.a), Y(e.a))
+              ctx.lineTo(X(e.b), Y(e.b))
+            }
+          ctx.stroke()
+        }
+        // a violet rim light under the outline, then the outline itself
+        ctx.strokeStyle = '#a78bfa'
+        ctx.lineWidth = 5 * dpr
+        ctx.globalAlpha = 0.14
+        outline()
+        ctx.strokeStyle = '#f4ecdc'
         ctx.lineWidth = 1.4 * dpr
         ctx.globalAlpha = 0.85
-        ctx.beginPath()
-        for (const e of EDGES)
-          if (facing.has(e.f[0]) !== facing.has(e.f[1])) {
-            ctx.moveTo(X(e.a), Y(e.a))
-            ctx.lineTo(X(e.b), Y(e.b))
-          }
-        ctx.stroke()
+        outline()
         // vertex dots in the signal color, where the front edges meet
         const front = new Set(faces.flatMap((x) => x.f))
         ctx.fillStyle = '#ff5a2e'
