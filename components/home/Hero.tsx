@@ -26,15 +26,17 @@ export function Hero() {
           <span aria-hidden="true" className={styles.mask}>
             <span className={styles.rise}>{first}</span>
           </span>
-          <span aria-hidden="true" className={`${styles.mask} lg:pl-[calc(100%/12*3)]`}>
+          <span aria-hidden="true" className={styles.mask}>
             <span className={styles.rise} style={{ animationDelay: '90ms' }}>
+              {/* an invisible "BE" sets the indent, so WOODS starts exactly under the N (desktop) */}
+              <span className="invisible hidden lg:inline">{first.slice(0, -1)}</span>
               {last}
             </span>
           </span>
         </h1>
 
         <div className="mt-10 grid grid-cols-4 gap-x-[var(--gutter)] pb-10 lg:mt-[min(3.5rem,5svh)] lg:grid-cols-12 lg:pb-14">
-          <p className={`${styles.fade} t-lede col-span-4 max-w-[30ch] text-fg lg:col-span-6 lg:col-start-4`}>{hero.lede}</p>
+          <p className={`${styles.fade} t-lede col-span-4 max-w-[30ch] text-fg lg:col-span-12 lg:max-w-[calc(30ch+1.107*min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh)))] lg:pl-[calc(1.107*min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh)))]`}>{hero.lede}</p>
         </div>
         </div>
 
