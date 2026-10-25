@@ -6,7 +6,8 @@
 //   touch, where there is no hover).
 // - Hover (mouse only): tiles near the pointer gather light in the signal color and let it go slowly,
 //   so moving the mouse leaves a soft trail instead of a spotlight.
-// - Click (mouse only): the tile under the pointer cycles through a few accent colors, neighbors follow softly.
+// - Click: the tile under the pointer cycles through a few accent colors and the color ripples out to its
+//   neighbors. Mouse clicks work on every hero; a tap on a touch screen only on the Home hero (`tappable`).
 // Each motif is pre-drawn once as a sprite; frames only run while the hero is on screen and the tab is visible.
 
 import { useEffect, useRef } from 'react'
@@ -92,12 +93,15 @@ export function PixelTiles({
   seed = 7,
   pixel = 7,
   tall = false,
+  tappable = false,
 }: {
   className?: string
   seed?: number
   pixel?: number
   /** Let the pattern run further down before it fades (the tall Home hero). */
   tall?: boolean
+  /** Taps on a touch screen ripple the tiles too (the Home hero only; elsewhere only mouse clicks do). */
+  tappable?: boolean
 }) {
   const ref = useRef<HTMLCanvasElement>(null)
 
@@ -121,7 +125,7 @@ export function PixelTiles({
     let tiles: Tile[] = []
     let baseSprites: HTMLCanvasElement[] = []
     let litSprites: HTMLCanvasElement[] = []
-    // click colors, drawn only the first time a tile is clicked (never on touch, where there is no click pop)
+    // click colors, drawn only the first time a tile is clicked
     let popSprites: (HTMLCanvasElement | undefined)[][] = [] // [color][motif]
     let popOf: (i: number, m: number) => HTMLCanvasElement = () => document.createElement('canvas')
     let built = '' // the size this was last built for (rebuilding is the expensive part)
@@ -465,7 +469,11 @@ export function PixelTiles({
     if (fine) {
       host.addEventListener('pointermove', move)
       host.addEventListener('pointerleave', leave)
+    }
+    if (fine || tappable) {
       host.addEventListener('click', click)
+      // no gray tap flash over the whole hero on phones
+      if (!fine) host.style.setProperty('-webkit-tap-highlight-color', 'transparent')
     }
     if (!reduce) start()
 
@@ -482,7 +490,7 @@ export function PixelTiles({
       host.removeEventListener('pointerleave', leave)
       host.removeEventListener('click', click)
     }
-  }, [seed, pixel])
+  }, [seed, pixel, tappable])
 
   // fades out toward the bottom so the hero blends into the next section (and never runs behind long content)
   const fade = easedFade('to bottom', 'min(45%, calc(var(--tiles-end) * 0.5))', 'min(100%, var(--tiles-end))')
