@@ -12,12 +12,14 @@ export function Hero() {
   const [first, last] = hero.title.split(' ')
 
   return (
-    <section aria-labelledby="hero-title" className="relative isolate flex min-h-[calc(100svh-var(--header-h))] flex-col overflow-hidden">
+    <section aria-labelledby="hero-title" className="relative isolate flex min-h-[calc(86svh-var(--header-h))] flex-col lg:min-h-[calc(100svh-var(--header-h))] overflow-hidden">
       <PixelTiles seed={7} tall />
       <div className="shell relative flex w-full flex-1 flex-col">
+        {/* on phones the name and lede sit centered in the space above the Selected work line */}
+        <div className="max-lg:my-auto">
         <h1
           id="hero-title"
-          className="t-display pt-12 text-[min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh))] sm:pt-16 lg:-ml-[0.04em] lg:pt-[min(5rem,7svh)]"
+          className="t-display pt-8 text-[min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh))] sm:pt-16 lg:-ml-[0.04em] lg:pt-[min(5rem,7svh)]"
         >
           {/* one accessible name; the two animated lines are visual only */}
           <span className="sr-only">{hero.title}</span>
@@ -31,8 +33,9 @@ export function Hero() {
           </span>
         </h1>
 
-        <div className="mt-10 grid grid-cols-4 gap-x-[var(--gutter)] pb-16 lg:mt-[min(3.5rem,5svh)] lg:grid-cols-12 lg:pb-14">
+        <div className="mt-10 grid grid-cols-4 gap-x-[var(--gutter)] pb-10 lg:mt-[min(3.5rem,5svh)] lg:grid-cols-12 lg:pb-14">
           <p className={`${styles.fade} t-lede col-span-4 max-w-[30ch] text-fg lg:col-span-6 lg:col-start-4`}>{hero.lede}</p>
+        </div>
         </div>
 
         <div className="t-label mt-auto flex items-center justify-between border-t border-rule py-3 text-fg-3">
