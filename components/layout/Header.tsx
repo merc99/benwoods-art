@@ -26,7 +26,7 @@ export function Header() {
     <>
       <header className="sticky top-0 z-40 border-b border-rule bg-bg">
         <div className="shell flex h-[var(--header-h)] items-center justify-between gap-4">
-          <Wordmark className="text-[28px] lg:text-[32px]" />
+          <Wordmark compactOnHero className="text-[28px] lg:text-[32px]" />
 
           <div className="flex items-center gap-1 sm:gap-2">
             {/* appears once you scroll past the top; collapses to no width when hidden, so it leaves no gap */}

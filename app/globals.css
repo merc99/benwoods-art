@@ -253,6 +253,12 @@ body::after {
 }
 .skip-link:focus { top: 12px; }
 
+/* the header's "b." mark settling in (Home, while the big name is on screen) */
+@keyframes wm-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: none; }
+}
+
 /* In-page links (Selected work, Back to top, #contact) glide instead of jumping; reduced motion below keeps the jump. */
 html {
   scroll-behavior: smooth;
