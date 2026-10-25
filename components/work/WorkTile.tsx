@@ -4,6 +4,7 @@ import { cn } from '@/lib/cn'
 import type { ProjectCard } from '@/lib/work'
 import { TileMeta } from './TileMeta'
 import { Bezel, bezelRadius } from '@/components/ui/Bezel'
+import { CoverMorph } from '@/components/ui/CoverMorph'
 
 /**
  * A work tile: cover on top (no overlay), title, year and mono tags below.
@@ -30,6 +31,7 @@ export function WorkTile({
 }) {
   const src = (wide && project.coverWide) || project.coverTile || project.cover
   const image = (
+    <CoverMorph slug={project.slug}>
     <Bezel size={wide ? 'wide' : 'half'}>
     <div
       style={project.coverBg ? { background: project.coverBg } : undefined}
@@ -50,6 +52,7 @@ export function WorkTile({
       )}
     </div>
     </Bezel>
+    </CoverMorph>
   )
 
   return (

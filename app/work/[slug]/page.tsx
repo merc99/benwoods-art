@@ -22,6 +22,7 @@ import { DemoCard } from '@/components/lab/DemoCard'
 import { LiveFrame } from '@/components/work/LiveFrame'
 import { GlowCover } from '@/components/work/GlowCover'
 import { lab } from '@/lib/lab'
+import { CoverMorph } from '@/components/ui/CoverMorph'
 
 export const dynamicParams = false
 
@@ -111,6 +112,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       {/* cover: a live demo over the cover, a framed product screenshot, or the cover image */}
       {p.heroDemo && p.cover ? (
         <div className="shell">
+          <CoverMorph slug={p.slug}>
           <Bezel size="wide">
             <div className={cn('relative aspect-[16/10] overflow-hidden bg-sunken', bezelRadius.wide.inner)}>
               <Image src={p.cover} alt={p.coverAlt} fill priority sizes="(min-width: 1520px) 1440px, 100vw" quality={88} className="object-cover" />
@@ -119,10 +121,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
           </Bezel>
+          </CoverMorph>
         </div>
       ) : p.liveFrame && (p.coverScreen || p.cover) ? (
         <div className="shell">
           <div className="mx-auto max-w-[1280px] pb-[clamp(1.5rem,4vw,3.5rem)]">
+            <CoverMorph slug={p.slug}>
             <Bezel size="wide">
               <div className={cn('relative aspect-[16/10] overflow-hidden bg-sunken', bezelRadius.wide.inner)}>
                 <Image
@@ -137,6 +141,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                 <LiveFrame src={p.liveFrame} title={p.title} />
               </div>
             </Bezel>
+            </CoverMorph>
             <p className="t-label mt-4 text-fg-3">
               <span className="max-lg:hidden">The live site, running in the frame. Click around · </span>
               <a href={p.liveFrame} target="_blank" rel="noreferrer" className="text-fg underline decoration-rule-strong underline-offset-4 hover:decoration-fg">
@@ -148,7 +153,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       ) : p.coverScreen ? (
         <div className="shell">
           <div className="mx-auto max-w-[1280px] pb-[clamp(1.5rem,4vw,3.5rem)]">
+            <CoverMorph slug={p.slug}>
             <DeviceFrame src={p.coverScreen} alt={p.coverScreenAlt || p.coverAlt} priority sizes="(min-width: 1520px) 1280px, 92vw" />
+            </CoverMorph>
           </div>
         </div>
       ) : (
@@ -157,6 +164,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         cover && (
           // tall art: the frame wraps the artwork itself, centered, instead of a wide frame with side gaps
           <div className={cn('shell', portrait && 'flex justify-center')}>
+            <CoverMorph slug={p.slug}>
             <Bezel size="wide" className={cn(portrait && 'max-w-full')}>
             <div className={cn('overflow-hidden bg-sunken', bezelRadius.wide.inner)}>
               {p.coverGlow.length ? (
@@ -183,6 +191,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               )}
             </div>
             </Bezel>
+            </CoverMorph>
           </div>
         )
       )}
@@ -342,6 +351,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               >
                 {thumbs[i] && (
                   // the cover whole, at its own shape, in the site's card frame (lifts on hover like other cards)
+                  <CoverMorph slug={project.slug}>
                   <Bezel size="small" className="hidden shrink-0 sm:block">
                     <span className={cn('block overflow-hidden bg-sunken', bezelRadius.small.inner)}>
                       <Image
@@ -355,6 +365,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                       />
                     </span>
                   </Bezel>
+                  </CoverMorph>
                 )}
                 <span className="min-w-0">
                   <span className="t-label block text-fg-3">

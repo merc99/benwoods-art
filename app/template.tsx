@@ -1,25 +1,17 @@
 'use client'
 
-import { motion, useReducedMotion } from 'motion/react'
-import { useEffect } from 'react'
+import { ViewTransition } from 'react'
 
-// Skip the transition on the very first load so content is never hidden before hydration.
-let firstLoad = true
-
-/** Page transition: a short cross-fade with an 8px rise on route changes (calm tier). */
+/**
+ * Page transition (calm tier), on the browser's View Transitions: on a route change the old page fades out fast and
+ * the new one fades in with an 8px rise. Project images named `cover-<slug>` (work cards, featured builds,
+ * previous/next thumbnails, the case-study cover) morph from where they were to where they land instead of fading.
+ * Nothing runs on the first load; reduced motion and browsers without the API just swap pages. CSS in globals.css.
+ */
 export default function Template({ children }: { children: React.ReactNode }) {
-  const reduce = useReducedMotion()
-  const animate = !firstLoad
-  useEffect(() => {
-    firstLoad = false
-  }, [])
   return (
-    <motion.div
-      initial={animate ? { opacity: 0, y: reduce ? 0 : 8 } : false}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
-    >
-      {children}
-    </motion.div>
+    <ViewTransition enter="page-in" exit="page-out" default="none">
+      <div>{children}</div>
+    </ViewTransition>
   )
 }
