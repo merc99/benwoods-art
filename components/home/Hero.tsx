@@ -16,25 +16,25 @@ export function Hero() {
       <PixelTiles seed={7} tall />
       <div className="shell relative flex w-full flex-1 flex-col">
         {/* the name and lede sit centered in the space above the Selected work line */}
-        <div className="my-auto">
+        <div className="my-auto text-center">
         <h1
           id="hero-title"
-          className="t-display pt-8 text-[min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh))] sm:pt-16 lg:-ml-[0.04em] lg:pt-0"
+          className="t-display pt-8 text-[min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh))] sm:pt-16 lg:pt-0"
         >
           {/* one accessible name; the two animated lines are visual only */}
           <span className="sr-only">{hero.title}</span>
           <span aria-hidden="true" className={styles.mask}>
             <span className={styles.rise}>{first}</span>
           </span>
-          <span aria-hidden="true" className={`${styles.mask} lg:pl-[calc(100%/12*3)]`}>
+          <span aria-hidden="true" className={styles.mask}>
             <span className={styles.rise} style={{ animationDelay: '90ms' }}>
               {last}
             </span>
           </span>
         </h1>
 
-        <div className="mt-10 grid grid-cols-4 gap-x-[var(--gutter)] pb-10 lg:mt-[min(3.5rem,5svh)] lg:grid-cols-12 lg:pb-14">
-          <p className={`${styles.fade} t-lede col-span-4 max-w-[30ch] text-fg lg:col-span-6 lg:col-start-4`}>{hero.lede}</p>
+        <div className="mt-8 pb-10 lg:mt-[min(3rem,5svh)] lg:pb-14">
+          <p className={`${styles.fade} t-lede mx-auto max-w-[30ch] text-fg`}>{hero.lede}</p>
         </div>
         </div>
 
