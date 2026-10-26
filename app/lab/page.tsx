@@ -7,9 +7,9 @@ import { PageIntro } from '@/components/ui/PageIntro'
 
 export const metadata: Metadata = {
   title: 'Lab',
-  description: 'Live interaction demos from Ben Woods’ recent builds: Check-in, 100K Club, MMO Nodes and Mega Roll.',
+  description: 'Live interaction demos from Ben Woods’ recent builds: Check-in, Chrometooth, 100K Club, MMO Nodes and Mega Roll.',
   alternates: { canonical: '/lab' },
-  openGraph: { type: 'website', siteName: 'Ben Woods', url: '/lab', title: 'Lab — Ben Woods', description: 'Live interaction demos from Ben Woods’ recent builds: Check-in, 100K Club, MMO Nodes and Mega Roll.' },
+  openGraph: { type: 'website', siteName: 'Ben Woods', url: '/lab', title: 'Lab — Ben Woods', description: 'Live interaction demos from Ben Woods’ recent builds: Check-in, Chrometooth, 100K Club, MMO Nodes and Mega Roll.' },
 }
 
 const live = [

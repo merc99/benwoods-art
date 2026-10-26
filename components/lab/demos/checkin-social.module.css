@@ -1,0 +1,88 @@
+/* Check-in's social moments (keyframes from check-in-web/app/globals.css, the app's delight curve). */
+.stickpop {
+  animation: stickpop 600ms cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+@keyframes stickpop {
+  30% {
+    transform: translateY(-6px) rotate(-6deg) scale(1.1);
+  }
+}
+.tick {
+  transition: transform 350ms cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+.tickpop {
+  animation: tickpop 500ms 150ms cubic-bezier(0.34, 1.45, 0.64, 1) both;
+}
+@keyframes tickpop {
+  from {
+    transform: scale(0) rotate(-90deg);
+  }
+}
+.handwave {
+  transform-origin: bottom left;
+  animation: handwave 600ms cubic-bezier(0.34, 1.45, 0.64, 1) both;
+}
+@keyframes handwave {
+  0% {
+    transform: scale(0) rotate(0deg);
+  }
+  30% {
+    transform: scale(1.15) rotate(-18deg);
+  }
+  50% {
+    transform: scale(1) rotate(16deg);
+  }
+  70% {
+    transform: rotate(-10deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+.allin {
+  animation: allin 450ms 700ms cubic-bezier(0.34, 1.45, 0.64, 1) both;
+}
+@keyframes allin {
+  50% {
+    transform: scale(1.25);
+  }
+}
+.toast {
+  animation: toast 2.6s ease both;
+}
+@keyframes toast {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  10%,
+  85% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.pop {
+  animation: pop 200ms ease-out both;
+  transform-origin: bottom left;
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stickpop,
+  .tickpop,
+  .handwave,
+  .allin,
+  .pop {
+    animation: none;
+  }
+  .tick {
+    transition: none;
+  }
+}
