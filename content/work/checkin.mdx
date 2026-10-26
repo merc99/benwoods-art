@@ -26,19 +26,46 @@ interesting:
   - "A banner made from each crew's color. Two CSS layers mixed from the crew's color with color-mix() and moved with transform only, so each of the 8 crew colors gets its own holographic shimmer. No new libraries."
   - "Nudges without guilt. You can wave at a crewmate who isn't in yet, once a day, with copy that says \"No pressure\". No reminders, no streak warnings."
   - "Smooth 3D on phones. Each card in the ring turns on its own GPU layer, so the corners stay smooth and the swipe keeps up with your finger."
+sections:
+  - title: Process
+    unit: images
+    intro: |
+      ## The problem
+
+      Most habit apps put you alone with a streak counter that resets the day you miss. One slip and the app feels like it's scolding you. The group chat this started in worked better, because showing up was something friends saw each other do.
+
+      ## Decisions
+
+      - **The crew comes first, the streak second.** The home screen is your crew's feed, not your stats. Missed days aren't marked, and the all-time count never goes down.
+      - **Nudges without guilt.** You can wave at a crewmate who isn't in yet, once a day. The message says "No pressure" and never mentions a streak.
+      - **The banner took four rounds.** It started as a flat block of color with a big "who's in today" card that took over phone screens. Patterns and emoji made it feel cheap. A richer surface still had diagonal lines nobody liked. The final version is compact and holographic, mixed from each crew's own color, so the feed leads.
+      - **Phones first.** On a phone, "who's in today" folds into one row inside the banner.
+
+      ## How it's built
+
+      Next.js 16, React 19, TypeScript and Tailwind CSS v4, on a Supabase data layer with sign-in. The demo data re-seeds relative to now, so the crew is always mid-day. Effects from three different kits were built side by side on one preview page, then merged into a single set of tokens and a motion budget. The weekly crew recap is an honest AI demo: it runs in the browser, with no model and no key.
+
+      ## Checking the work
+
+      I ran the project's 17 UX checks on every screen, at 375px and 1280px, in light and dark mode, then fixed what failed. Focus now returns to the button that opened a sheet, every tap target reaches 44px, nothing is smaller than 12px, and forms explain what's missing instead of greying out their buttons.
+
+      ## What I'd do next
+
+      Real photo uploads in place of the AI placeholder covers, and real waves sent to a crewmate's phone.
+    items:
+      - src: /work/checkin/feed-dark-hq.webp
+        alt: The earlier Check-in feed, with a flat sky-blue 5am Lifters banner above a join request and posts.
+        caption: Before. The crew banner as a flat block of color.
+        span: half
+      - src: /work/checkin/feed-dark-v2.webp
+        alt: The current Check-in feed, with a compact holographic DIALED banner above a join request, a pinned note and posts.
+        caption: After. Four rounds later, a compact holographic banner made from the crew's color, so the feed leads.
+        span: half
 gallery:
   - src: /work/checkin/explore-v2.webp
     alt: Check-in's Explore page in dark mode, a 3D ring of crew cards with cover photos (Hydration Station, Couch to 5K, Morning Pages) above photo cards for all crews.
     caption: Explore. Crews looking for one more person, on a draggable ring over cards with cover photos. The covers are AI-generated placeholders made with Higgsfield.
     span: full
-  - src: /work/checkin/feed-dark-hq.webp
-    alt: The earlier Check-in feed, with a flat sky-blue 5am Lifters banner above a join request and posts.
-    caption: Before. The crew banner as a flat block of color.
-    span: half
-  - src: /work/checkin/feed-dark-v2.webp
-    alt: The current Check-in feed, with a compact holographic DIALED banner above a join request, a pinned note and posts.
-    caption: After. Four rounds later, a compact holographic banner made from the crew's color, so the feed leads.
-    span: half
   - src: /work/checkin/feed-phone-v2.webp
     alt: Check-in's phone feed in dark mode, with the holographic DIALED banner holding a row of member avatars and 2/5 in today, above a join request and a pinned note.
     caption: On phones, who's in today folds into one row inside the banner.

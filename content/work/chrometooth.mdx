@@ -24,6 +24,29 @@ interesting:
   - "Evidence you can check. Every reason the AI gives links both ways to the exact log lines behind it, and fixes stay locked until each one is confirmed or disputed."
   - "One signature interaction. Fixing a threat takes a bite out of its card and the Enamel score climbs. Everything else stays quiet."
   - "Color carries meaning. Red, orange and yellow are severity, violet is privacy tracking, chrome means fixed."
+sections:
+  - title: Process
+    intro: |
+      ## The problem
+
+      Security tools ask you to trust them. When an AI says "this file is a trojan, quarantine it?", most people either click yes without reading or ignore it. Neither is safe, and when the AI is wrong, nobody can tell.
+
+      ## Decisions
+
+      - **Evidence before action.** Every reason the AI gives links both ways to the exact log lines behind it. A fix stays locked until each reason is confirmed or disputed. "Confirm all" covers the quick case, and disputing every reason turns the fix into "Mark false positive".
+      - **Your rules outrank the AI.** A confidence floor, a never-block-my-network rule and login limits are checked live as pass, warning or hard stop before any fix runs.
+      - **One signature interaction.** Fixing a threat takes a bite out of its card, and the Enamel score climbs. Everything else stays quiet.
+      - **Color carries meaning.** Red, orange and yellow are severity, violet is privacy tracking, chrome means fixed.
+      - **An honest demo mode.** "Check something" calls Claude when the page runs inside claude.ai. Anywhere else it labels itself Demo mode and uses saved results.
+      - **A record of every decision.** Every AI finding and human decision goes into an activity log, which drafts a copyable incident report.
+
+      ## How it's built
+
+      One self-contained HTML file in plain JavaScript, SVG and Canvas, with no framework and no build step. It covers light and dark mode, phones down to 375px, the keyboard with visible focus, and reduced motion. All the data is fictional, and the IP addresses use reserved documentation ranges.
+
+      ## What I'd do next
+
+      A small serverless endpoint so live AI works on any domain, and a pass with real home-network data.
 gallery:
   - src: /work/chrometooth/site-landing.webp
     alt: The Chrometooth landing page in dark mode, the chrome tooth pixel wordmark over a violet wave grid, with Start free trial and Try the live demo buttons.
