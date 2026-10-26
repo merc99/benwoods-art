@@ -29,8 +29,8 @@ export default function Home() {
             <div className="md:col-span-12">
               <FeaturedShowcase
                 project={checkin}
-                screenshot="/work/checkin/feed-dark-hq.webp"
-                screenshotAlt="Check-in’s desktop feed in dark mode, with a crew banner, posts and today’s check-ins."
+                screenshot="/work/checkin/feed-dark-v2.webp"
+                screenshotAlt="Check-in’s desktop feed in dark mode, with a holographic crew banner, posts and today’s check-ins."
               />
             </div>
             <div className="md:col-span-6">

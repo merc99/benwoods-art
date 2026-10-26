@@ -10,27 +10,43 @@ status: Portfolio build · demo data
 liveUrl: https://check-in-web-six.vercel.app
 repoUrl: https://github.com/merc99/check-in-web
 # cards show the app itself, filling the frame (the sky-blue backdrop covers are unused now)
-cover: /work/checkin/feed-dark-hq.webp
-coverWide: /work/checkin/feed-dark-hq.webp
+cover: /work/checkin/feed-dark-v2.webp
+coverWide: /work/checkin/feed-dark-v2.webp
 coverPosition: top
-coverScreen: /work/checkin/feed-dark-hq.webp
-coverScreenAlt: Check-in's desktop feed in dark mode, with a sky-blue 5am Lifters crew banner, a join request, posts with reactions and a right rail showing 2 of 5 crewmates in today.
-coverAlt: Check-in's desktop feed in dark mode, with a sky-blue crew banner, posts with reactions and a rail showing 2 of 5 crewmates in today.
-summary: "A social habit tracker for small crews: check in once a day and see who else showed up."
+coverScreen: /work/checkin/feed-dark-v2.webp
+coverScreenAlt: Check-in's desktop feed in dark mode, with a holographic DIALED crew banner, a join request, posts with colored edges and a right rail showing 2 of 5 crewmates in today.
+coverAlt: Check-in's desktop feed in dark mode, with a holographic crew banner, posts with reactions and a rail showing 2 of 5 crewmates in today.
+summary: "A social habit tracker for small crews: check in once a day, see who showed up, no shame days."
 order: 1
 # the cover frame runs the live site on desktop
 liveFrame: https://check-in-web-six.vercel.app/feed
 demos: [checkin-ring, checkin-reactions, checkin-gloss]
 featured: true
 interesting:
-  - "One effect system. Overlapping effects from three sources were built side by side, compared, and merged into one set of tokens and a motion budget."
-  - "One app, two layouts. The phone app and the desktop dashboard share every component; CSS handles most of the difference."
-  - "Demo data that stays current. It re-seeds relative to now, with crewmates who check in and react on their own."
+  - "A banner made from each crew's color. Two CSS layers mixed from the crew's color with color-mix() and moved with transform only, so each of the 8 crew colors gets its own holographic shimmer. No new libraries."
+  - "Nudges without guilt. You can wave at a crewmate who isn't in yet, once a day, with copy that says \"No pressure\". No reminders, no streak warnings."
+  - "Smooth 3D on phones. Each card in the ring turns on its own GPU layer, so the corners stay smooth and the swipe keeps up with your finger."
 gallery:
-  - src: /work/checkin/explore.webp
-    alt: Check-in's Explore page in dark mode, a 3D ring of crew cards (Hydration Station, Couch to 5K, Morning Pages) above a grid of all crews.
-    caption: Explore. Crews looking for one more person, on a draggable ring carousel.
+  - src: /work/checkin/explore-v2.webp
+    alt: Check-in's Explore page in dark mode, a 3D ring of crew cards with cover photos (Hydration Station, Couch to 5K, Morning Pages) above photo cards for all crews.
+    caption: Explore. Crews looking for one more person, on a draggable ring over cards with cover photos. The covers are AI-generated placeholders made with Higgsfield.
     span: full
+  - src: /work/checkin/feed-dark-hq.webp
+    alt: The earlier Check-in feed, with a flat sky-blue 5am Lifters banner above a join request and posts.
+    caption: Before. The crew banner as a flat block of color.
+    span: half
+  - src: /work/checkin/feed-dark-v2.webp
+    alt: The current Check-in feed, with a compact holographic DIALED banner above a join request, a pinned note and posts.
+    caption: After. Four rounds later, a compact holographic banner made from the crew's color, so the feed leads.
+    span: half
+  - src: /work/checkin/feed-phone-v2.webp
+    alt: Check-in's phone feed in dark mode, with the holographic DIALED banner holding a row of member avatars and 2/5 in today, above a join request and a pinned note.
+    caption: On phones, who's in today folds into one row inside the banner.
+    span: half
+  - src: /work/checkin/crew-look-v2.webp
+    alt: The Crew look settings on a phone, a live DIALED banner preview above the color and emoji pickers.
+    caption: Crew look. Owners pick a color, an emoji and a cover pattern, with a live preview.
+    span: half
   - src: /work/checkin/you.webp
     alt: The You dashboard in dark mode, with glossy green, orange and purple stat cards for 41 check-ins, a 6-day streak and a best streak of 14, plus a crew leaderboard.
     caption: You. Glossy stat panels, achievements and crew streaks.
@@ -53,6 +69,6 @@ gallery:
     span: half
 ---
 
-A habit tracker for small crews of 3 to 15 people. Check in once a day with a short note, and see who else showed up. Missed days aren't punished, and the all-time count never goes down.
+Most habit apps are built around a lonely streak counter that punishes you for missing a day. Check-in is built around the crew. Each crew has its own look, a live feed of who checked in today, and small social gestures (reactions, a wave to a crewmate who isn't in yet) that make showing up feel shared rather than tracked.
 
 It started in a group chat where friends posted what they did each day. Check-in gives that a home.
