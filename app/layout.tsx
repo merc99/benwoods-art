@@ -27,10 +27,8 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#fdf0d5' },
-    { media: '(prefers-color-scheme: dark)', color: '#0f0f0e' },
-  ],
+  // the site opens dark for everyone, so the browser chrome matches it
+  themeColor: '#0f0f0e',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -43,7 +41,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${inter.variable} ${grotesk.variable} ${mono.variable} ${munro.variable}`}
     >
       <body id="top">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        {/* Opens dark for everyone, whatever their device is set to; the toggle still switches, and that choice is
+            remembered. A new storage key so choices saved under the old "follow the device" default don't carry over. */}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="bw-theme" disableTransitionOnChange>
           <a href="#main" className="skip-link t-label">
             Skip to content
           </a>
