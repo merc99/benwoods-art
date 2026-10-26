@@ -12,7 +12,7 @@ const quarter = '(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 90vw'
 const grid = 'grid gap-x-[calc(var(--gutter)*1.25)] gap-y-14 md:grid-cols-12 lg:gap-y-20'
 
 export default function Home() {
-  const [checkin, club, mmo] = bySlug(['checkin', '100k-club', 'mmo-nodes'])
+  const [checkin, chrometooth, club, mmo] = bySlug(['checkin', 'chrometooth', '100k-club', 'mmo-nodes'])
   const [ratMats, megaRoll] = bySlug(['rat-mats', 'mega-roll'])
   const [dreamline, mamies, gilded, flexible] = bySlug(['dreamline', 'mamie-s-sunday-best', 'gildedcan', 'flexible'])
   const [squeaky, evershift, wagdie, retro] = bySlug(['squeaky-feet', 'solar-punk', 'wagdie', 'retrofuturism'])
@@ -31,6 +31,13 @@ export default function Home() {
                 project={checkin}
                 screenshot="/work/checkin/feed-dark-v2.webp"
                 screenshotAlt="Check-in’s desktop feed in dark mode, with a holographic crew banner, posts and today’s check-ins."
+              />
+            </div>
+            <div className="md:col-span-12">
+              <FeaturedShowcase
+                project={chrometooth}
+                screenshot="/work/chrometooth/site-dashboard.webp"
+                screenshotAlt="The Chrometooth dashboard in dark mode, with the Enamel score, a network map of 12 devices and the threat queue."
               />
             </div>
             <div className="md:col-span-6">
