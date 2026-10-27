@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { categories, categoryLabel, type Category } from '@/lib/categories'
 import type { ProjectCard } from '@/lib/work'
 import { cn } from '@/lib/cn'
+import { FilterPills } from '@/components/ui/FilterPills'
 import { WorkTile } from './WorkTile'
 import styles from './WorkIndex.module.css'
 
@@ -57,20 +58,6 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
     window.history.replaceState(null, '', q ? `?${q}` : window.location.pathname)
   }
 
-  // position of the sliding highlight, measured from the active button
-  const pills = useRef<HTMLDivElement>(null)
-  const [pill, setPill] = useState({ left: 0, width: 0 })
-  useLayoutEffect(() => {
-    const measure = () => {
-      const b = pills.current?.querySelector<HTMLElement>(`[data-filter="${filter}"]`)
-      if (b) setPill({ left: b.offsetLeft, width: b.offsetWidth })
-    }
-    measure()
-    void document.fonts?.ready.then(measure)
-    window.addEventListener('resize', measure)
-    return () => window.removeEventListener('resize', measure)
-  }, [filter])
-
   // the filter row scrolls sideways on narrow screens: fade whichever edge has more to see, instead of a hard cut
   const strip = useRef<HTMLDivElement>(null)
   const [edge, setEdge] = useState({ l: false, r: false })
@@ -92,7 +79,7 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
   const chosen = useRef(false)
   useEffect(() => {
     if (!chosen.current) return void (chosen.current = true)
-    pills.current?.querySelector<HTMLElement>(`[data-filter="${filter}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' })
+    strip.current?.querySelector<HTMLElement>(`[data-value="${filter}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' })
   }, [filter])
   const fade = 64
   const mask = `linear-gradient(to right, ${edge.l ? 'transparent' : '#000'} 0, #000 ${edge.l ? fade : 0}px, #000 calc(100% - ${edge.r ? fade : 0}px), ${edge.r ? 'transparent' : '#000'} 100%)`
@@ -111,30 +98,12 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
             className="-ml-1 min-w-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             style={{ maskImage: mask, WebkitMaskImage: mask }}
           >
-            <div role="group" aria-label="Filter by discipline" ref={pills} className="relative flex w-max gap-0.5 rounded-full border border-rule p-1">
-              {/* the highlight slides under the active filter */}
-              <span
-                aria-hidden
-                className="absolute top-1 bottom-1 rounded-full bg-fg transition-[left,width] duration-[var(--dur-move)] ease-glide motion-reduce:transition-none"
-                style={{ left: pill.left, width: pill.width, opacity: pill.width ? 1 : 0 }}
-              />
-              {filters.map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  data-filter={f}
-                  aria-pressed={filter === f}
-                  onClick={() => set('filter', f, 'all')}
-                  className={cn(
-                    'hit-44 t-label z-[1] inline-flex h-9 shrink-0 items-center gap-2 rounded-full px-3.5 transition-colors duration-[var(--dur-fade)]',
-                    filter === f ? 'text-bg' : 'text-fg-2 hover:text-fg',
-                  )}
-                >
-                  {f === 'all' ? 'All' : categoryLabel[f]}
-                  <span className={filter === f ? 'text-bg/60' : 'text-fg-3'}>{String(count(f)).padStart(2, '0')}</span>
-                </button>
-              ))}
-            </div>
+            <FilterPills
+              label="Filter by discipline"
+              options={filters.map((f) => ({ value: f, label: f === 'all' ? 'All' : categoryLabel[f], count: count(f) }))}
+              value={filter}
+              onChange={(v) => set('filter', v, 'all')}
+            />
           </div>
         </div>
       </div>
