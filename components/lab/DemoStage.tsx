@@ -18,6 +18,7 @@ const DEMOS = {
   'checkin-who': load(() => import('./demos/checkin-social'), 'CheckinWho'),
   'ct-evidence': load(() => import('./demos/chrometooth'), 'CtEvidence'),
   'ct-bite': load(() => import('./demos/chrometooth'), 'CtBite'),
+  'ct-activity': load(() => import('./demos/chrometooth'), 'CtActivity'),
   'club-crest': load(() => import('./demos/club'), 'ClubCrest'),
   'club-metal': load(() => import('./demos/club'), 'ClubMetal'),
   'club-silk': load(() => import('./demos/club'), 'ClubSilk'),

@@ -41,6 +41,7 @@ export const lab: LabGroup[] = [
     demos: [
       { id: 'ct-evidence', title: 'Evidence you can check', note: 'Pick a reason to find its log line, or a highlighted line to find its reason. Confirm or dispute each one; the fix stays locked until all three are checked.', wide: true, height: 440, autoOnPhone: true },
       { id: 'ct-bite', title: 'The bite', note: 'Fix a threat and it takes a bite out of its card while the Enamel score climbs. Here the review step is skipped.', wide: true, height: 470, autoOnPhone: true },
+      { id: 'ct-activity', title: 'Activity log', note: 'Filter 300 rows with device:tv or -verdict:allowed, or use the chips; they rewrite the query. Sort any column. Only the rows in view are drawn.', wide: true, height: 520 },
     ],
   },
   {
