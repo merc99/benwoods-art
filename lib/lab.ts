@@ -25,8 +25,7 @@ export const lab: LabGroup[] = [
     slug: 'checkin',
     liveUrl: 'https://check-in-web-six.vercel.app',
     demos: [
-      { id: 'checkin-wave', title: 'Wave, then all in', note: 'Wave at a crewmate who isn’t in yet. When the last one checks in, the banner says all in.', height: 320 },
-      { id: 'checkin-who', title: 'Who reacted', note: 'Hold or hover a reaction to see who left it. A tap adds yours.', height: 320 },
+      { id: 'checkin-wave', title: 'Wave, then all in', note: 'Wave at a crewmate who isn’t in yet. When the last one checks in, the banner says all in.', wide: true, height: 320 },
       { id: 'checkin-ring', title: 'Ring carousel', note: 'Drag or flick the ring.', wide: true, height: 400 },
       { id: 'checkin-reactions', title: 'Emoji reactions', note: 'Pick an emoji and it flies to its chip.' },
       { id: 'checkin-foil', title: 'Foil card', note: 'A card that catches the light as you move over it.' },

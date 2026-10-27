@@ -15,7 +15,6 @@ const DEMOS = {
   'checkin-hold': load(() => import('./demos/checkin'), 'CheckinHold'),
   'checkin-gloss': load(() => import('./demos/checkin'), 'CheckinGloss'),
   'checkin-wave': load(() => import('./demos/checkin-social'), 'CheckinWave'),
-  'checkin-who': load(() => import('./demos/checkin-social'), 'CheckinWho'),
   'ct-evidence': load(() => import('./demos/chrometooth'), 'CtEvidence'),
   'ct-bite': load(() => import('./demos/chrometooth'), 'CtBite'),
   'ct-activity': load(() => import('./demos/chrometooth'), 'CtActivity'),
