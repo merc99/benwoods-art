@@ -403,3 +403,217 @@
     animation: none;
   }
 }
+
+/* activity log */
+.al {
+  --faint: #71757f;
+  --low: #6b7280;
+  --low-f: #eef0f3;
+}
+:global(.dark) .al {
+  --faint: #7c808b;
+  --low: #9aa0ab;
+  --low-f: rgb(154 160 171 / 0.14);
+}
+.alsearch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--hair2);
+  border-radius: 12px;
+  background: var(--panel2);
+  transition: border-color 0.2s;
+}
+.alsearch:focus-within {
+  border-color: var(--ink);
+}
+.alsearch svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: var(--mute);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.alsearch input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: none;
+  outline: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink);
+}
+.alsearch input::placeholder {
+  color: var(--faint);
+}
+.alchips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.alchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--hair2);
+  border-radius: 999px;
+  background: var(--panel);
+  font-size: 13px;
+  color: var(--ink2);
+  white-space: nowrap;
+}
+.alchip:hover {
+  border-color: var(--faint);
+  color: var(--ink);
+}
+.alchip[aria-pressed='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+}
+.alchip i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c);
+}
+.alscroll {
+  position: relative;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.algrid {
+  min-width: 820px;
+  font-size: 13px;
+  color: var(--ink2);
+}
+.alhead,
+.alrow {
+  display: grid;
+  grid-template-columns: var(--cols);
+  align-items: center;
+}
+.alhead {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  height: 34px;
+  border-bottom: 1px solid var(--hair2);
+  background: var(--panel2);
+}
+.alrow {
+  --rb: var(--panel);
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 34px;
+  border-bottom: 1px solid var(--hair);
+  background: var(--rb);
+  outline: none;
+}
+.alrow:hover {
+  --rb: var(--panel2);
+}
+.alrow:focus-visible::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.alc {
+  min-width: 0;
+  padding: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.alfirst {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--hair);
+  background: var(--rb, var(--panel2));
+  color: var(--ink);
+}
+.alhead .alfirst {
+  background: var(--panel2);
+}
+.almono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink);
+}
+.alnum {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.alsort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: none;
+  padding: 4px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mute);
+  white-space: nowrap;
+}
+.alnum .alsort {
+  flex-direction: row-reverse;
+}
+.alsort:hover,
+.alon {
+  color: var(--ink);
+}
+.alar {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.alsort:hover .alar {
+  opacity: 0.45;
+}
+.alon .alar {
+  opacity: 1;
+}
+.alup {
+  transform: rotate(180deg);
+}
+.alempty {
+  position: absolute;
+  inset: 34px 0 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 2px;
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .alar,
+  .alsearch {
+    transition: none;
+  }
+}
