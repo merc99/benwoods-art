@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Download } from 'lucide-react'
 import { GlyphFieldLazy } from '@/components/about/GlyphFieldLazy'
 import { SectionHeader } from '@/components/ui/SectionHeader'
-import { approach, bio } from '@/lib/about'
+import { bio } from '@/lib/about'
 import { links, site } from '@/lib/site'
 import { latestPlaylist } from '@/lib/playlists'
 import { Button } from '@/components/ui/Button'
@@ -53,7 +53,6 @@ export default function AboutPage() {
                 {p}
               </p>
             ))}
-            <p className="mt-6 text-[1.0625rem] leading-[1.65] text-fg-2 lg:text-[1.125rem]">{approach}</p>
             <div className="mt-10 flex flex-wrap gap-2">
               <Button href={site.resume} download="Benjamin Woods - Resume.pdf">
                 <Download className="size-4" strokeWidth={1.5} aria-hidden /> Download resume (PDF)
