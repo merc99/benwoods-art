@@ -4,6 +4,7 @@
 // mailto: link on the site.
 
 import { useEffect, useState } from 'react'
+import { Toast, ToastRegion } from '@/components/ui/Toast'
 
 export function MailCopy() {
   const [note, setNote] = useState<string | null>(null)
@@ -31,12 +32,6 @@ export function MailCopy() {
   }, [])
 
   return (
-    <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-6 z-[80] flex justify-center px-4">
-      {note && (
-        <p className="t-label animate-[wm-in_220ms_ease-out_both] rounded-full bg-fg px-4 py-2.5 text-bg shadow-[var(--shadow-float)] motion-reduce:animate-none">
-          {note} <span aria-hidden>✓</span>
-        </p>
-      )}
-    </div>
+    <ToastRegion>{note && <Toast>{note}</Toast>}</ToastRegion>
   )
 }

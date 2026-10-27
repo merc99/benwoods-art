@@ -22,6 +22,7 @@ import { DemoCard } from '@/components/lab/DemoCard'
 import { LiveFrame } from '@/components/work/LiveFrame'
 import { GlowCover } from '@/components/work/GlowCover'
 import { lab } from '@/lib/lab'
+import { Button } from '@/components/ui/Button'
 
 export const dynamicParams = false
 
@@ -40,7 +41,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-const ext = { target: '_blank', rel: 'noreferrer' }
 
 /** Splits "Lead sentence. The rest." so the lead can be set in bold. */
 function lead(text: string) {
@@ -83,22 +83,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               {(p.liveUrl || p.repoUrl) && (
                 <div className="flex flex-wrap gap-2">
                   {p.liveUrl && (
-                    <a
-                      href={p.liveUrl}
-                      {...ext}
-                      className="t-label inline-flex h-11 items-center gap-2 bg-fg px-5 text-bg transition-transform duration-[var(--dur-chrome)] active:scale-[0.97]"
-                    >
+                    <Button href={p.liveUrl}>
                       {p.liveLabel || 'View live site'} <span aria-hidden>↗</span>
-                    </a>
+                    </Button>
                   )}
                   {p.repoUrl && (
-                    <a
-                      href={p.repoUrl}
-                      {...ext}
-                      className="t-label inline-flex h-11 items-center gap-2 border border-rule-strong px-5 text-fg transition-colors duration-[var(--dur-chrome)] hover:border-fg active:scale-[0.97]"
-                    >
+                    <Button variant="outline" href={p.repoUrl}>
                       View on GitHub <span aria-hidden>↗</span>
-                    </a>
+                    </Button>
                   )}
                 </div>
               )}

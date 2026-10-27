@@ -70,10 +70,12 @@ export function Button({
   )
 
   if (href && !off) {
-    const external = /^https?:/.test(href)
+    const newTab = /^https?:/.test(href)
+    // mail links and downloads are plain anchors; only site pages go through Link
+    const plain = newTab || href.startsWith('mailto:') || 'download' in rest
     const props = { className: cls, 'data-state': state, ...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>) }
-    return external ? (
-      <a href={href} target="_blank" rel="noreferrer" {...props}>
+    return plain ? (
+      <a href={href} {...(newTab && { target: '_blank', rel: 'noreferrer' })} {...props}>
         {body}
       </a>
     ) : (
