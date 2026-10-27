@@ -27,7 +27,7 @@ interesting:
 gallery:
   - src: /work/chrometooth/site-landing.webp
     alt: The Chrometooth landing page in dark mode, the chrome tooth pixel wordmark over a violet wave grid, with Start free trial and Try the live demo buttons.
-    caption: The landing page. The marketing site and the working dashboard are one page.
+    caption: The landing page.
     span: full
   - src: /work/chrometooth/site-evidence.webp
     alt: A threat drawer for Trojan.Generic.F56 over the blurred dashboard, with three reasons the AI flagged it, the first confirmed and highlighted, and the matching log line highlighted in the source below.
@@ -39,7 +39,7 @@ gallery:
     span: half
   - src: /work/chrometooth/site-dashboard-light.webp
     alt: The same dashboard in light mode, on pale grey panels.
-    caption: Light mode.
+    caption: The dashboard.
     span: half
   - src: /work/chrometooth/site-check.webp
     alt: The Check something panel in Demo mode, a phishing email rated malicious with 96% confidence, its suspicious phrases underlined in the source and four findings listed beside it, next to Your rules with toggles and limits.
@@ -51,65 +51,28 @@ gallery:
     span: full
   - src: /work/chrometooth/activity-filtered.webp
     alt: The Activity view in dark mode filtered to flagged and blocked traffic from the last 6 hours, with 425 of 2,222 rows, a stacked hourly chart and a table of connections with verdict pills and severity marks.
-    caption: Activity. Every connection, lookup and block, filtered here to flagged and blocked traffic from the last 6 hours.
+    caption: Activity. Every connection, lookup and block on the network.
     span: full
   - src: /work/chrometooth/activity-drawer.webp
     alt: The evidence drawer for traffic to acr.tvmaker-cloud.com, with three checks that matched (230 connections, a tracking-list match, 18 times more data out than in), labelled as simple checks with no AI analysis.
-    caption: A flagged row opens the same evidence drawer. Outside the three threats, its reasons are plain pattern checks on the log, and it says so.
+    caption: A flagged row opens the same evidence drawer.
     span: full
   - src: /work/chrometooth/activity-bulk.webp
     alt: Four blocked rows to ads.tvmaker-cloud.com selected, with a bar above the table offering Block destination, Mark as trusted and Export CSV.
-    caption: Select rows to block or trust their destinations, or export them as CSV. Blocking asks first.
+    caption: Block or trust in bulk. Blocking asks first.
     span: half
   - src: /work/chrometooth/activity-light.webp
     alt: The Activity view in light mode, sorted by data sent, with NAS backups to backup.b2-storage.net at the top.
-    caption: Light mode, sorted by data sent.
+    caption: Sorted by data sent.
     span: half
   - src: /work/chrometooth/activity-phone.webp
     alt: The Activity view on a phone, each row a card with the device and time, the destination, and a verdict pill with severity.
-    caption: On a phone, each row becomes a card with the device, the destination and the verdict.
+    caption: Activity on a phone.
     span: full
-sections:
-  - title: How it's built
-    intro: |
-      Activity is a second view in the same single page: vanilla JavaScript, no framework and no build step. It had to stay smooth with 2,222 rows, and work in both themes, from the keyboard and on a phone.
-
-      **Only the rows you can see exist.** The table body is as tall as every row would be, but only the rows in view, plus four either side, are in the DOM. Rows that stay in view are kept, so each scroll step only builds the few rows coming in.
-
-      <div className="mb-6 text-[13px] leading-[1.6] [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-rule [&_pre]:p-4 [&_pre]:font-mono">
-
-      ```js
-      const a = Math.max(0, Math.floor(top / rowHeight) - 4)
-      const b = Math.min(rows.length, Math.ceil((top + height) / rowHeight) + 4)
-      for (const [i, el] of live) if (i < a || i >= b) { el.remove(); live.delete(i) }
-      for (let i = a; i < b; i++) if (!live.has(i)) add(i) // new rows above prepend, below append
-      ```
-
-      </div>
-
-      Measured in Edge at 1440 × 900, flinging the mouse wheel through all 2,222 rows and back: every frame took 16.7 to 16.9 ms, so it held 60 fps, and the DOM never held more than 18 rows (21 in compact density). With the CPU slowed 4×, the median frame was 16.8 ms and the 95th percentile 33.4 ms. The first version rebuilt every visible row on each step. Keeping rows cut long tasks under that 4× slowdown from 133 to 14, and the most rows in the DOM from 26 to 18.
-
-      **A small query language.** `device:tv verdict:blocked country:CN` reads the way it looks. Keys are combined with AND, repeats of one key with OR, a minus excludes (`-verdict:allowed`) and sizes compare (`sent:>1mb`). One regular expression splits the text into terms, each term becomes a small test, and the whole query compiles to one function per change.
-
-      <div className="mb-6 text-[13px] leading-[1.6] [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-rule [&_pre]:p-4 [&_pre]:font-mono">
-
-      ```js
-      // every key must pass (any of its values), no excluded value may match,
-      // and every free-text word must appear somewhere in the row
-      return (r) => pos.every((fs) => fs.some((f) => f(r))) && !neg.some((f) => f(r)) && words.every((f) => f(r))
-      ```
-
-      </div>
-
-      **Chips and text never disagree.** The parsed query is the only state. Typing parses the text and redraws the chips. A chip edits the parsed terms and writes the text back, so the two can't drift. Clicking an hour in the chart is just another chip: it writes `hour:11`.
-
-      **The same data on every load.** Rows come from a seeded generator (mulberry32), so every visit, screenshot and bug report sees the same 2,222 rows. Each device has a profile: the TV calls its ACR server around the clock, laptops go quiet at night, the server takes a 214-attempt SSH burst at 14:20. The three threats from the overview sit at the exact times their log lines show, so a row and its evidence point at each other.
-
-      **Honest checks.** Flagged rows that aren't one of the three threats open the same evidence drawer, but their reasons are simple pattern checks on the log: a count, a list lookup, a sent-to-received ratio. The drawer says so.
 ---
 
 A home and small-team security concept. An AI watches every device on your network, explains what it found in plain language, shows the exact evidence behind each flag, and only fixes things once you've reviewed them.
 
-The prototype is a marketing site and a working dashboard in one self-contained page, with no framework and no build step. It covers light and dark modes, phones down to 375px, the keyboard and reduced motion.
+The prototype pairs the marketing site with a working dashboard.
 
-A second view, Activity, is the analyst’s side: a dense log of every connection, lookup and block on the network, with a query language, saved views and bulk actions. It's built to be used all day, so it stays fast with thousands of rows and works from the keyboard.
+A second view, Activity, is the analyst’s side: every connection, lookup and block on the network, ready to search, filter and act on.
