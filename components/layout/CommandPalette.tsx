@@ -8,6 +8,7 @@ import { useTheme } from 'next-themes'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Search } from 'lucide-react'
 import { links, nav, site } from '@/lib/site'
+import { TextField } from '@/components/ui/TextField'
 import { cn } from '@/lib/cn'
 
 type Cmd = { label: string; group: string; run: () => void; keywords?: string }
@@ -137,25 +138,24 @@ export function CommandPalette({ projects }: { projects: { title: string; slug: 
               }
             }}
           >
-            <div className="flex items-center gap-3 border-b border-rule px-4">
-              <Search className="size-4 shrink-0 text-fg-3" strokeWidth={1.5} aria-hidden />
-              <input
-                ref={input}
-                value={q}
-                onChange={(e) => {
-                  setQ(e.target.value)
-                  setSel(0)
-                }}
-                placeholder="Jump to a page, project or link"
-                aria-label="Search commands"
-                role="combobox"
-                aria-expanded="true"
-                aria-controls="palette-list"
-                aria-activedescendant={hits[active] ? `cmd-${active}` : undefined}
-                className="h-14 w-full bg-transparent text-[1rem] text-fg outline-none placeholder:text-fg-3"
-              />
-              <kbd className="t-label shrink-0 border border-rule px-1.5 py-0.5 text-fg-3">Esc</kbd>
-            </div>
+            <TextField
+              variant="bare"
+              label="Search commands"
+              ref={input}
+              value={q}
+              onChange={(e) => {
+                setQ(e.target.value)
+                setSel(0)
+              }}
+              placeholder="Jump to a page, project or link"
+              role="combobox"
+              aria-expanded="true"
+              aria-controls="palette-list"
+              aria-activedescendant={hits[active] ? `cmd-${active}` : undefined}
+              icon={<Search className="size-4" strokeWidth={1.5} aria-hidden />}
+              trailing={<kbd className="t-label shrink-0 border border-rule px-1.5 py-0.5 text-fg-3">Esc</kbd>}
+              className="border-b border-rule px-4"
+            />
             <ul ref={list} id="palette-list" role="listbox" className="max-h-[min(60vh,420px)] overflow-y-auto py-2">
               {hits.length === 0 && <li className="px-4 py-6 text-center text-fg-2">Nothing matches. Try “work” or “email”.</li>}
               {hits.map((c, i) => {

@@ -22,6 +22,7 @@ export function Button({
   state,
   className,
   children,
+  ref,
   ...rest
 }: {
   variant?: ButtonVariant
@@ -32,6 +33,7 @@ export function Button({
   state?: ButtonState
   className?: string
   children: React.ReactNode
+  ref?: React.Ref<HTMLButtonElement>
 } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement> & React.AnchorHTMLAttributes<HTMLAnchorElement>, 'className' | 'children'>) {
   const off = disabled || loading
   const cls = cn(
@@ -82,6 +84,7 @@ export function Button({
   }
   return (
     <button
+      ref={ref}
       type="button"
       {...(rest as React.ButtonHTMLAttributes<HTMLButtonElement>)}
       disabled={disabled}
