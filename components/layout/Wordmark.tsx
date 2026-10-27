@@ -49,7 +49,7 @@ export function Wordmark({ className, onNavigate, compactOnHero = false }: { cla
       onPointerEnter={(e) => e.pointerType === 'mouse' && setHover((h) => h + 1)}
       // keyboard focus only (a click or a page change also focuses the link)
       onFocus={(e) => e.currentTarget.matches(':focus-visible') && setHover((h) => h + 1)}
-      className={cn('relative inline-flex h-11 items-center font-pixel leading-none whitespace-pre', className)}
+      className={cn('relative inline-flex h-11 min-w-11 items-center font-pixel leading-none whitespace-pre', className)}
     >
       {compact ? (
         // the b decodes like the full name does (on load and hover); the dot stays put in the signal color
