@@ -94,6 +94,8 @@ export type Project = {
   summary: string
   order: number
   featured: boolean
+  /** Older work: listed under Archive on the Work page instead of in the grid. The case study stays. */
+  archived: boolean
   draft: boolean
   interesting: string[]
   gallery: GalleryItem[]
@@ -104,7 +106,7 @@ export type Project = {
 /** What list views and tiles need (safe to pass to client components). */
 export type ProjectCard = Pick<
   Project,
-  'title' | 'slug' | 'category' | 'tags' | 'year' | 'role' | 'cover' | 'coverWide' | 'coverTile' | 'coverAlt' | 'coverPosition' | 'coverFit' | 'coverBg' | 'summary' | 'featured'
+  'title' | 'slug' | 'category' | 'tags' | 'year' | 'role' | 'cover' | 'coverWide' | 'coverTile' | 'coverAlt' | 'coverPosition' | 'coverFit' | 'coverBg' | 'summary' | 'featured' | 'archived'
 >
 
 const dir = join(process.cwd(), 'content', 'work')
@@ -142,6 +144,7 @@ function load(): Project[] {
         medium: '',
         summary: '',
         featured: false,
+        archived: false,
         draft: false,
         interesting: [],
         gallery: [],
@@ -170,8 +173,8 @@ export function bySlug(slugs: string[]): Project[] {
 }
 
 export function toCard(p: Project): ProjectCard {
-  const { title, slug, category, tags, year, role, cover, coverWide, coverTile, coverAlt, coverPosition, coverFit, coverBg, summary, featured } = p
-  return { title, slug, category, tags, year, role, cover, coverWide, coverTile, coverAlt, coverPosition, coverFit, coverBg, summary, featured }
+  const { title, slug, category, tags, year, role, cover, coverWide, coverTile, coverAlt, coverPosition, coverFit, coverBg, summary, featured, archived } = p
+  return { title, slug, category, tags, year, role, cover, coverWide, coverTile, coverAlt, coverPosition, coverFit, coverBg, summary, featured, archived }
 }
 
 /** Previous and next project in site order, wrapping around. */

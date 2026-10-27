@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { categories, categoryLabel, type Category } from '@/lib/categories'
 import type { ProjectCard } from '@/lib/work'
@@ -85,6 +86,9 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
   const mask = `linear-gradient(to right, ${edge.l ? 'transparent' : '#000'} 0, #000 ${edge.l ? fade : 0}px, #000 calc(100% - ${edge.r ? fade : 0}px), ${edge.r ? 'transparent' : '#000'} 100%)`
 
   const shown = filter === 'all' ? projects : projects.filter((p) => p.category === filter)
+  // older work sits in a short list under the grid; it still follows the filter
+  const current = shown.filter((p) => !p.archived)
+  const archive = shown.filter((p) => p.archived)
   const count = (f: Filter) => (f === 'all' ? projects.length : projects.filter((p) => p.category === f).length)
   const filters: Filter[] = ['all', ...categories]
 
@@ -115,7 +119,7 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
       {/* key on the filter so the new set fades in (calm) */}
       <div key={filter} className={cn(styles.fade, 'pt-8 lg:pt-10')}>
         <div className="grid gap-x-[calc(var(--gutter)*1.25)] gap-y-14 md:grid-cols-12 lg:gap-y-20">
-          {rows(shown).flatMap((row, r) =>
+          {rows(current).flatMap((row, r) =>
             row.items.map((p) => (
               <WorkTile
                 key={p.slug}
@@ -128,6 +132,31 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
             )),
           )}
         </div>
+
+        {archive.length > 0 && (
+          <section aria-labelledby="work-archive" className="mt-20 lg:mt-28">
+            <h3 id="work-archive" className="t-label border-t border-rule-strong pt-4 text-fg-3">
+              Archive
+            </h3>
+            <ul className="mt-2">
+              {archive.map((p) => (
+                <li key={p.slug} className="border-b border-rule">
+                  <Link
+                    href={`/work/${p.slug}`}
+                    className="group grid grid-cols-[minmax(0,1fr)_auto_1.25rem] items-baseline gap-x-4 py-3 transition-[padding,background-color] duration-[var(--dur-fast)] hover:bg-sunken hover:pl-3 md:grid-cols-[minmax(0,1fr)_12rem_4rem_1.5rem] md:py-4"
+                  >
+                    <span className="t-title text-[1rem] md:text-[1.25rem]">{p.title}</span>
+                    <span className="t-label hidden text-fg-3 md:inline">{categoryLabel[p.category]}</span>
+                    <span className="t-label text-fg-2">{p.year}</span>
+                    <span aria-hidden className="text-right text-fg-3 transition-transform group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </div>
   )
