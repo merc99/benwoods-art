@@ -1,6 +1,4 @@
-import type { Metadata } from 'next'
 import Link from 'next/link'
-import { PageIntro } from '@/components/ui/PageIntro'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 import { MotionList, Swatches, TypeScale } from '@/components/system/Tokens'
@@ -15,13 +13,6 @@ import {
   ToastSpecimen,
 } from '@/components/system/Specimens'
 import { changelog, colorTokens, durationTokens, easeTokens, layoutTokens, radiusTokens, shadowTokens, typeStyles } from '@/lib/system'
-
-export const metadata: Metadata = {
-  title: 'System',
-  description: 'The design system benwoods.art runs on: tokens, components, patterns and principles.',
-  alternates: { canonical: '/system' },
-  openGraph: { type: 'website', siteName: 'Ben Woods', url: '/system', title: 'System — Ben Woods', description: 'The design system benwoods.art runs on: tokens, components, patterns and principles.' },
-}
 
 type Prop = [name: string, type: string, note: string]
 type Spec = { id: string; name: string; keys: string; props: Prop[]; good: string; bad: string; demo: React.ReactNode; file: string }
@@ -225,7 +216,7 @@ function Toc() {
 
 function Sub({ id, title, note, children }: { id: string; title: string; note?: string; children: React.ReactNode }) {
   return (
-    <section id={id} aria-labelledby={`${id}-h`} className="scroll-mt-[calc(var(--header-h)+24px)] pt-12 first:pt-8">
+    <section id={id} aria-labelledby={`${id}-h`} className="scroll-mt-[calc(var(--header-h)+var(--tabs-h)+24px)] pt-12 first:pt-8">
       <h3 id={`${id}-h`} className="t-title text-[1.5rem]">
         {title}
       </h3>
@@ -235,30 +226,21 @@ function Sub({ id, title, note, children }: { id: string; title: string; note?: 
   )
 }
 
-export default function SystemPage() {
+/** The System tab of the Lab: tokens read from the stylesheet, live components, patterns, principles, changelog. */
+export function SystemContent() {
   const colors = colorTokens()
   const layout = layoutTokens()
   const space = [1, 2, 3, 4, 6, 8, 10, 14, 20]
   return (
     <>
-      <PageIntro
-        label="(Index) System"
-        title="System"
-        lede="The tokens, components and patterns this site runs on."
-        seed={61}
-        bordered={false}
-        revealLede={false}
-        padding="pt-10 pb-12 lg:pt-16 lg:pb-16"
-        titleSize="text-[clamp(3.5rem,0.5rem+12vw,12rem)]"
-        ledeClass="mt-6 max-w-[34ch]"
-      >
-        <div className="mt-8 flex items-center gap-3">
+      <div className="shell pt-10 lg:pt-12">
+        <div className="flex items-center gap-3">
           <ThemeToggle className="border border-rule" />
           <span className="t-label text-fg-3">Light or dark: switches every swatch and component below</span>
         </div>
-      </PageIntro>
+      </div>
 
-      <div className="shell border-t border-rule lg:grid lg:grid-cols-12 lg:gap-x-[var(--gutter)]">
+      <div className="shell lg:grid lg:grid-cols-12 lg:gap-x-[var(--gutter)]">
         {/* contents: sticky beside the page on desktop, a fold-down list on phones */}
         <nav aria-label="On this page" className="lg:col-span-3">
           <details className="border-b border-rule py-3 lg:hidden">
@@ -267,13 +249,13 @@ export default function SystemPage() {
               <Toc />
             </div>
           </details>
-          <div className="sticky top-[calc(var(--header-h)+24px)] hidden max-h-[calc(100svh-var(--header-h)-48px)] overflow-y-auto py-12 lg:block">
+          <div className="sticky top-[calc(var(--header-h)+var(--tabs-h)+24px)] hidden max-h-[calc(100svh-var(--header-h)-var(--tabs-h)-48px)] overflow-y-auto py-12 lg:block">
             <Toc />
           </div>
         </nav>
 
         <div className="min-w-0 lg:col-span-9">
-          <section id="tokens" aria-labelledby="tokens-h" className="scroll-mt-[calc(var(--header-h)+24px)] py-12 lg:py-16">
+          <section id="tokens" aria-labelledby="tokens-h" className="scroll-mt-[calc(var(--header-h)+var(--tabs-h)+24px)] py-12 lg:py-16">
             <SectionHeader index="01" id="tokens-h" title="Tokens" meta="From app/globals.css" />
 
             <Sub id="color" title="Color" note="Light and dark values side by side. Each is checked against what it sits on, in your browser.">
@@ -334,7 +316,7 @@ export default function SystemPage() {
             </Sub>
           </section>
 
-          <section id="components" aria-labelledby="components-h" className="scroll-mt-[calc(var(--header-h)+24px)] border-t border-rule py-12 lg:py-16">
+          <section id="components" aria-labelledby="components-h" className="scroll-mt-[calc(var(--header-h)+var(--tabs-h)+24px)] border-t border-rule py-12 lg:py-16">
             <SectionHeader index="02" id="components-h" title="Components" meta={`${components.length} components`} />
             {components.map((c) => (
               <Sub key={c.id} id={c.id} title={c.name}>
@@ -382,7 +364,7 @@ export default function SystemPage() {
             ))}
           </section>
 
-          <section id="patterns" aria-labelledby="patterns-h" className="scroll-mt-[calc(var(--header-h)+24px)] border-t border-rule py-12 lg:py-16">
+          <section id="patterns" aria-labelledby="patterns-h" className="scroll-mt-[calc(var(--header-h)+var(--tabs-h)+24px)] border-t border-rule py-12 lg:py-16">
             <SectionHeader index="03" id="patterns-h" title="Patterns" meta="Reused across projects" />
             <ul className="mt-6">
               {patterns.map((p) => (
@@ -399,7 +381,7 @@ export default function SystemPage() {
             </ul>
           </section>
 
-          <section id="principles" aria-labelledby="principles-h" className="scroll-mt-[calc(var(--header-h)+24px)] border-t border-rule py-12 lg:py-16">
+          <section id="principles" aria-labelledby="principles-h" className="scroll-mt-[calc(var(--header-h)+var(--tabs-h)+24px)] border-t border-rule py-12 lg:py-16">
             <SectionHeader index="04" id="principles-h" title="Principles" />
             <div className="mt-6 grid gap-x-[var(--gutter)] gap-y-8 md:grid-cols-3">
               {principles.map((p) => (
@@ -415,7 +397,7 @@ export default function SystemPage() {
             </div>
           </section>
 
-          <section id="changelog" aria-labelledby="changelog-h" className="scroll-mt-[calc(var(--header-h)+24px)] border-t border-rule py-12 lg:py-16">
+          <section id="changelog" aria-labelledby="changelog-h" className="scroll-mt-[calc(var(--header-h)+var(--tabs-h)+24px)] border-t border-rule py-12 lg:py-16">
             <SectionHeader index="05" id="changelog-h" title="Changelog" />
             <ol className="mt-6">
               {changelog.map((c) => (

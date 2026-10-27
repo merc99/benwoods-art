@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       { source: '/motion', destination: '/lab', permanent: true },
       { source: '/web-design', destination: '/work', permanent: true },
       { source: '/more-art', destination: '/work', permanent: true },
+      { source: '/system', destination: '/lab?tab=system', permanent: false },
     ]
   },
   images: {

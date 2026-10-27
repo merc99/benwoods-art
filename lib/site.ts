@@ -21,7 +21,6 @@ export const nav = [
   { href: '/work', label: 'Work' },
   { href: '/lab', label: 'Lab' },
   { href: '/resources', label: 'Resources' },
-  { href: '/system', label: 'System' },
   { href: '/about', label: 'About' },
 ] as const
 

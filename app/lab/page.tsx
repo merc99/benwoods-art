@@ -4,12 +4,14 @@ import { DemoCard } from '@/components/lab/DemoCard'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { lab } from '@/lib/lab'
 import { PageIntro } from '@/components/ui/PageIntro'
+import { LabTabs } from '@/components/lab/LabTabs'
+import { SystemContent } from '@/components/system/SystemContent'
 
 export const metadata: Metadata = {
   title: 'Lab',
-  description: 'Live interaction demos from Ben Woods’ recent builds: Check-in, Chrometooth, 100K Club, MMO Nodes and Mega Roll.',
+  description: 'Live interaction demos from Ben Woods’ recent builds, and the design system this site runs on.',
   alternates: { canonical: '/lab' },
-  openGraph: { type: 'website', siteName: 'Ben Woods', url: '/lab', title: 'Lab — Ben Woods', description: 'Live interaction demos from Ben Woods’ recent builds: Check-in, Chrometooth, 100K Club, MMO Nodes and Mega Roll.' },
+  openGraph: { type: 'website', siteName: 'Ben Woods', url: '/lab', title: 'Lab — Ben Woods', description: 'Live interaction demos from Ben Woods’ recent builds, and the design system this site runs on.' },
 }
 
 const live = [
@@ -62,8 +64,11 @@ export default function LabPage() {
           </ul>
       </PageIntro>
 
-      {lab.map((g, gi) => (
-        <section key={g.slug} aria-labelledby={`lab-${g.slug}`} className="border-t border-rule">
+      <LabTabs
+        demoCount={count}
+        system={<SystemContent />}
+        demos={lab.map((g, gi) => (
+        <section key={g.slug} aria-labelledby={`lab-${g.slug}`} className={gi ? 'border-t border-rule' : undefined}>
           <div className="shell py-14 lg:py-20">
             <SectionHeader
               index={String(gi + 1).padStart(2, '0')}
@@ -96,6 +101,7 @@ export default function LabPage() {
           </div>
         </section>
       ))}
+      />
     </>
   )
 }

@@ -86,7 +86,7 @@ export const changelog: { date: string; items: string[] }[] = [
   {
     date: '2026-10-26',
     items: [
-      'System page: this page, with every token read from the stylesheet.',
+      'System: a new tab in the Lab, with every token read from the stylesheet.',
       'Motion: named the 9 durations and 2 easing curves the site already used. 26 inline values now point at them, with no change in timing.',
       'Color: text on the signal pill is now a token (--on-signal) instead of two hardcoded colors.',
       'Radii: square and pill are named tokens.',
