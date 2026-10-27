@@ -8,6 +8,7 @@ import { cn } from '@/lib/cn'
 import { Menu } from './Menu'
 import { ThemeToggle } from './ThemeToggle'
 import { Wordmark } from './Wordmark'
+import { Button } from '@/components/ui/Button'
 
 export function Header() {
   const [open, setOpen] = useState(false)
@@ -36,14 +37,9 @@ export function Header() {
                 scrolled ? 'max-w-40 opacity-100' : 'max-w-0 opacity-0',
               )}
             >
-              <Link
-                href="/about#contact"
-                tabIndex={scrolled ? 0 : -1}
-                aria-hidden={!scrolled}
-                className="t-label mr-2 inline-flex h-9 items-center gap-1.5 rounded-full bg-signal px-4 whitespace-nowrap text-on-signal transition-[filter] hover:brightness-110"
-              >
+              <Button variant="signal" size="sm" href="/about#contact" tabIndex={scrolled ? 0 : -1} aria-hidden={!scrolled} className="mr-2">
                 Contact <span aria-hidden>→</span>
-              </Link>
+              </Button>
             </div>
             <nav aria-label="Primary" className="mr-2 hidden md:block">
               <ul className="flex items-center">
@@ -68,19 +64,13 @@ export function Header() {
               </ul>
             </nav>
             <ThemeToggle />
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              aria-expanded={open}
-              aria-haspopup="dialog"
-              className="t-label inline-flex h-11 items-center gap-2.5 bg-fg px-4 text-bg transition-transform duration-[var(--dur-chrome)] active:scale-[0.97]"
-            >
+            <Button onClick={() => setOpen(true)} aria-expanded={open} aria-haspopup="dialog">
               <span aria-hidden className="flex flex-col gap-[3px]">
                 <span className="block h-px w-3.5 bg-current" />
                 <span className="block h-px w-3.5 bg-current" />
               </span>
               Menu
-            </button>
+            </Button>
           </div>
         </div>
       </header>

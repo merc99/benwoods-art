@@ -8,6 +8,7 @@ import { SectionHeader } from '@/components/ui/SectionHeader'
 import { approach, bio } from '@/lib/about'
 import { links, site } from '@/lib/site'
 import { latestPlaylist } from '@/lib/playlists'
+import { Button } from '@/components/ui/Button'
 
 export const metadata: Metadata = {
   title: 'About',
@@ -54,19 +55,12 @@ export default function AboutPage() {
             ))}
             <p className="mt-6 text-[1.0625rem] leading-[1.65] text-fg-2 lg:text-[1.125rem]">{approach}</p>
             <div className="mt-10 flex flex-wrap gap-2">
-              <a
-                href={site.resume}
-                download="Benjamin Woods - Resume.pdf"
-                className="t-label inline-flex h-11 items-center gap-2 bg-fg px-5 text-bg transition-transform duration-[var(--dur-chrome)] active:scale-[0.97]"
-              >
+              <Button href={site.resume} download="Benjamin Woods - Resume.pdf">
                 <Download className="size-4" strokeWidth={1.5} aria-hidden /> Download resume (PDF)
-              </a>
-              <a
-                href={`mailto:${site.email}`}
-                className="t-label inline-flex h-11 items-center gap-2 border border-rule-strong px-5 text-fg transition-colors hover:border-fg"
-              >
+              </Button>
+              <Button variant="outline" href={`mailto:${site.email}`}>
                 Email me <span aria-hidden>↗</span>
-              </a>
+              </Button>
             </div>
           </div>
         </div>

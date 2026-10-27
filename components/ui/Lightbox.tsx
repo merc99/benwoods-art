@@ -8,6 +8,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useCallback, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
 
 export type LightboxItem = { src: string; alt: string; caption: string }
 
@@ -120,14 +121,9 @@ export function Lightbox({
             <span>
               {String(open + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
             </span>
-            <button
-              type="button"
-              data-close
-              onClick={() => onChange(null)}
-              className="inline-flex h-11 items-center gap-2 border border-rule-strong px-4 text-fg hover:bg-fg hover:text-bg"
-            >
+            <Button variant="outline" data-close onClick={() => onChange(null)}>
               Close <X className="size-4" strokeWidth={1.5} aria-hidden />
-            </button>
+            </Button>
           </div>
           <div ref={photo} className="relative min-h-0 flex-1 touch-pan-y">
             <Image key={current.src} src={current.src} alt={current.alt} fill sizes="100vw" className="object-contain" />

@@ -9,6 +9,7 @@ import { links, nav, site, ticker } from '@/lib/site'
 import { Clock } from './Clock'
 import { ThemeToggle } from './ThemeToggle'
 import styles from './Menu.module.css'
+import { Button } from '@/components/ui/Button'
 
 const EASE = [0.16, 1, 0.3, 1] as const
 
@@ -107,14 +108,9 @@ export function Menu({ open, onClose }: { open: boolean; onClose: () => void }) 
                   ))}
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={onClose}
-                data-autofocus
-                className="t-label inline-flex h-11 shrink-0 items-center gap-2 border border-rule-strong px-4 text-fg transition-colors duration-[var(--dur-chrome)] hover:bg-fg hover:text-bg"
-              >
+              <Button variant="outline" onClick={onClose} data-autofocus>
                 Close <X className="size-4" strokeWidth={1.5} aria-hidden />
-              </button>
+              </Button>
             </div>
 
             {/* big links */}
