@@ -44,7 +44,8 @@ export function Clock({ className }: { className?: string }) {
   return (
     <span className={className}>
       {value ? <RollingDigits value={time} label={`Nashville time ${time} ${zone}`} /> : <span aria-hidden>{time}</span>}
-      {zone && <span aria-hidden> {zone}</span>}
+      {/* visual only: the label above already says the zone */}
+      {zone && <span aria-hidden data-zone={` ${zone}`} className="whitespace-pre before:content-[attr(data-zone)]" />}
     </span>
   )
 }

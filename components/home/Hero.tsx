@@ -22,15 +22,15 @@ export function Hero() {
           id="hero-title"
           className="t-display pt-8 text-[min(clamp(5.5rem,25vw,18rem),max(5.5rem,27svh))] sm:pt-16 lg:-ml-[0.04em] lg:pt-0"
         >
-          {/* one accessible name; the two animated lines are visual only */}
-          <span className="sr-only">{hero.title}</span>
-          <span aria-hidden="true" className={styles.mask}>
+          {/* the two lines are the heading's only text, so it reads "Ben Woods" once */}
+          <span className={styles.mask}>
             <span className={styles.rise}>{first}</span>
-          </span>
-          <span aria-hidden="true" className={styles.mask}>
+          </span>{' '}
+          <span className={styles.mask}>
             <span className={styles.rise} style={{ animationDelay: '90ms' }}>
-              {/* an invisible "BE" sets the indent, so WOODS starts exactly under the N (desktop) */}
-              <span className="invisible hidden lg:inline">{first.slice(0, -1)}</span>
+              {/* an invisible "BE" sets the indent, so WOODS starts exactly under the N (desktop). Drawn with CSS
+                  from data-indent, so it isn't text. */}
+              <span aria-hidden="true" data-indent={first.slice(0, -1)} className="invisible hidden before:content-[attr(data-indent)] lg:inline" />
               {last}
             </span>
           </span>

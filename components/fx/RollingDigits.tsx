@@ -8,7 +8,8 @@ const DIGITS = '0123456789'.split('')
 
 /**
  * Columns are keyed from the right, so 9 → 10 adds a column on the left instead of reshuffling.
- * Pass `label` so screen readers hear the value once instead of every column.
+ * Pass `label` so screen readers hear the value once instead of every column. The digits are drawn with CSS
+ * (data-d), so copied or crawled text gets the label alone.
  */
 export function RollingDigits({ value, label, className }: { value: string; label?: string; className?: string }) {
   const chars = value.split('')
@@ -19,16 +20,14 @@ export function RollingDigits({ value, label, className }: { value: string; labe
           const key = chars.length - i
           if (!/\d/.test(c)) {
             return (
-              <span key={key} className={styles.sep}>
-                {c}
-              </span>
+              <span key={key} data-d={c} className={cn(styles.sep, 'before:content-[attr(data-d)]')} />
             )
           }
           return (
             <span key={key} className={styles.col}>
               <span className={styles.strip} style={{ transform: `translateY(calc(${-Number(c)} * var(--roll-h)))` }}>
                 {DIGITS.map((d) => (
-                  <span key={d}>{d}</span>
+                  <span key={d} data-d={d} className="before:content-[attr(data-d)]" />
                 ))}
               </span>
             </span>

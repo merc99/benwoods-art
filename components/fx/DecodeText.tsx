@@ -56,7 +56,7 @@ export function DecodeText({
         }
         if (t < start + DECODE.window) {
           done = false
-          if (swap) glyphs[i].textContent = GLYPHS[(Math.random() * GLYPHS.length) | 0]
+          if (swap) glyphs[i].dataset.g = GLYPHS[(Math.random() * GLYPHS.length) | 0]
           glyphs[i].style.opacity = '0.35'
         } else if (real[i].style.opacity === '0') {
           glyphs[i].style.opacity = '0'
@@ -76,15 +76,17 @@ export function DecodeText({
   const words = text.split(' ')
   return (
     <span ref={root} className={className}>
-      {srText && <span className="sr-only">{text}</span>}
-      <span aria-hidden="true">
+      {/* the letters are the real text (read once by screen readers, crawlers and copy); the flickering glyph
+          is drawn with CSS from data-g, so it never becomes text. `srText={false}` hides it all where the
+          parent already names it (the logo link). */}
+      <span aria-hidden={srText ? undefined : true}>
         {words.map((w, wi) => (
           <span key={wi}>
             <span className="whitespace-nowrap">
               {[...w].map((ch, ci) => (
                 <span key={ci} data-c className="relative">
                   <span className="transition-opacity duration-[var(--dur-fade)] ease-out">{ch}</span>
-                  <span className="pointer-events-none absolute top-0 left-0 opacity-0">{ch}</span>
+                  <span aria-hidden="true" data-g={ch} className="pointer-events-none absolute top-0 left-0 opacity-0 before:content-[attr(data-g)]" />
                 </span>
               ))}
             </span>
