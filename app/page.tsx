@@ -14,7 +14,7 @@ const grid = 'grid gap-x-[calc(var(--gutter)*1.25)] gap-y-14 md:grid-cols-12 lg:
 export default function Home() {
   const [checkin, chrometooth, club, mmo] = bySlug(['checkin', 'chrometooth', '100k-club', 'mmo-nodes'])
   const [ratMats, megaRoll] = bySlug(['rat-mats', 'mega-roll'])
-  const [dreamline, mamies, gilded, flexible] = bySlug(['dreamline', 'mamie-s-sunday-best', 'gildedcan', 'flexible'])
+  const [dreamline, mamies] = bySlug(['dreamline', 'mamie-s-sunday-best'])
   const [squeaky, evershift, wagdie, retro] = bySlug(['squeaky-feet', 'solar-punk', 'wagdie', 'retrofuturism'])
 
   return (
@@ -76,11 +76,9 @@ export default function Home() {
         <div className="shell relative py-20 lg:py-28">
           <SectionHeader index="03" id="brand-title" title="Brand & illustration" meta="2022—2026" />
           <div className={`mt-10 lg:mt-12 ${grid}`}>
-            {/* newest first: brand 2025, 2025, 2024, 2024; then illustration 2026, 2024, 2023, 2022, four across */}
+            {/* newest first: brand 2025, 2025; then illustration 2026, 2024, 2023, 2022, four across */}
             <WorkTile project={dreamline} sizes={half} className="md:col-span-6" />
             <WorkTile project={mamies} sizes={half} className="md:col-span-6" />
-            <WorkTile project={gilded} sizes={half} className="md:col-span-6" />
-            <WorkTile project={flexible} sizes={half} className="md:col-span-6" />
             {[squeaky, evershift, wagdie, retro].map((p) => (
               <WorkTile key={p.slug} project={p} sizes={quarter} aspect="aspect-[4/5]" className="md:col-span-6 lg:col-span-3" />
             ))}
