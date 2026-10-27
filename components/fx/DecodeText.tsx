@@ -83,7 +83,7 @@ export function DecodeText({
             <span className="whitespace-nowrap">
               {[...w].map((ch, ci) => (
                 <span key={ci} data-c className="relative">
-                  <span className="transition-opacity duration-300 ease-out">{ch}</span>
+                  <span className="transition-opacity duration-[var(--dur-fade)] ease-out">{ch}</span>
                   <span className="pointer-events-none absolute top-0 left-0 opacity-0">{ch}</span>
                 </span>
               ))}

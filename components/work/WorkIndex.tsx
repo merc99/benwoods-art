@@ -115,7 +115,7 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
               {/* the highlight slides under the active filter */}
               <span
                 aria-hidden
-                className="absolute top-1 bottom-1 rounded-full bg-fg transition-[left,width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+                className="absolute top-1 bottom-1 rounded-full bg-fg transition-[left,width] duration-[var(--dur-move)] ease-glide motion-reduce:transition-none"
                 style={{ left: pill.left, width: pill.width, opacity: pill.width ? 1 : 0 }}
               />
               {filters.map((f) => (
@@ -126,7 +126,7 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
                   aria-pressed={filter === f}
                   onClick={() => set('filter', f, 'all')}
                   className={cn(
-                    'hit-44 t-label z-[1] inline-flex h-9 shrink-0 items-center gap-2 rounded-full px-3.5 transition-colors duration-300',
+                    'hit-44 t-label z-[1] inline-flex h-9 shrink-0 items-center gap-2 rounded-full px-3.5 transition-colors duration-[var(--dur-fade)]',
                     filter === f ? 'text-bg' : 'text-fg-2 hover:text-fg',
                   )}
                 >

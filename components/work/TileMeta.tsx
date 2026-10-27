@@ -23,13 +23,13 @@ export function TileMeta({
     <>
       <div className="relative mt-4 flex items-baseline justify-between gap-4">
         <h3 id={titleId} className="t-title text-[clamp(1.375rem,1.15rem+0.8vw,1.875rem)]">
-          <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-[position:left_1.04em] bg-no-repeat transition-[background-size] duration-500 ease-out group-hover:bg-[length:100%_1px]">
+          <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-[position:left_1.04em] bg-no-repeat transition-[background-size] duration-[var(--dur-move)] ease-out group-hover:bg-[length:100%_1px]">
             {project.title}
           </span>
         </h3>
         <span className="t-label shrink-0 text-fg-2">
           {project.year}
-          <span aria-hidden className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none">
+          <span aria-hidden className="ml-2 inline-block transition-transform duration-[var(--dur-fade)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none">
             ↗
           </span>
         </span>

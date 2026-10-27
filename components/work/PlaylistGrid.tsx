@@ -48,7 +48,7 @@ export function PlaylistGrid({ playlists }: { playlists: Playlist[] }) {
                   onLoad={() => setReady(true)}
                   title={`Spotify player: ${p.title}`}
                   src={`https://open.spotify.com/embed/playlist/${p.id}?utm_source=generator&theme=0`}
-                  className={`absolute inset-0 h-[352px] w-full border-0 transition-opacity duration-300 ${ready ? 'opacity-100' : 'opacity-0'}`}
+                  className={`absolute inset-0 h-[352px] w-full border-0 transition-opacity duration-[var(--dur-fade)] ${ready ? 'opacity-100' : 'opacity-0'}`}
                   allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                   loading="lazy"
                 />
@@ -60,7 +60,7 @@ export function PlaylistGrid({ playlists }: { playlists: Playlist[] }) {
                     fill
                     sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                     quality={88}
-                    className="object-cover transition-transform duration-700 ease-out [backface-visibility:hidden] [will-change:scale] group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                    className="object-cover transition-transform duration-[var(--dur-reveal)] ease-out [backface-visibility:hidden] [will-change:scale] group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                   />
                 </a>
               )}
@@ -75,7 +75,7 @@ export function PlaylistGrid({ playlists }: { playlists: Playlist[] }) {
                 }}
                 aria-label={on ? `Close the ${p.title} player` : `Play ${p.title} here`}
                 aria-pressed={on}
-                className="absolute right-3 bottom-3 z-10 grid size-11 place-items-center rounded-full bg-[#0f0f0e] text-[#f4ecdc] shadow-[var(--shadow-float)] transition-transform duration-150 hover:scale-105 active:scale-95"
+                className="absolute right-3 bottom-3 z-10 grid size-11 place-items-center rounded-full bg-[#0f0f0e] text-[#f4ecdc] shadow-[var(--shadow-float)] transition-transform duration-[var(--dur-tap)] hover:scale-105 active:scale-95"
               >
                 {on ? <X className="size-4" strokeWidth={2} aria-hidden /> : <Play className="ml-0.5 size-4 fill-current" strokeWidth={2} aria-hidden />}
               </button>

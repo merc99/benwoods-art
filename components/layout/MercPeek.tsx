@@ -67,7 +67,7 @@ export function MercPeek() {
         tabIndex={up ? 0 : -1}
         className={cn(
           'group relative block outline-none',
-          'transition-[translate,opacity] duration-700 ease-[cubic-bezier(0.34,1.45,0.64,1)] motion-reduce:translate-y-0 motion-reduce:duration-300 motion-reduce:ease-out',
+          'transition-[translate,opacity] duration-[var(--dur-reveal)] ease-pop motion-reduce:translate-y-0 motion-reduce:duration-[var(--dur-fade)] motion-reduce:ease-out',
           up ? 'translate-y-0 opacity-100' : 'translate-y-[105%] opacity-0 motion-reduce:opacity-0',
         )}
       >
@@ -75,7 +75,7 @@ export function MercPeek() {
           aria-hidden
           className={cn(
             't-label pointer-events-none absolute top-[14%] right-[92%] rounded-full bg-[#f4ecdc] px-3 py-1.5 whitespace-nowrap text-[#0f0f0e] shadow-[var(--shadow-float)]',
-            'origin-right transition-[opacity,scale] duration-300 ease-out motion-reduce:transition-none',
+            'origin-right transition-[opacity,scale] duration-[var(--dur-fade)] ease-out motion-reduce:transition-none',
             'group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100',
             up && hello ? 'scale-100 opacity-100' : 'scale-90 opacity-0',
           )}
@@ -89,7 +89,7 @@ export function MercPeek() {
           height={550}
           sizes="(min-width: 1024px) 164px, (min-width: 640px) 118px, 76px"
           quality={90}
-          className="h-auto w-full origin-bottom transition-transform duration-300 ease-out group-hover:-translate-y-1.5 group-hover:-rotate-2 group-focus-visible:-translate-y-1.5 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0 motion-reduce:group-hover:rotate-0"
+          className="h-auto w-full origin-bottom transition-transform duration-[var(--dur-fade)] ease-out group-hover:-translate-y-1.5 group-hover:-rotate-2 group-focus-visible:-translate-y-1.5 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0 motion-reduce:group-hover:rotate-0"
         />
         <span aria-hidden className="pointer-events-none absolute inset-x-2 -bottom-1 hidden h-1 rounded-full bg-fg group-focus-visible:block" />
       </Link>

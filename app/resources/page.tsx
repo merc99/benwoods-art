@@ -19,7 +19,7 @@ function LinkList({ items, numbered = true }: { items: ResourceLink[]; numbered?
             href={l.href}
             target="_blank"
             rel="noreferrer"
-            className="group grid grid-cols-[1.75rem_minmax(0,1fr)_1.25rem] items-baseline gap-x-3 gap-y-0 py-2.5 transition-[padding,background-color] md:gap-x-4 md:gap-y-1 md:py-4 duration-200 hover:bg-sunken hover:pl-3 md:grid-cols-[3.5rem_minmax(0,16rem)_minmax(0,1fr)_1.5rem]"
+            className="group grid grid-cols-[1.75rem_minmax(0,1fr)_1.25rem] items-baseline gap-x-3 gap-y-0 py-2.5 transition-[padding,background-color] md:gap-x-4 md:gap-y-1 md:py-4 duration-[var(--dur-fast)] hover:bg-sunken hover:pl-3 md:grid-cols-[3.5rem_minmax(0,16rem)_minmax(0,1fr)_1.5rem]"
           >
             <span className="t-label text-fg-3">{numbered ? String(i + 1).padStart(2, '0') : ''}</span>
             <span className="t-title text-[1rem] md:text-[1.25rem]">{l.name}</span>

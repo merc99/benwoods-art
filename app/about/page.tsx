@@ -106,7 +106,7 @@ export default function AboutPage() {
                 <a
                   href={l.href}
                   {...(l.href.startsWith('http') && { target: '_blank', rel: 'noreferrer' })}
-                  className="group flex items-baseline justify-between gap-4 py-5 pr-4 transition-[padding,background-color] duration-200 hover:bg-sunken hover:pl-3"
+                  className="group flex items-baseline justify-between gap-4 py-5 pr-4 transition-[padding,background-color] duration-[var(--dur-fast)] hover:bg-sunken hover:pl-3"
                 >
                   <span>
                     <span className="t-title block text-[1.5rem]">{l.label}</span>
@@ -119,7 +119,7 @@ export default function AboutPage() {
               </li>
             ))}
             <li className="border-b border-rule">
-              <a href={site.resume} download="Benjamin Woods - Resume.pdf" className="group flex items-baseline justify-between gap-4 py-5 pr-4 transition-[padding,background-color] duration-200 hover:bg-sunken hover:pl-3">
+              <a href={site.resume} download="Benjamin Woods - Resume.pdf" className="group flex items-baseline justify-between gap-4 py-5 pr-4 transition-[padding,background-color] duration-[var(--dur-fast)] hover:bg-sunken hover:pl-3">
                 <span>
                   <span className="t-title block text-[1.5rem]">Resume</span>
                   <span className="t-label mt-1 block text-fg-3">PDF</span>

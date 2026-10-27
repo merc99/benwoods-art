@@ -24,7 +24,7 @@ export function Bezel({
   children: React.ReactNode
 }) {
   const radius = bezelRadius[size].outer
-  const ease = 'duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)]'
+  const ease = 'duration-[var(--dur-settle)] ease-glide'
   return (
     <div
       className={cn(

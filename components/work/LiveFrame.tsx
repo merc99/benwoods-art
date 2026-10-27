@@ -99,7 +99,7 @@ export function LiveFrame({ src, title, width = 1440 }: { src: string; title: st
           referrerPolicy="no-referrer"
           allow="clipboard-write"
           style={{ width: VW + SCROLLBAR, height: VH, transform: `scale(${scale})` }}
-          className={cn('absolute top-0 left-0 origin-top-left border-0 transition-opacity duration-500', loaded ? 'opacity-100' : 'opacity-0')}
+          className={cn('absolute top-0 left-0 origin-top-left border-0 transition-opacity duration-[var(--dur-move)]', loaded ? 'opacity-100' : 'opacity-0')}
         />
       )}
     </div>

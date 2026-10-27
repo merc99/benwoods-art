@@ -32,7 +32,7 @@ export function Header() {
             {/* appears once you scroll past the top; collapses to no width when hidden, so it leaves no gap */}
             <div
               className={cn(
-                'hidden overflow-hidden transition-[max-width,opacity] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none md:block',
+                'hidden overflow-hidden transition-[max-width,opacity] duration-[var(--dur-glide)] ease-glide motion-reduce:transition-none md:block',
                 scrolled ? 'max-w-40 opacity-100' : 'max-w-0 opacity-0',
               )}
             >
@@ -40,7 +40,7 @@ export function Header() {
                 href="/about#contact"
                 tabIndex={scrolled ? 0 : -1}
                 aria-hidden={!scrolled}
-                className="t-label mr-2 inline-flex h-9 items-center gap-1.5 rounded-full bg-signal px-4 whitespace-nowrap text-[#fff8ee] transition-[filter] hover:brightness-110 dark:text-[#1c0d05]"
+                className="t-label mr-2 inline-flex h-9 items-center gap-1.5 rounded-full bg-signal px-4 whitespace-nowrap text-on-signal transition-[filter] hover:brightness-110"
               >
                 Contact <span aria-hidden>→</span>
               </Link>

@@ -109,7 +109,7 @@ export async function Gallery({
         className={cn(
           className,
           playful &&
-            `${TILT[i % TILT.length]} bg-surface p-3 shadow-[var(--shadow-float)] transition-transform duration-300 ease-out hover:rotate-0 motion-reduce:rotate-0 motion-reduce:transition-none sm:p-4`,
+            `${TILT[i % TILT.length]} bg-surface p-3 shadow-[var(--shadow-float)] transition-transform duration-[var(--dur-fade)] ease-out hover:rotate-0 motion-reduce:rotate-0 motion-reduce:transition-none sm:p-4`,
         )}
       >
         {item.placeholder ? (

@@ -137,7 +137,7 @@ export function Menu({ open, onClose }: { open: boolean; onClose: () => void }) 
                         className="group flex items-baseline gap-4 py-3 sm:gap-6"
                       >
                         <span className="t-label w-8 shrink-0 text-fg-3">{String(i + 1).padStart(2, '0')}</span>
-                        <span className="t-heading text-[clamp(2.75rem,1.6rem+5.5vw,5.75rem)] transition-transform duration-300 ease-out group-hover:translate-x-2">
+                        <span className="t-heading text-[clamp(2.75rem,1.6rem+5.5vw,5.75rem)] transition-transform duration-[var(--dur-fade)] ease-out group-hover:translate-x-2">
                           {item.label}
                         </span>
                         {current && <span className="mb-[0.6em] size-2 shrink-0 self-end rounded-full bg-signal" aria-hidden />}
