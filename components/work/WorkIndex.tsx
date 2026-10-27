@@ -143,11 +143,11 @@ export function WorkIndex({ projects }: { projects: ProjectCard[] }) {
                 <li key={p.slug} className="border-b border-rule">
                   <Link
                     href={`/work/${p.slug}`}
-                    className="group grid grid-cols-[minmax(0,1fr)_auto_1.25rem] items-baseline gap-x-4 py-3 transition-[padding,background-color] duration-[var(--dur-fast)] hover:bg-sunken hover:pl-3 md:grid-cols-[minmax(0,1fr)_12rem_4rem_1.5rem] md:py-4"
+                    className="group grid grid-cols-[minmax(0,1fr)_auto_1.25rem] items-baseline gap-x-4 py-2.5 transition-[padding,background-color] duration-[var(--dur-fast)] hover:bg-sunken hover:pl-3 md:grid-cols-[minmax(0,1fr)_12rem_4rem_1.5rem] md:py-4"
                   >
                     <span className="t-title text-[1rem] md:text-[1.25rem]">{p.title}</span>
                     <span className="t-label hidden text-fg-3 md:inline">{categoryLabel[p.category]}</span>
-                    <span className="t-label text-fg-2">{p.year}</span>
+                    <span className="t-label text-fg-3">{p.year}</span>
                     <span aria-hidden className="text-right text-fg-3 transition-transform group-hover:translate-x-0.5">
                       →
                     </span>
